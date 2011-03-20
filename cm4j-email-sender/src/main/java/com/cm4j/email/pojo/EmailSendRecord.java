@@ -10,73 +10,86 @@ import java.util.Date;
  */
 public class EmailSendRecord {
 
-    private long id;
+	/**
+	 * 发送中 - 未验证
+	 */
+	public static final String STATE_SENDING = "0";
+	/**
+	 * 发送成功 - 已验证
+	 */
+	public static final String STATE_SEND_OK = "1";
+	/**
+	 * 发送失败 - 有退信
+	 */
+	public static final String STATE_SEND_FEEDBACK = "2";
 
-    private long outboxId;
+	private long id;
 
-    private long inboxId;
+	private long outboxId;
 
-    private String sendState;
+	private long inboxId;
 
-    private String feedbackCode;
+	private String sendState;
 
-    private String feedbackInfo;
+	private String feedbackCode;
 
-    private Date updateDate;
+	private String feedbackInfo;
 
-    public long getId() {
-        return id;
-    }
+	private Date updateDate;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public long getOutboxId() {
-        return outboxId;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public void setOutboxId(long outboxId) {
-        this.outboxId = outboxId;
-    }
+	public long getOutboxId() {
+		return outboxId;
+	}
 
-    public long getInboxId() {
-        return inboxId;
-    }
+	public void setOutboxId(long outboxId) {
+		this.outboxId = outboxId;
+	}
 
-    public void setInboxId(long inboxId) {
-        this.inboxId = inboxId;
-    }
+	public long getInboxId() {
+		return inboxId;
+	}
 
-    public String getSendState() {
-        return sendState;
-    }
+	public void setInboxId(long inboxId) {
+		this.inboxId = inboxId;
+	}
 
-    public void setSendState(String sendState) {
-        this.sendState = sendState;
-    }
+	public String getSendState() {
+		return sendState;
+	}
 
-    public String getFeedbackCode() {
-        return feedbackCode;
-    }
+	public void setSendState(String sendState) {
+		this.sendState = sendState;
+	}
 
-    public void setFeedbackCode(String feedbackCode) {
-        this.feedbackCode = feedbackCode;
-    }
+	public String getFeedbackCode() {
+		return feedbackCode;
+	}
 
-    public String getFeedbackInfo() {
-        return feedbackInfo;
-    }
+	public void setFeedbackCode(String feedbackCode) {
+		this.feedbackCode = feedbackCode;
+	}
 
-    public void setFeedbackInfo(String feedbackInfo) {
-        this.feedbackInfo = feedbackInfo;
-    }
+	public String getFeedbackInfo() {
+		return feedbackInfo;
+	}
 
-    public Date getUpdateDate() {
-        return updateDate;
-    }
+	public void setFeedbackInfo(String feedbackInfo) {
+		this.feedbackInfo = feedbackInfo;
+	}
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
 }

@@ -9,7 +9,28 @@ import java.util.Date;
  * 
  */
 public class EmailOutbox {
-
+	
+	/**
+	 * 状态 - 禁用
+	 */
+	public static final String STATE_INVALID = "0";
+	/**
+	 * 状态 - 可用
+	 */
+	public static final String STATE_VALID = "1";
+	/**
+	 * 状态 - 待验证可用性
+	 */
+	public static final String STATE_TO_VERIFY = "2";
+	/**
+	 * 状态 - 用户名或密码错
+	 */
+	public static final String STATE_IDENTITY_INVALID = "3";
+	/**
+	 * 状态 - 无法连接到对应端口
+	 */
+	public static final String STATE_PORT_CONN_FAIL = "4";
+	
     private long id;
 
     private String email;

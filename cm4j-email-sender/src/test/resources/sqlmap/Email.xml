@@ -4,12 +4,15 @@
 
 <mapper namespace="com.cm4j.email.EmailMyBatisDao">
 	<select id="querySoftware" resultType="Software">
-		SELECT N_ID as id ,S_NAME as name,S_VERSION as version,S_CHECK_SUM as
-		checkSum ,S_STATE as state FROM SOFTWARE where S_NAME = #{1} 
+		SELECT N_ID as id ,S_NAME
+		as name,S_VERSION as version,S_CHECK_SUM as
+		checkSum ,S_STATE as state
+		FROM SOFTWARE where S_NAME = #{1} 
   </select>
 
 	<insert id="insertSoftware" parameterType="Software">
-		<selectKey keyProperty="id" resultType="int" order="BEFORE" statementType="PREPARED">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE"
+			statementType="PREPARED">
 			select SOFTWARE_SQ.nextval from
 			dual 
 		</selectKey>
@@ -20,7 +23,12 @@
 
 	<select id="randomQueryOutbox" resultType="EmailOutbox">
 		<!-- 待完成 -->
-		SELECT * from emailoutbox
+		SELECT * from email_outbox
+	</select>
+
+	<select id="queryInboxToSend" resultType="list">
+		select
+		n_id as id,s_email as email,s_state as state,d_create as createDate,d_update as updateDate from	email_inbox where s_state = #{1}
 	</select>
 
 </mapper>
