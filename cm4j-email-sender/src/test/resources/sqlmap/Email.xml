@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cm4j.email.EmailMyBatisDao">
+	<select id="querySoftware" resultType="Software">
+		SELECT N_ID as id ,S_NAME as name,S_VERSION as version,S_CHECK_SUM as
+		checkSum ,S_STATE as state FROM SOFTWARE where S_NAME = #{1} 
+  </select>
+
+	<insert id="insertSoftware" parameterType="Software">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE" statementType="PREPARED">
+			select SOFTWARE_SQ.nextval from
+			dual 
+		</selectKey>
+		insert into software (n_id,s_name ,s_version ,s_check_sum ,s_state)
+		values
+		(#{id},lower(#{name}),#{version},#{checkSum},#{state})
+	</insert>
+
+	<select id="randomQueryOutbox" resultType="EmailOutbox">
+		<!-- 待完成 -->
+		SELECT * from emailoutbox
+	</select>
+
+</mapper>

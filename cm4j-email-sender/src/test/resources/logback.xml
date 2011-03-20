@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="false">
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{MM-dd HH:mm:ss} [%-5level] [%thread] [%logger{0}:%L] - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.cm4j">
+		<level value="debug" />
+		<appender-ref ref="stdout" />
+	</logger>
+
+
+</configuration>

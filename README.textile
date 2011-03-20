@@ -1,0 +1,7 @@
+Project:cm4j-all
+Version:1.0.0-SNAPSHOT
+
+MAVEN项目，主要包含模块
+cm4j-core：核心模块
+cm4j-dao：数据库处理模块，依赖于cm4j-core
+cm4j-email-sender：邮件群发项目，依赖于cm4j-dao
