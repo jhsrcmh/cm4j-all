@@ -25,6 +25,7 @@
 		<mail.version>1.4.1</mail.version>
 		<!-- 数据库 -->
 		<h2database.version>1.2.135</h2database.version>
+		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version><!-- 3.2.7.ga -->
 		<mysql.version>5.1.12</mysql.version>
 		<oracle-jdk1.4.version>10.2.0.4.0</oracle-jdk1.4.version>
 		<oracle-jdk6.version>11.2.0.1.0</oracle-jdk6.version>
@@ -229,6 +230,17 @@
 			</dependency>
 
 			<!-- 数据库 -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.entitymanager.version}</version>
+				<exclusions>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+			</exclusions>
+			</dependency>
 			<dependency>
 				<groupId>c3p0</groupId>
 				<artifactId>c3p0</artifactId>
