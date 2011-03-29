@@ -22,4 +22,14 @@ public class EmailOutboxDao extends MyBatisDao {
 		// TODO selectOne会抛异常
 		return (EmailOutbox) getSqlSession().selectOne(STMT_RANDOM_QUERY_OUTBOX);
 	}
+	
+	/**
+	 * 获取一个等待校验的发件箱
+	 * 
+	 * @return
+	 */
+	public EmailOutbox queryToVerifyEmailOutbox() throws DataAccessException{
+		
+		return null;
+	}
 }

@@ -18,6 +18,14 @@ import com.cm4j.core.utils.IOUtils;
 public class DBUtil {
 	String contents = null;
 
+	/**
+	 * 读取sql文件并执行
+	 * 
+	 * @param dataSource
+	 * @param schemaName
+	 * @throws DataAccessException
+	 * @throws FileNotFoundException
+	 */
 	public void loadDBSchema(DataSource dataSource, String schemaName) throws DataAccessException,
 			FileNotFoundException {
 		JdbcTemplate template = new JdbcTemplate(dataSource);
