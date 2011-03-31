@@ -23,9 +23,11 @@
 		<xmemcached.version>1.3.1</xmemcached.version>
 		<swt.version>3.6.2</swt.version>
 		<mail.version>1.4.1</mail.version>
+		<hamcrest.version>1.1</hamcrest.version>
 		<!-- 数据库 -->
 		<h2database.version>1.2.135</h2database.version>
-		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version><!-- 3.2.7.ga -->
+		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version><!-- 
+			3.2.7.ga -->
 		<mysql.version>5.1.12</mysql.version>
 		<oracle-jdk1.4.version>10.2.0.4.0</oracle-jdk1.4.version>
 		<oracle-jdk6.version>11.2.0.1.0</oracle-jdk6.version>
@@ -48,6 +50,7 @@
 		<module>cm4j-core</module>
 		<module>cm4j-email-sender</module>
 		<module>cm4j-dao</module>
+		<module>cm4j-test</module>
 	</modules>
 
 	<!-- 预定义依赖项 -->
@@ -228,6 +231,13 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.hamcrest</groupId>
+				<artifactId>hamcrest-all</artifactId>
+				<version>${hamcrest.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<!-- 数据库 -->
 			<dependency>
@@ -235,11 +245,11 @@
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${hibernate.entitymanager.version}</version>
 				<exclusions>
-				<exclusion>
-					<groupId>javax.transaction</groupId>
-					<artifactId>jta</artifactId>
-				</exclusion>
-			</exclusions>
+					<exclusion>
+						<groupId>javax.transaction</groupId>
+						<artifactId>jta</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>c3p0</groupId>
