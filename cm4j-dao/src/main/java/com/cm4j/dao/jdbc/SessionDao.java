@@ -12,19 +12,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 import com.cm4j.dao.exception.Cm4jDataAccessException;
 
@@ -45,8 +44,7 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * @Contact <a href="mailto:hao.yh@qq.com">hao.yh@qq.com</a>
  * @copyright Woniu.com
  */
-@Repository
-public class SessionDaoImpl implements BaseSessionDAO {
+public class SessionDao implements BaseSessionDAO {
 
 	// log4j日志
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -251,7 +249,7 @@ public class SessionDaoImpl implements BaseSessionDAO {
 	 * 
 	 * @param dataSource
 	 */
-	@Resource
+	@Autowired(required = false)
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.simpleJdbcTemplate = new SimpleJdbcTemplate(dataSource);

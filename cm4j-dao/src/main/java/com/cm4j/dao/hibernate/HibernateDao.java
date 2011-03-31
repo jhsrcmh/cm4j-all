@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -18,11 +16,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
-import org.springframework.stereotype.Repository;
 
 import com.cm4j.dao.exception.Cm4jDataAccessException;
 
@@ -44,7 +43,7 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * </font></b>
  * <p>
  * <font color="green"> <b> A、分别继承接口{@link BaseHibernateDAO}和本类
- * {@link HibernateDaoImpl}，使用接口指定范型POJO（通过范型获取pojo） </b> </font>
+ * {@link HibernateDao}，使用接口指定范型POJO（通过范型获取pojo） </b> </font>
  * <p>
  * <b>接口GsUserDao如下：</b>
  * 
@@ -56,7 +55,7 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * <b>实现GsUserDaoImpl如下：</b>
  * 
  * <pre>
- * public class GsUserDaoImpl extends HibernateDaoImpl&lt;GsUser, Long&gt; implements GsUserDao {
+ * public class GsUserDaoImpl extends HibernateDao&lt;GsUser, Long&gt; implements GsUserDao {
  * }
  * </pre>
  * 
@@ -68,19 +67,19 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * </pre>
  * <p>
  * <font color="green"> <b> B、使用Spring直接配置，将持久化对象（POJO）通过有参构造函数注入
- * {@link HibernateDaoImpl}，避免多余DAO代码（通过构造函数获取pojo）<br>
+ * {@link HibernateDao}，避免多余DAO代码（通过构造函数获取pojo）<br>
  * </b> </font>
  * <p>
  * <b>注意：在调用时候采用注解方式，<font
  * color="red">必须使用@Resource（按ID名称），不可使用@Autowired（按类型）</font>，
- * 因为这是通过ID名称注入的，将所有DAO都注入到 {@link HibernateDaoImpl}，而A方法两者都可以使用</b>
+ * 因为这是通过ID名称注入的，将所有DAO都注入到 {@link HibernateDao}，而A方法两者都可以使用</b>
  * <p>
  * 
  * <b>Spring配置如下：</b>
  * 
  * <pre>
  * //SessionFacotory通过Autowired注入进来
- * &lt;bean id=&quot;gsUserDao&quot; class=&quot;com.cm4j.common.dao.impl.HibernateDaoImpl&quot;;&gt;
+ * &lt;bean id=&quot;gsUserDao&quot; class=&quot;com.cm4j.common.dao.impl.HibernateDao&quot;;&gt;
  * 	 //注入持久化对象POJO
  * 	 &lt;constructor-arg&gt;
  * 	 	&lt;value&gt;com.woniu.sncp.popularize.pojo.GsUser&lt;/value&gt;
@@ -103,25 +102,24 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * 
  * @author YangHao
  * @since 2008-12-7 下午09:35:34
- * @contact <a href="mailto:hao.yh@qq.com">hao.yh@qq.com</a>
- * @copyright Woniu.com
+ * @contact <a href="mailto:hao.yhao@gmail.com">hao.yhao@gmail.com</a>
+ * @copyright cm4j
  */
-@Repository
-public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHibernateDAO<E, ID> {
+public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDAO<E, ID>, InitializingBean {
 
 	private HibernateTemplate hibernateTemplate;
-
-	// private SessionFactory sessionFactory;
 
 	// 持久化对象：E
 	private Class<E> persistentClass;
 
 	public Class<E> getPersistentClass() {
+		checkPersistentClass();
 		return persistentClass;
 	}
 
-	public void setPersistentClass(Class<E> persistentClass) {
+	public BaseHibernateDAO<E, ID> setPersistentClass(Class<E> persistentClass) {
 		this.persistentClass = persistentClass;
+		return this;
 	}
 
 	// 日志logger对象
@@ -133,31 +131,34 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 	// **************************************************************************
 	// /
 
-	/**
-	 * 构造函数，通过范型获取持久化对象
-	 */
 	@SuppressWarnings("unchecked")
-	public HibernateDaoImpl() throws DataAccessException {
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		try {
-			if (this.persistentClass == null) {
-				this.persistentClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
+			if (persistentClass == null) {
+				persistentClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
 						.getActualTypeArguments()[0];
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			throw new Cm4jDataAccessException("初始化获取POJO类失败！", e);
 		}
-		logger.debug("HibernateDaoImpl范型获取POJO:" + this.persistentClass);
+
+		logger.debug("HibernateDao范型获取POJO:" + this.persistentClass);
+	}
+
+	private void checkPersistentClass() throws Cm4jDataAccessException {
+		if (persistentClass == null)
+			throw new Cm4jDataAccessException("persistentClass不能为空");
 	}
 
 	/**
 	 * 构造函数，通过spring配置注入持久化对象
 	 */
-	public HibernateDaoImpl(Class<E> persistentClass) {
-		if (this.persistentClass == null) {
+	public HibernateDao(Class<E> persistentClass) {
+		if (persistentClass == null) {
 			this.persistentClass = persistentClass;
 		}
-		logger.debug("HibernateDaoImpl构造函数获取POJO：" + this.persistentClass);
+		logger.debug("HibernateDao构造函数获取POJO：" + persistentClass);
 	}
 
 	// **************************************************************************
@@ -268,10 +269,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 	}
 
 	public List<?> findAllWithHql(String hql, Object[] values) throws DataAccessException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + hql);
-			logger.debug("查询参数：" + ArrayUtils.toString(values));
-		}
+		logger.debug("查询语句：" + hql);
+		logger.debug("查询参数：" + ArrayUtils.toString(values));
 		return hibernateTemplate.find(hql, values);
 	}
 
@@ -302,10 +301,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 			values[index] = paramValues.get(param);
 			index++;
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + paramValues);
-		}
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + paramValues);
 		return hibernateTemplate.findByNamedParam(queryString, params, values);
 	}
 
@@ -326,11 +323,9 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		}
 		StringBuilder hql = new StringBuilder("from ").append(this.getPersistentClass().getSimpleName())
 				.append(" where ").append(property).append(" = :").append(property);
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + hql);
-			logger.debug("参数名称：" + property);
-			logger.debug("参数值：" + value);
-		}
+		logger.debug("查询语句：" + hql);
+		logger.debug("参数名称：" + property);
+		logger.debug("参数值：" + value);
 		return hibernateTemplate.findByNamedParam(hql.toString(), property, value);
 	}
 
@@ -343,11 +338,9 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		StringBuilder hql = new StringBuilder("from ").append(this.getPersistentClass().getSimpleName())
 				.append(" where ").append(property).append(" = :").append(property).append(" order by ")
 				.append(orderBy).append(isAsc ? " asc" : " desc");
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + hql);
-			logger.debug("参数名：" + property);
-			logger.debug("参数值：" + value);
-		}
+		logger.debug("查询语句：" + hql);
+		logger.debug("参数名：" + property);
+		logger.debug("参数值：" + value);
 		return hibernateTemplate.findByNamedParam(hql.toString(), property, value);
 	}
 
@@ -365,11 +358,9 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 			hql = hql.append(param).append(" = :").append(param).append(" and ");
 		}
 		String queryString = StringUtils.substringBeforeLast(hql.toString(), " and");
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			for (int i = 0; i < properties.length; i++) {
-				logger.debug("参数名[第" + (i + 1) + "个]：" + properties[i] + "，参数值：" + values[i]);
-			}
+		logger.debug("查询语句：" + queryString);
+		for (int i = 0; i < properties.length; i++) {
+			logger.debug("参数名[第" + (i + 1) + "个]：" + properties[i] + "，参数值：" + values[i]);
 		}
 		return hibernateTemplate.findByNamedParam(queryString, properties, values);
 	}
@@ -389,10 +380,10 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 			hql = hql.append(param).append(" = :").append(param).append(" and ");
 		}
 		String queryString = StringUtils.substringBeforeLast(hql.toString(), "and");
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + paramValues);
-		}
+
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + paramValues);
+
 		Session session = getSession();
 		Query query = session.createQuery(queryString.toString());
 		query.setProperties(paramValues);
@@ -408,10 +399,10 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		if (MapUtils.isEmpty(paramValues)) {
 			throw new Cm4jDataAccessException("查询参数不允许为空");
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + paramValues);
-		}
+
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + paramValues);
+
 		Session session = this.getSession();
 		Query query = session.createQuery(queryString);
 		query.setFirstResult(firstRow);
@@ -456,10 +447,10 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		}
 
 		hql.append(queryString);
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + otherValues);
-		}
+
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + otherValues);
+
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
 		query.setProperties(otherValues);
@@ -483,10 +474,10 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		StringBuilder hql = new StringBuilder("FROM ").append(this.getPersistentClass().getSimpleName())
 				.append(" WHERE ").append(property).append(" = :").append(property).append(" ORDER BY ")
 				.append(orderStr).append(StringUtils.isBlank(orderBy) ? "" : ",").append("ID DESC");
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + hql);
-			logger.debug("参数键值对：property：" + property + "，value：" + value);
-		}
+
+		logger.debug("查询语句：" + hql);
+		logger.debug("参数键值对：property：" + property + "，value：" + value);
+
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
 		query.setFirstResult(firstResult);
@@ -519,10 +510,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 				.append(" where ").append(queryString).append(" order by ").append(orderStr)
 				.append(StringUtils.isBlank(orderBy) ? "" : ",").append("id desc");
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + hql);
-			logger.debug("参数键值对：" + paramValues);
-		}
+		logger.debug("查询语句：" + hql);
+		logger.debug("参数键值对：" + paramValues);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
@@ -558,10 +547,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		// 将2个参数Map拼装起来
 		propertyValues.putAll(otherValues);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + hql);
-			logger.debug("参数键值对：" + otherValues);
-		}
+		logger.debug("查询语句：" + hql);
+		logger.debug("参数键值对：" + otherValues);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
@@ -582,10 +569,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		Query q = session.createQuery(queryString);
 		q.setProperties(paramValues);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + paramValues);
-		}
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + paramValues);
 
 		int result = 0;
 		try {
@@ -620,10 +605,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		Query q = session.createQuery(queryString);
 		q.setProperties(paramValues);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + paramValues);
-		}
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + paramValues);
 
 		int result = 0;
 		try {
@@ -658,10 +641,8 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 		Query query = session.createQuery(hql.toString());
 		query.setProperties(propertyValues);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("查询语句：" + queryString);
-			logger.debug("参数键值对：" + propertyValues);
-		}
+		logger.debug("查询语句：" + queryString);
+		logger.debug("参数键值对：" + propertyValues);
 
 		int result = 0;
 		try {
@@ -695,9 +676,7 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 	 */
 	public List<Map<String, Object>> executeWithResult(String spName, Map<String, Object> parameters,
 			Map<String, Integer> outParams, String cursorName) throws DataAccessException {
-		// TODO Auto-generated method stub
-		logger.error("未实现该功能");
-		return null;
+		throw new Cm4jDataAccessException("no implements");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -785,9 +764,9 @@ public class HibernateDaoImpl<E, ID extends Serializable> implements BaseHiberna
 	 * 
 	 * @param sessionFactory
 	 */
-	@Resource
+	@Autowired(required = false)
 	public void setSessionFactory(SessionFactory sessionFactory) {
-		logger.debug("HibernateDaoImpl设置sessionFacotry，持久化类为：" + persistentClass);
+		logger.debug("HibernateDao设置sessionFacotry，持久化类为：" + persistentClass);
 		// 首先，检查原来的hibernateTemplate实例是否还存在
 		if (this.hibernateTemplate == null || sessionFactory != this.hibernateTemplate.getSessionFactory()) {
 			this.hibernateTemplate = new HibernateTemplate(sessionFactory);

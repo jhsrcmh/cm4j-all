@@ -1,4 +1,4 @@
-package com.cm4j.dao.jdbc;
+package com.cm4j.dao.utils;
 
 import java.util.Date;
 
