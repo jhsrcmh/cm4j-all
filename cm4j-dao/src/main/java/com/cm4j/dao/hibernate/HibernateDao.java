@@ -140,10 +140,10 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 						.getActualTypeArguments()[0];
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.warn("初始化未能获取范型POJO，class：{}", getClass());
 		}
 
-		logger.debug("HibernateDao范型获取POJO:" + this.persistentClass);
+		logger.debug("HibernateDao范型获取POJO：{}", this.persistentClass);
 	}
 
 	private void checkPersistentClass() throws Cm4jDataAccessException {
@@ -151,6 +151,10 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 			throw new Cm4jDataAccessException("persistentClass不能为空");
 	}
 
+	public HibernateDao() {
+		// do nothing
+	}
+	
 	/**
 	 * 构造函数，通过spring配置注入持久化对象
 	 */
@@ -158,7 +162,7 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		if (persistentClass == null) {
 			this.persistentClass = persistentClass;
 		}
-		logger.debug("HibernateDao构造函数获取POJO：" + persistentClass);
+		logger.debug("HibernateDao构造函数获取POJO：{}", persistentClass);
 	}
 
 	// **************************************************************************
@@ -269,8 +273,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 	}
 
 	public List<?> findAllWithHql(String hql, Object[] values) throws DataAccessException {
-		logger.debug("查询语句：" + hql);
-		logger.debug("查询参数：" + ArrayUtils.toString(values));
+		logger.debug("查询语句：{}", hql);
+		logger.debug("查询参数：{}", ArrayUtils.toString(values));
 		return hibernateTemplate.find(hql, values);
 	}
 
@@ -301,8 +305,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 			values[index] = paramValues.get(param);
 			index++;
 		}
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + paramValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", paramValues);
 		return hibernateTemplate.findByNamedParam(queryString, params, values);
 	}
 
@@ -323,9 +327,9 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		}
 		StringBuilder hql = new StringBuilder("from ").append(this.getPersistentClass().getSimpleName())
 				.append(" where ").append(property).append(" = :").append(property);
-		logger.debug("查询语句：" + hql);
-		logger.debug("参数名称：" + property);
-		logger.debug("参数值：" + value);
+		logger.debug("查询语句：{}", hql);
+		logger.debug("参数名称：{}", property);
+		logger.debug("参数值：{}", value);
 		return hibernateTemplate.findByNamedParam(hql.toString(), property, value);
 	}
 
@@ -338,9 +342,9 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		StringBuilder hql = new StringBuilder("from ").append(this.getPersistentClass().getSimpleName())
 				.append(" where ").append(property).append(" = :").append(property).append(" order by ")
 				.append(orderBy).append(isAsc ? " asc" : " desc");
-		logger.debug("查询语句：" + hql);
-		logger.debug("参数名：" + property);
-		logger.debug("参数值：" + value);
+		logger.debug("查询语句：{}", hql);
+		logger.debug("参数名：{}", property);
+		logger.debug("参数值：{}", value);
 		return hibernateTemplate.findByNamedParam(hql.toString(), property, value);
 	}
 
@@ -358,9 +362,9 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 			hql = hql.append(param).append(" = :").append(param).append(" and ");
 		}
 		String queryString = StringUtils.substringBeforeLast(hql.toString(), " and");
-		logger.debug("查询语句：" + queryString);
+		logger.debug("查询语句：{}", queryString);
 		for (int i = 0; i < properties.length; i++) {
-			logger.debug("参数名[第" + (i + 1) + "个]：" + properties[i] + "，参数值：" + values[i]);
+			logger.debug("参数名[第{}个]：{}，参数值：{}", new Object[] { i + 1, properties[i], values[i] });
 		}
 		return hibernateTemplate.findByNamedParam(queryString, properties, values);
 	}
@@ -381,8 +385,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		}
 		String queryString = StringUtils.substringBeforeLast(hql.toString(), "and");
 
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + paramValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", paramValues);
 
 		Session session = getSession();
 		Query query = session.createQuery(queryString.toString());
@@ -400,8 +404,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 			throw new Cm4jDataAccessException("查询参数不允许为空");
 		}
 
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + paramValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", paramValues);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(queryString);
@@ -448,8 +452,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 
 		hql.append(queryString);
 
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + otherValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", otherValues);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
@@ -475,8 +479,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 				.append(" WHERE ").append(property).append(" = :").append(property).append(" ORDER BY ")
 				.append(orderStr).append(StringUtils.isBlank(orderBy) ? "" : ",").append("ID DESC");
 
-		logger.debug("查询语句：" + hql);
-		logger.debug("参数键值对：property：" + property + "，value：" + value);
+		logger.debug("查询语句：{}", hql);
+		logger.debug("参数键值对：property：{}，value：{}", property, value);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
@@ -510,8 +514,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 				.append(" where ").append(queryString).append(" order by ").append(orderStr)
 				.append(StringUtils.isBlank(orderBy) ? "" : ",").append("id desc");
 
-		logger.debug("查询语句：" + hql);
-		logger.debug("参数键值对：" + paramValues);
+		logger.debug("查询语句：{}", hql);
+		logger.debug("参数键值对：{}", paramValues);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
@@ -547,8 +551,8 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		// 将2个参数Map拼装起来
 		propertyValues.putAll(otherValues);
 
-		logger.debug("查询语句：" + hql);
-		logger.debug("参数键值对：" + otherValues);
+		logger.debug("查询语句：{}", hql);
+		logger.debug("参数键值对：{}", otherValues);
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
@@ -569,14 +573,14 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		Query q = session.createQuery(queryString);
 		q.setProperties(paramValues);
 
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + paramValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", paramValues);
 
 		int result = 0;
 		try {
 			result = Integer.parseInt(q.iterate().next().toString());
 		} catch (NumberFormatException e) {
-			logger.error("数字转换错误" + e);
+			logger.error("数字转换错误{}", e);
 		} catch (HibernateException e) {
 			logger.debug("查询记录数为0");
 		}
@@ -605,14 +609,14 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		Query q = session.createQuery(queryString);
 		q.setProperties(paramValues);
 
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + paramValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", paramValues);
 
 		int result = 0;
 		try {
 			result = Integer.parseInt(q.iterate().next().toString());
 		} catch (NumberFormatException e) {
-			logger.error("数字转换错误" + e);
+			logger.error("数字转换错误", e);
 		} catch (HibernateException e) {
 			logger.debug("查询记录数为0");
 		}
@@ -641,14 +645,14 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		Query query = session.createQuery(hql.toString());
 		query.setProperties(propertyValues);
 
-		logger.debug("查询语句：" + queryString);
-		logger.debug("参数键值对：" + propertyValues);
+		logger.debug("查询语句：{}", queryString);
+		logger.debug("参数键值对：{}", propertyValues);
 
 		int result = 0;
 		try {
 			result = Integer.parseInt(query.iterate().next().toString());
 		} catch (NumberFormatException e) {
-			logger.error("数字转换错误" + e);
+			logger.error("数字转换错误", e);
 		} catch (HibernateException e) {
 			logger.debug("查询记录数为0");
 		}
@@ -702,7 +706,7 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 	public void deleteById(ID id) throws DataAccessException {
 		E entity = this.findById(id);
 		if (entity == null) {
-			logger.warn("删除对象异常：对象" + this.getPersistentClass().getSimpleName() + "未查询到");
+			logger.warn("删除对象异常：对象{}未查询到",this.getPersistentClass().getSimpleName());
 			throw new Cm4jDataAccessException("删除对象异常：对象" + this.getPersistentClass().getSimpleName() + "未查询到");
 		}
 		this.delete(entity);
@@ -766,7 +770,7 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 	 */
 	@Autowired(required = false)
 	public void setSessionFactory(SessionFactory sessionFactory) {
-		logger.debug("HibernateDao设置sessionFacotry，持久化类为：" + persistentClass);
+		logger.debug("HibernateDao设置sessionFacotry，持久化类为：{}", persistentClass);
 		// 首先，检查原来的hibernateTemplate实例是否还存在
 		if (this.hibernateTemplate == null || sessionFactory != this.hibernateTemplate.getSessionFactory()) {
 			this.hibernateTemplate = new HibernateTemplate(sessionFactory);

@@ -132,14 +132,12 @@ public class SelectSockets {
 
 		// Loop while data is available; channel is nonblocking
 		while ((count = socketChannel.read(buffer)) > 0) {
+			buffer.flip();
 			// Send the data; don't assume it goes all at once
 			while (buffer.hasRemaining()) {
-				buffer.flip();
 				byte result = buffer.get();
 				System.out.println("server received:" + (char)result);
-				buffer.clear();
 				buffer.put(result);
-				buffer.flip();
 				socketChannel.write(buffer);
 			}
 			

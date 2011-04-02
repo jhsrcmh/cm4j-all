@@ -2,12 +2,23 @@ package com.cm4j.email.pojo;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * 收件箱 - 接受者邮件
  * 
  * @author yanghao
  * 
  */
+@Entity
+@Table(name = "email_inbox")
+@SequenceGenerator(name = "SEQ_GEN", sequenceName = "email_inbox_sq", allocationSize = 1)
 public class EmailInbox {
 
 	/**
@@ -31,10 +42,21 @@ public class EmailInbox {
 	 */
 	public static final String STATE_IDENTITY_INVALID = "4";
 
+	@Id
+	@Column(name = "n_id")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private long id;
+
+	@Column(name = "s_email", nullable = false)
 	private String email;
+
+	@Column(name = "s_state", nullable = false)
 	private String state;
+
+	@Column(name = "d_create", nullable = false)
 	private Date createDate;
+
+	@Column(name = "d_update", nullable = false)
 	private Date updateDate;
 
 	public long getId() {

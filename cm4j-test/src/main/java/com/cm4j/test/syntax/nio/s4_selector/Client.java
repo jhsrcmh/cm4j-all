@@ -1,10 +1,8 @@
 package com.cm4j.test.syntax.nio.s4_selector;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -17,16 +15,16 @@ public class Client {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	ByteBuffer buffer = ByteBuffer.wrap("server，我来了".getBytes());
+	ByteBuffer buffer = ByteBuffer.wrap("server,i am coming!".getBytes());
 
 	public Client() throws Exception {
 		InetSocketAddress inetSocketAddress = new InetSocketAddress("127.0.0.1", 1234);
 		SocketChannel socketChannel = SocketChannel.open(inetSocketAddress);
-		SelectableChannel configureBlocking = socketChannel.configureBlocking(false);
+		socketChannel.configureBlocking(false);
 
 		Selector selector = Selector.open();
 		socketChannel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-		
+
 		logger.debug("client connect to:{}", inetSocketAddress);
 		System.out.println(socketChannel.finishConnect());
 
@@ -38,17 +36,23 @@ public class Client {
 
 			Set<SelectionKey> selectedKeys = selector.selectedKeys();
 			for (SelectionKey selectionKey : selectedKeys) {
-				if (selectionKey.isConnectable()) {
-					sayHelloToServer(socketChannel);
-
-					socketChannel.register(selector, SelectionKey.OP_WRITE);
-				}
 				if (selectionKey.isWritable()) {
-					
-					while (buffer.hasRemaining()){
-						socketChannel.write(buffer);
-					}
+					sayHelloToServer(socketChannel);
+					/*
+					 * while (buffer.hasRemaining()){
+					 * socketChannel.write(buffer); } buffer.clear();
+					 */
+				}
+
+				if (selectionKey.isReadable()) {
 					buffer.clear();
+					while (socketChannel.read(buffer) > 0) {
+						buffer.flip();
+						while (buffer.hasRemaining()) {
+							System.out.println((char) buffer.get());
+						}
+						buffer.clear();
+					}
 				}
 
 			}
@@ -61,9 +65,6 @@ public class Client {
 	}
 
 	public void sayHelloToServer(SocketChannel socketChannel) throws IOException {
-		buffer.clear();
-		buffer.put("Hello,Server!\n".getBytes());
-		buffer.flip();
 		socketChannel.write(buffer);
 	}
 }

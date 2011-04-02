@@ -19,12 +19,6 @@
 		</dependency>
 		<!-- module dependency end -->
 
-		<!-- Visual Editor插件已包含本类 -->
-		<dependency>
-			<groupId>org.eclipse.swt.win32.win32</groupId>
-			<artifactId>x86</artifactId>
-		</dependency>
-
 		<!-- mail -->
 		<dependency>
 			<groupId>javax.mail</groupId>
