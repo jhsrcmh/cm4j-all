@@ -1,0 +1,39 @@
+一.	线程的生命周期：http://www.blogjava.net/nokiaguy/archive/2009/03/11/259060.html
+A	创建并运行线程
+
+B	挂起和唤醒线程
+	1.  在线程执行的过程中，可以通过两个方法使线程暂时停止执行。这两个方法是suspend和sleep
+	2.  在使用suspend挂起线程后，可以通过resume方法唤醒线程。而使用sleep使线程休眠后，只能在设定的时间后使线程处于就绪状态
+	（在线程休眠结束后，线程不一定会马上执行，只是进入了就绪状态，等待着系统进行调度）。
+	
+C	终止线程的三种方法
+	1.  使用退出标志，使线程正常退出，也就是当run方法完成后线程终止。(查看ExitFlagThread.java)
+	2.  使用stop方法强行终止线程（这个方法不推荐使用，因为stop和suspend、resume一样，也可能发生不可预料的结果）。
+	3.  使用interrupt方法中断线程。(查看InterruptThread.java)
+	使用interrupt方法来终端线程可分为两种情况：
+	(1)线程处于阻塞状态，如使用了sleep方法。
+	(2)使用while(!isInterrupted()){...}来判断线程是否被中断。
+	在第一种情况下使用interrupt方法，sleep方法将抛出一个InterruptedException例外，而在第二种情况下线程将直接退出。
+	
+	注意：在Thread类中有两个方法可以判断线程是否通过interrupt方法被终止。
+	一个是静态的方法interrupted()，一个是非静态的方法isInterrupted()，
+	这两个方法的区别是interrupted用来判断当前线是否被中断，而isInterrupted可以用来判断其他线程是否被中断。
+	因此，while (!isInterrupted())也可以换成while (!Thread.interrupted())。
+
+二.	join方法的使用：http://www.blogjava.net/nokiaguy/archive/2009/03/12/259262.html
+	join方法的功能就是使异步执行的线程变成同步执行。(查看JoinThread.java)
+	
+三.	向线程传递数据的三种方法：http://www.blogjava.net/nokiaguy/archive/2009/03/archive/2009/nokiaguy/archive/2009/03/16/260131.html
+A	通过构造方法传递数据
+B	通过变量和方法传递数据(setter)
+C	通过回调函数传递数据(查看PassParamsThread.java)
+
+四.使用Synchronized关键字同步类方法
+	1.  synchronized关键字不能继承。
+	虽然可以使用synchronized来定义方法，但synchronized并不属于方法定义的一部分，因此，synchronized关键字不能被继承。
+	如果在父类中的某个方法使用了synchronized关键字，而在子类中覆盖了这个方法，在子类中的这个方法默认情况下并不是同步的，
+	而必须显式地在子类的这个方法中加上synchronized关键字才可以。当然，还可以在子类方法中调用父类中相应的方法，
+	这样虽然子类中的方法不是同步的，但子类调用了父类的同步方法，因此，子类的方法也就相当于同步了。
+	2.  在定义接口方法时不能使用synchronized关键字。
+	3.  构造方法不能使用synchronized关键字，但可以使用下节要讨论的synchronized块来进行同步。
+	4.  synchronized可以自由放置。
