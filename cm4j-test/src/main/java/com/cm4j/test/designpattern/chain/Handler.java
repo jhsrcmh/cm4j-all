@@ -1,30 +1,27 @@
 package com.cm4j.test.designpattern.chain;
 
 public abstract class Handler {
-    protected abstract void response(IWoman woman);
-    
-    public static final int TYPE_FATHER = 1;
-    public static final int TYPE_HUSBAND = 2;
-    public static final int TYPE_SON = 3;
+	/**
+	 * 抽象方法 - 子类去各自实现处理
+	 * 
+	 * @param woman
+	 */
+	protected abstract void handle(IWoman woman);
 
-    private int type;
+	private Handler next;
 
-    private Handler next;
+	public void setNext(Handler handler) {
+		this.next = handler;
+	}
 
-    public Handler(int type) {
-        this.type = type;
-    }
-
-    public void setNext(Handler handler) {
-        this.next = handler;
-    }
-
-    public void handleMessage(IWoman woman) {
-        if (this.type == woman.getType())
-            this.response(woman);
-        else if (this.next != null)
-            this.next.handleMessage(woman);
-        else
-            System.out.println("request not match");
-    }
+	public final void handleMessage(IWoman woman) {
+		// woman指定的处理类型，则当前处理
+		if (getClass() == woman.getHandler())
+			this.handle(woman);
+		// woman没指定类型，但next不为空，则传递给next处理
+		else if (this.next != null)
+			this.next.handleMessage(woman);
+		else
+			System.out.println("request not match");
+	}
 }

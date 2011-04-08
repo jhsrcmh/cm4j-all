@@ -1,25 +1,28 @@
 package com.cm4j.test.designpattern.chain;
 
-import java.util.ArrayList;
-
-import org.junit.Test;
-
+/**
+ * 责任链模式 - woman请求逛街，father-husband-son依次答复
+ * 
+ * @author yang.hao
+ * @since 2011-4-7 下午04:30:35
+ * 
+ */
 public class Client {
 
-    @Test
-    public void usage() {
-        ArrayList<IWoman> arrayList = new ArrayList<IWoman>();
-        for (int i = 0; i < 4; i++)
-            arrayList.add(new Woman(i, "我要去逛啊"));
+	public static void main(String[] args) {
 
-        Handler father = new Father();
-        Handler husband = new Husband();
-        Handler son = new Son();
+		Handler father = new Father();
+		Handler husband = new Husband();
+		Handler son = new Son();
 
-        father.setNext(husband);
-        husband.setNext(son);
+		// father->husband->son
+		father.setNext(husband);
+		husband.setNext(son);
 
-        for (IWoman iWoman : arrayList)
-            father.handleMessage(iWoman);
-    }
+		IWoman iWoman = new Woman(Son.class, "我要去逛啊");
+		father.handleMessage(iWoman);
+
+		IWoman iWoman2 = new Woman(Father.class, "我要去逛啊2");
+		father.handleMessage(iWoman2);
+	}
 }

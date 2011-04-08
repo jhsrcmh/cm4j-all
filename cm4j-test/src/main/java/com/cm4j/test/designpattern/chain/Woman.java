@@ -2,24 +2,30 @@ package com.cm4j.test.designpattern.chain;
 
 public class Woman implements IWoman {
 
-    private int type = 0;
-    
-    private String request = "";
-    
-    public Woman(int type, String request) {
-        super();
-        this.type = type;
-        this.request = request;
-    }
+	private Class<? extends Handler> handler;
 
-    @Override
-    public int getType() {
-        return this.type;
-    }
+	private String request = "";
 
-    @Override
-    public String getRequest() {
-        return this.request;
-    }
+	/**
+	 * 
+	 * @param handler
+	 *            指定的处理handler
+	 * @param request
+	 *            请求
+	 */
+	public Woman(Class<? extends Handler> handler, String request) {
+		super();
+		this.handler = handler;
+		this.request = request;
+	}
+
+	public Class<? extends Handler> getHandler() {
+		return handler;
+	}
+
+	@Override
+	public String getRequest() {
+		return this.request;
+	}
 
 }
