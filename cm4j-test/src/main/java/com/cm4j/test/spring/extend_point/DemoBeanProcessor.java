@@ -4,9 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Service;
-
-import com.cm4j.test.spring.extend_point.HelloWorld;
 
 /**
  * BeanProcessor处理器，如果启用注解则起作用

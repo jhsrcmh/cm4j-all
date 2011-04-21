@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.stereotype.Service;
 
 /**
  * <pre>
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
  * @author yanghao
  * 
  */
-@Service
 public class BatchInsertUsage {
 
     private static Logger logger = LoggerFactory.getLogger(BatchInsertUsage.class);
@@ -50,7 +48,7 @@ public class BatchInsertUsage {
 
     }
 
-    @Autowired
+    @Autowired(required=false)
     public void setDataSource(DataSource ds) {
         simpleJdbcTemplate = new SimpleJdbcTemplate(ds);
     }
