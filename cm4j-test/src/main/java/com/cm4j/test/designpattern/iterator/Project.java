@@ -1,7 +1,6 @@
 package com.cm4j.test.designpattern.iterator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Project implements IProject {
 

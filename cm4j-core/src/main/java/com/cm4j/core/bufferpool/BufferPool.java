@@ -1,12 +1,12 @@
 package com.cm4j.core.bufferpool;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -30,7 +30,11 @@ public class BufferPool<E> {
 	private AtomicLong batchExecCounter = new AtomicLong(0);
 
 	// 是否可以offer
-	private boolean shouldOffer = true;
+	private volatile boolean shouldOffer = true;
+
+	// 线程关闭Latch
+	private CountDownLatch shutdownLatch;
+	private volatile boolean shutdown = false;
 
 	// 用于存放启动时添加的consumer线程，在ShutdownHook中关闭
 	private Set<ConsumerThread> listenedThreads = new LinkedHashSet<ConsumerThread>();
@@ -39,6 +43,7 @@ public class BufferPool<E> {
 		this.configuration = configuration;
 		this.handler = handler;
 		this.blockingQueue = new ArrayBlockingQueue<E>(configuration.getQueueSize());
+		this.shutdownLatch = new CountDownLatch(configuration.getConsumerThreadNum());
 
 		// 系统停止时业务处理
 		Runtime.getRuntime().addShutdownHook(new Thread("shutdownThread") {
@@ -47,39 +52,19 @@ public class BufferPool<E> {
 				logger.info("应用接受到关闭指令，执行ShutdownHook");
 				// 禁止向队列里放数据
 				shouldOffer = false;
-
-				IncrementSleepStrategy incrementSleepStrategy = new IncrementSleepStrategy();
-				int size = 0;
-				while (true) {
-					size = blockingQueue.size();
-
-					if (size == 0) {
-						// 可能是已从缓冲中获取值，但执行未完成
-						// 等待3秒，让其他线程处理剩余数据
-						// TODO 但如果此时处理阻塞，等待3秒也执行不完，此时如何处理？
-						new SingleSleepStrategy().sleep(3000L);
-
-						// 退出所有线程
-						logger.trace("队列中无数据，退出所有线程");
-						for (Iterator<ConsumerThread> itor = listenedThreads.iterator(); itor.hasNext();) {
-							ConsumerThread t = itor.next();
-							t.setExit(true);
-							logger.debug("线程{}退出....", t.getName());
-						}
-						// 退出循环
-						break;
-					}
-
-					// 当前队列中存在数据，线程等待
-					logger.trace("队列中有数据，等待consumer执行完queue");
-
-					// 线程等待
-					incrementSleepStrategy.sleep(250L);
+				// 标识关闭
+				shutdown = true;
+				try {
+					shutdownLatch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-
+				logger.info("所有线程已关闭，程序退出");
 			}
 		});
+	}
 
+	public void start() {
 		// 启动消费监听线程
 		for (int i = 0; i < configuration.getConsumerThreadNum(); i++) {
 			ConsumerThread t = new ConsumerThread();
@@ -147,13 +132,14 @@ public class BufferPool<E> {
 	 * 
 	 */
 	private class ConsumerThread extends Thread {
+
 		// 等待执行次数
 		private int waitExecCounter = 0;
 
 		/**
 		 * 退出标志
 		 */
-		private boolean isExit = false;
+		private boolean stopped = false;
 
 		@Override
 		public void run() {
@@ -163,17 +149,24 @@ public class BufferPool<E> {
 			IncrementSleepStrategy incrementSleepStrategy = new IncrementSleepStrategy();
 
 			// 退出标志判断
-			while (!isExit) {
+			while (!stopped) {
 				// 当前队列大小
 				int queueCurrentSize = blockingQueue.size();
 				if (queueCurrentSize == 0) {
-					logger.trace("当前队列为0，等待有数据再继续");
-					incrementSleepStrategy.sleep(250L);
+					if (shutdown) { // 退出程序
+						stopped = true;
+						logger.debug("线程countDown() --> {}", getName());
+						shutdownLatch.countDown();
+					} else {
+						logger.trace("当前队列为0，等待有数据再继续");
+						incrementSleepStrategy.sleep(250L);
+					}
 					continue;
-				} else {
-					logger.info("当前队列大小：{}/{}", queueCurrentSize, configuration.getQueueSize());
-					incrementSleepStrategy.reset();
 				}
+
+				// 此处的显示和最终批处理之间仍有时间差，因此显示上2者可能存在不一致的情况
+				logger.info("当前队列大小：{}/{}", queueCurrentSize, configuration.getQueueSize());
+				incrementSleepStrategy.reset();
 
 				// 等待执行次数+1
 				int currentWaitExecTime = ++waitExecCounter;
@@ -196,18 +189,15 @@ public class BufferPool<E> {
 
 				// 取到list之后执行批处理
 				try {
-					if (!list.isEmpty())
+					if (!list.isEmpty()) {
 						handler.onElementsReceived(list);
+						logger.info("批处理数量:本次循环/总数量：{}/{}\n", list.size(), batchExecCounter.addAndGet(list.size()));
+					}
 				} catch (Exception e) {
 					logger.error("handler发生异常，无法恢复....", e);
 				}
 
-				logger.info("批处理数量:本次循环/总数量：{}/{}\n", list.size(), batchExecCounter.addAndGet(list.size()));
 			}
-		}
-
-		public void setExit(boolean isExit) {
-			this.isExit = isExit;
 		}
 	}
 }

@@ -7,23 +7,29 @@ package com.cm4j.test.thread.basic.datasharing;
  * 
  */
 public class ThreadNoDataSharing extends Thread {
+	public int n = 0;
 
-    private int ticket = 10;
+	@Override
+	public void run() {
+		int m = n;
+		yield();
+		m++;
+		n = m;
+	}
 
-    public void run() {
-        while(true) {
-            if (this.ticket > 0) {
-                System.out.println("卖票：ticket" + this.ticket--);
-            }
-        }
-    }
+	public int getN() {
+		return n;
+	}
 
-    public static void main(String[] args) {
-        Thread mt1 = new ThreadNoDataSharing();
-        Thread mt2 = new ThreadNoDataSharing();
-        Thread mt3 = new ThreadNoDataSharing();
-        mt1.start();// 每个线程都各卖了10张，共卖了30张票
-        mt2.start();// 但实际只有10张票，每个线程都卖自己的票
-        mt3.start();// 没有达到资源共享
-    }
+	public static void main(String[] args) throws Exception {
+		ThreadNoDataSharing myThread = new ThreadNoDataSharing();
+		Thread threads[] = new Thread[100];
+		for (int i = 0; i < threads.length; i++)
+			threads[i] = new Thread(myThread);
+		for (int i = 0; i < threads.length; i++)
+			threads[i].start();
+		for (int i = 0; i < threads.length; i++)
+			threads[i].join();
+		System.out.println("n = " + myThread.getN());
+	}
 }

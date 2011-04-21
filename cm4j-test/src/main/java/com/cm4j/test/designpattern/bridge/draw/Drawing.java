@@ -1,6 +1,5 @@
 package com.cm4j.test.designpattern.bridge.draw;
 
-import java.util.Calendar;
 
 public abstract class Drawing {
 	

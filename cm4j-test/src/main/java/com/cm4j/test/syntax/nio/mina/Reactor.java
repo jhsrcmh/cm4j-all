@@ -20,12 +20,14 @@ public class Reactor implements Runnable {
 	final Selector selector;
 	final ServerSocketChannel serverSocketChannel;
 
+	// step1:setup
 	public Reactor(int port) throws IOException {
-		selector = Selector.open();
 		serverSocketChannel = ServerSocketChannel.open();
 		serverSocketChannel.socket().bind(new InetSocketAddress(port));
 		serverSocketChannel.configureBlocking(false);
+
 		// 只监听accept
+		selector = Selector.open();
 		SelectionKey sk = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 		// accept的SelectionKey附件Acceptor对象
 		sk.attach(new Acceptor());
@@ -42,6 +44,7 @@ public class Reactor implements Runnable {
 			r.run();
 	}
 
+	// step2:dispatch loop
 	@Override
 	public void run() {
 		// normally in a new Thread
@@ -65,6 +68,7 @@ public class Reactor implements Runnable {
 
 	}
 
+	// step3:Acceptor
 	class Acceptor implements Runnable { // inner
 
 		@Override
@@ -81,6 +85,7 @@ public class Reactor implements Runnable {
 
 	}
 
+	// step4:Handler setup
 	final class Handler implements Runnable {
 
 		final SocketChannel socket;
@@ -114,6 +119,7 @@ public class Reactor implements Runnable {
 			System.out.println("process()");
 		}
 
+		// step5:Request Handling
 		@Override
 		public void run() {
 			try {
