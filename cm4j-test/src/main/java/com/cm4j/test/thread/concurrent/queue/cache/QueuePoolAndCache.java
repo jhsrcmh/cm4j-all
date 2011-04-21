@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Service;
 
 import com.cm4j.test.spring.dal.batch.BatchInsertUsage;
 
@@ -21,7 +20,6 @@ import com.cm4j.test.spring.dal.batch.BatchInsertUsage;
  * @author yanghao
  * 
  */
-@Service
 public class QueuePoolAndCache {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

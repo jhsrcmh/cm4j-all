@@ -27,7 +27,7 @@
 		</encoder>
 	</appender>
 	
-	<logger name="com.woniu">
+	<logger name="com.cm4j.test">
 		<level value="debug" />
 		<appender-ref ref="STDOUT" />
 	</logger>

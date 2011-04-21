@@ -4,7 +4,7 @@
     "http://www.mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<typeAliases>
-		<typeAlias type="com.woniu.spring.dal.ibatis.pojo.Passport" alias="Passport" />
+		<typeAlias type="com.cm4j.test.spring.dal.ibatis.pojo.Passport" alias="Passport" />
 	</typeAliases>
 	<mappers>
 		<mapper resource="sqlmap/Passport.xml" />

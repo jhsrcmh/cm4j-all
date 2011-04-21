@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.stereotype.Repository;
 
 import com.cm4j.test.spring.dal.ibatis.pojo.Passport;
 
-@Repository
 public class SimplePassportDao extends JdbcDaoSupport {
 
     private static final String QUERY_PASSPORT = "select S_ACCOUNT as userName, S_PASSWD as pwd from sn_passport.pp_passport where S_ACCOUNT = ?";

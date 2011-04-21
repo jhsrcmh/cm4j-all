@@ -1,7 +1,6 @@
 package com.cm4j.test.spring.extend_point;
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.stereotype.Service;
 
 /**
  * 实现了FactoryBean的对象在getBean()的时候是返回具体的实例而不是FactoryBeanCreator对象实例<br />
@@ -12,22 +11,21 @@ import org.springframework.stereotype.Service;
  * @author yanghao
  * 
  */
-@Service
 public class FactoryBeanCreator implements FactoryBean<String> {
 
-    @Override
-    public String getObject() throws Exception {
-        return "ABC";
-    }
+	@Override
+	public String getObject() throws Exception {
+		return "ABC";
+	}
 
-    @Override
-    public Class<?> getObjectType() {
-        return String.class;
-    }
+	@Override
+	public Class<?> getObjectType() {
+		return String.class;
+	}
 
-    @Override
-    public boolean isSingleton() {
-        return true;
-    }
+	@Override
+	public boolean isSingleton() {
+		return true;
+	}
 
 }

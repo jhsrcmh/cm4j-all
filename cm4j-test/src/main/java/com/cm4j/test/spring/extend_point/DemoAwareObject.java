@@ -11,40 +11,38 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Service;
 
-@Service
 public class DemoAwareObject implements BeanNameAware, BeanFactoryAware, ApplicationContextAware, InitializingBean {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    @Override
-    public void setBeanName(String name) {
-        System.out.println("====================================");
-        logger.debug("调用setBeanName(),name:{}", name);
-    }
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        logger.debug("调用setBeanFactory(),beanFactory:{}", beanFactory);
-    }
+	@Override
+	public void setBeanName(String name) {
+		System.out.println("====================================");
+		logger.debug("调用setBeanName(),name:{}", name);
+	}
 
-    @PostConstruct
-    public void customInit() {
-        logger.debug("调用customInit()...");
-    }
+	@Override
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		logger.debug("调用setBeanFactory(),beanFactory:{}", beanFactory);
+	}
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        logger.debug("调用afterPropertiesSet()...");
-    }
+	@PostConstruct
+	public void customInit() {
+		logger.debug("调用customInit()...");
+	}
 
-    public void exec() {
-        logger.debug("执行业务逻辑");
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		logger.debug("调用afterPropertiesSet()...");
+	}
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        logger.debug("调用applicationContext(),context:{}", applicationContext);
-    }
+	public void exec() {
+		logger.debug("执行业务逻辑");
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		logger.debug("调用applicationContext(),context:{}", applicationContext);
+	}
 }
