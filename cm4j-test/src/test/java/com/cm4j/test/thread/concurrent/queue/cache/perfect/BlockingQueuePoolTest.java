@@ -9,9 +9,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.cm4j.test.spring.dal.batch.BatchInsertUsage;
-import com.cm4j.test.thread.concurrent.queue.cache.perfect.BufferHandler;
-import com.cm4j.test.thread.concurrent.queue.cache.perfect.BufferPool;
-import com.cm4j.test.thread.concurrent.queue.cache.perfect.BufferPoolConfiguration;
 
 public class BlockingQueuePoolTest {
 

@@ -2,9 +2,7 @@ package com.cm4j.test.designpattern.commander;
 
 import org.junit.Test;
 
-import com.cm4j.test.designpattern.commander.command.AddRequirementCommand;
 import com.cm4j.test.designpattern.commander.command.AddRequirementCommandExtend;
-import com.cm4j.test.designpattern.commander.command.ChangeCodeCommand;
 import com.cm4j.test.designpattern.commander.command.Command;
 
 /**

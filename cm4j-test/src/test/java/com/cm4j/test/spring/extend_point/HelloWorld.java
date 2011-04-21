@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.cm4j.test.spring.extend_point.DemoAwareObject;
 import com.cm4j.test.spring.extend_point.events.Animals;
 
 /**

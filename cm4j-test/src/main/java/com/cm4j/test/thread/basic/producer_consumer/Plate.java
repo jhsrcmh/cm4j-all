@@ -1,7 +1,7 @@
 package com.cm4j.test.thread.basic.producer_consumer;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <pre>

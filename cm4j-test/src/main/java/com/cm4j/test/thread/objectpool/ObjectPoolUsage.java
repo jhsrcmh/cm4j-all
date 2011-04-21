@@ -1,7 +1,6 @@
 package com.cm4j.test.thread.objectpool;
 
 import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
