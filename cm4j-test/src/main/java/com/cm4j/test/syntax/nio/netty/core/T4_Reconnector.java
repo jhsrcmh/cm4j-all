@@ -15,6 +15,13 @@ import org.jboss.netty.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 客户端重连
+ * 
+ * @author yang.hao
+ * @since 2011-6-10 下午05:05:04
+ *
+ */
 public class T4_Reconnector extends SimpleChannelUpstreamHandler {
 
 	private ClientBootstrap bootstrap;
@@ -32,7 +39,7 @@ public class T4_Reconnector extends SimpleChannelUpstreamHandler {
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
 		super.channelConnected(ctx, e);
-		System.out.println("reconnect channelConnected()");
+		logger.debug("reconnect channelConnected()");
 	}
 	
 	@Override
@@ -43,13 +50,11 @@ public class T4_Reconnector extends SimpleChannelUpstreamHandler {
 
 	@Override
 	public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		final InetSocketAddress remoteAddress = getRemoteInet();
-
 		timer.newTimeout(new TimerTask() {
 			@Override
 			public void run(Timeout timeout) throws Exception {
-				ChannelFuture future = bootstrap.connect();
-				logger.debug("reconnect channel:{}", future.awaitUninterruptibly().getChannel());
+				ChannelFuture future = bootstrap.connect(getRemoteInet());
+				logger.debug("reconnect channel:{}", future.getChannel());
 			}
 		}, 3L, TimeUnit.SECONDS);
 	}

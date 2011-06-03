@@ -22,10 +22,10 @@ public class T4_TimerEncoder extends OneToOneEncoder {
 		buffer.writeInt(time.getValue());
 		Channels.write(ctx, e.getFuture(), buffer);
 	}
-
+	
 	@Override
 	protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
-		logger.debug("current:{}" ,getClass().getSimpleName());
+		logger.debug("encode:{}" ,getClass().getSimpleName());
 		
 		T4_UnixTime time = (T4_UnixTime) msg;
 		ChannelBuffer buffer = ChannelBuffers.buffer(4);

@@ -1,4 +1,4 @@
-package com.cm4j.test.syntax.nio.netty.http;
+package com.cm4j.test.syntax.nio.netty.http.snoop;
 
 import static org.jboss.netty.handler.codec.http.HttpHeaders.getHost;
 import static org.jboss.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;

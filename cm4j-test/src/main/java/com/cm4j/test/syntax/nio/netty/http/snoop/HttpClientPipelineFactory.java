@@ -1,4 +1,4 @@
-package com.cm4j.test.syntax.nio.netty.http;
+package com.cm4j.test.syntax.nio.netty.http.snoop;
 
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;

@@ -19,13 +19,14 @@ public class T4_TimerServer {
 		ChannelFactory factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(),
 				Executors.newCachedThreadPool());
 		ServerBootstrap bootstrap = new ServerBootstrap(factory);
-		T4_TimerServerHandler handler = new T4_TimerServerHandler();
+		
 		bootstrap.getPipeline().addLast("encoder", new T4_TimerEncoder());
-		bootstrap.getPipeline().addLast("handler", handler);
+		bootstrap.getPipeline().addLast("connect_limit", new T4_Connect_MaxLimit());
+		bootstrap.getPipeline().addLast("handler", new T4_TimerServerHandler());
 
-		// bootstrap.setOption("tcpNoDelay", true);
-		// bootstrap.setOption("keepAlive", false);
-		// bootstrap.setOption("connectTimeoutMillis", 1000);
+		bootstrap.setOption("tcpNoDelay", true);
+		bootstrap.setOption("keepAlive", false);
+		bootstrap.setOption("connectTimeoutMillis", 1000);
 
 		bootstrap.bind(new InetSocketAddress(2012));
 	}
