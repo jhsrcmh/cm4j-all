@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>cm4j-all</artifactId>
+		<groupId>com.cm4j</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>cm4j-taobao</artifactId>
+	<name>cm4j-taobao</name>
+
+	<properties>
+		<com.taobao.version>20110613</com.taobao.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.cm4j</groupId>
+			<artifactId>cm4j-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.taobao</groupId>
+			<artifactId>taobao-api</artifactId>
+			<version>${com.taobao.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
