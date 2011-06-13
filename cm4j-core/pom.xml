@@ -6,7 +6,6 @@
 		<groupId>com.cm4j</groupId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.cm4j</groupId>
 	<artifactId>cm4j-core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 

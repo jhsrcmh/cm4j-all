@@ -53,6 +53,7 @@
 		<module>cm4j-email-sender</module>
 		<module>cm4j-dao</module>
 		<module>cm4j-test</module>
+		<module>cm4j-taobao</module>
 	</modules>
 
 	<!-- 仓库 -->
