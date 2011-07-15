@@ -1,0 +1,5 @@
+package com.cm4j.drools.query
+import com.cm4j.drools.lhs.Customer
+query "query customer"
+	customer:Customer(age>30)
+end

@@ -1,0 +1,36 @@
+package com.cm4j.drools.func
+import com.cm4j.drools.lhs.Customer;
+
+#drools 属性部分
+rule "rule2"
+	activation-group "test" #激活组，同一激活组只有一个rule被激活，具体哪个被激活可由salience设置最大值
+	agenda-group "001" # agenda组，程序中必须指定该组名，本rule才可使用
+	salience 2
+	when
+	 	eval( true )
+	then
+		System.out.println("rule2");
+end
+
+rule "rule1" 
+   #duration 1000 #为啥不管用？？？
+   salience 1 #优先级，数字越大，优先级越高
+   date-effective "2011-06-30 14:05:00" #开始时间
+   date-expires "2012-06-30 14:05:00" #结束时间
+   activation-group "test"
+   agenda-group "001"  # 因为有activation-group属性，所以本方法不执行，而rule2执行
+   when 
+      eval(true); 
+   then
+   	  System.out.println("rule1");
+   	  System.out.println("rule thrad id:" + Thread.currentThread().getId());
+end 
+
+rule "rule3"
+	agenda-group "001"
+	auto-focus true # 这样程序可以不用指定agenda-group的组名
+	when
+		eval( true )
+	then
+		System.out.println("rule3");
+end

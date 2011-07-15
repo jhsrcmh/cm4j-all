@@ -1,0 +1,16 @@
+package com.cm4j.drools.func
+import com.cm4j.drools.lhs.Customer;
+import function com.cm4j.drools.agendafilter.Test.print
+
+function void addCustomerAge(Customer customer) {
+	customer.setAge(customer.getAge() + 1);
+}
+
+rule "rule1"
+	when
+		$customer:Customer();
+	then
+		print("rule1");
+		addCustomerAge($customer);
+		print($customer.getAge());
+end

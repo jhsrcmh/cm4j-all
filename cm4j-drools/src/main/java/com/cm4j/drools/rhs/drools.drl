@@ -1,0 +1,31 @@
+package com.cm4j.drools.func
+import com.cm4j.drools.lhs.Customer;
+
+# 查询工作内存中Customer对象的数量
+query "query fact count" 
+   Customer(); 
+end 
+ 
+# drools - 在规则文件里更多的对当前的 Working  Memory控制
+rule "rule1" 
+   salience 2 
+   when 
+      eval(true); 
+   then  
+      Customer cus=new Customer(); 
+      cus.setName("张三"); 
+      cus.setAge(1); 
+      insert(cus); 
+end 
+rule "rule2" 
+   salience 1 
+   when 
+      $customer:Customer(name=="张三",age<10); 
+   then  
+      Customer customer=new Customer(); 
+      customer.setName("张三"); 
+      customer.setAge($customer.getAge()+1); 
+ 
+   	  update(drools.getWorkingMemory().getFactHandleByIdentity($customer),customer); 
+      System.out.println("----------"+$customer.getName()); 
+end 

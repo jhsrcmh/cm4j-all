@@ -1,0 +1,24 @@
+package com.cm4j.drools.func
+import com.cm4j.drools.lhs.Customer;
+
+query "query fact count"
+	Customer()
+end
+# insert 是向工作内存插入对象，插入后立即通知所有规则
+rule "rule1" 
+   salience 2
+   when 
+      eval(true); 
+   then
+   	  System.out.println("rule1");
+      Customer cus=new Customer();
+      cus.setName("张三"); 
+      insert(cus); 
+end 
+rule "rule2" 
+   salience 1
+   when 
+      $customer:Customer(name =="张三"); 
+   then  
+      System.out.println("rule2----"+$customer.getName()); 
+end 

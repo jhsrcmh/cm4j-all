@@ -7,10 +7,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
- * @author Sun Xiaochen
+ * 文件读取帮助类
+ * 
+ * @author yang.hao
+ * @since 2011-6-14 上午09:44:55
+ * 
  */
 public class IOUtils {
 	/**
@@ -123,58 +130,86 @@ public class IOUtils {
 	}
 
 	/**
+	 * 从偏移量进行读取行数
+	 * 
+	 * @param file
+	 * @param pos
+	 *            文件开头为0
+	 * @return pos=-2 文件打开异常或获取指针异常 <br />
+	 *         pos=-1 文件全部读取完成 <br />
+	 *         pos>=0 文件读取的偏移量
+	 * @throws FileNotFoundException
+	 */
+	public static Object[] readLines(File file, long pos) throws FileNotFoundException {
+		List<String> lines = new ArrayList<String>();
+		RandomAccessFile accessFile = null;
+		String readLine = null;
+		try {
+			accessFile = new RandomAccessFile(file, "r");
+			accessFile.seek(pos);
+		} catch (IOException e) {
+			if (accessFile != null)
+				closeRandomAccessFile(accessFile);
+			return new Object[] { -2L, null }; // -2 文件打开异常或获取指针异常
+		}
+		try {
+			do {
+				// if (accessFile.getFilePointer() > 30)
+				// throw new IOException();
+
+				readLine = accessFile.readLine();
+				if (readLine != null)
+					lines.add(readLine);
+			} while (readLine != null);
+			return new Object[] { -1L, lines }; // -1 文件全部读取完成
+		} catch (IOException e) {
+			long readPos = 0L;
+			try {
+				readPos = accessFile.getFilePointer();
+			} catch (IOException e1) {
+				return new Object[] { -2L, null }; // -2 文件打开异常或获取指针异常
+			}
+			return new Object[] { readPos, lines };
+		} finally {
+			closeRandomAccessFile(accessFile);
+		}
+	}
+
+	private static void closeRandomAccessFile(RandomAccessFile file) {
+		try {
+			file.close();
+		} catch (IOException e) {
+			// do nothing
+		}
+	}
+
+	/**
 	 * 获取行号+该行的内容
 	 * 
 	 * @param br
-	 * @return Iterable[lineNum,line]
-	 * @throws IOException
+	 * @return Iterable[lineNum,line,nexHasError(下一行获取是否有异常)]
 	 */
-	public static Iterable<Object[]> readlinesWithIndex(final BufferedReader br) throws IOException {
-		return new Iterable<Object[]>() {
+	public static List<Object[]> readlinesWithIndex(final BufferedReader br) {
+		List<Object[]> result = new ArrayList<Object[]>();
 
-			@Override
-			public Iterator<Object[]> iterator() {
-				return new Iterator<Object[]>() {
-					// 行号
-					int lineNum = 0;
-					Object[] last = getLine();
-
-					@Override
-					public boolean hasNext() {
-						return last != null && last[1] != null;
-					}
-
-					@Override
-					public Object[] next() {
-						Object[] last = this.last;
-						this.last = getLine();
-						return last;
-					}
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-
-					Object[] getLine() {
-						String line = null;
-						try {
-							line = br.readLine();
-							if (line == null) {
-								br.close();
-							} else {
-								lineNum++;
-							}
-						} catch (IOException ioEx) {
-							line = null;
-						}
-
-						return new Object[] { lineNum, line };
-					}
-
-				};
+		String current = null;
+		String next = null;
+		int index = -1; // 包含第0行，用于显示第一行是否有异常
+		boolean nextHasError = false;
+		do {
+			index++;
+			next = null;
+			try {
+				// if (index == 0)
+				// throw new IOException();
+				next = br.readLine();
+			} catch (IOException e) {
+				nextHasError = true;
 			}
-		};
+			result.add(new Object[] { index, current, nextHasError });
+			current = next;
+		} while (next != null);
+		return result;
 	}
 
 	/**
@@ -207,16 +242,16 @@ public class IOUtils {
 		StringBuilder sb = new StringBuilder();
 		for (String line : lines) {
 			String replaced = line.replaceAll(regex, dist);
-			if (line.equals(replaced)) {
-				sb.append(line).append("\n");
-			} else {
-				sb.append(replaced).append("\n");
+			sb.append(replaced).append("\n");
+			// 目标dist和行line相同代表有替换
+			// line和替换后的replaced不相同代表有替换
+			if (dist.equals(line) || !line.equals(replaced)) {
 				result = 1;
 			}
 		}
 
 		if (result == 0)
-			sb.append(addedLine);
+			sb.append(addedLine).append("\n");
 
 		// 非append模式，创建时会清空文件内容，所以此行代码不可上移，否则出错
 		FileWriter fileWriter = new FileWriter(filePath);
@@ -259,7 +294,7 @@ public class IOUtils {
 		File newFile = new File(newNamePath);
 
 		if (!oldFile.exists())
-			throw new FileNotFoundException();
+			throw new FileNotFoundException("<" + oldFilePath + "> is not exist,can not rename");
 
 		if (newFile.exists())
 			throw new IllegalAccessException("<" + newNamePath + "> is exist,can not rename to the new file");

@@ -1,10 +1,10 @@
 package com.cm4j.test.syntax.nio.netty.core;
 
+import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.SimpleChannelHandler;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * @since 2011-6-10 下午05:09:27
  * 
  */
-public class T4_Connect_MaxLimit extends SimpleChannelHandler{
+public class T4_Connect_MaxLimit extends SimpleChannelHandler {
 
 	private int counter;
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -25,16 +25,18 @@ public class T4_Connect_MaxLimit extends SimpleChannelHandler{
 		super.connectRequested(ctx, e);
 		logger.debug("connectRequested():{}", getClass().getSimpleName());
 	}
-	
+
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
-		logger.debug("channelConnnected():{}" ,getClass().getSimpleName());
+		logger.debug("channelConnnected():{}", getClass().getSimpleName());
 		if (counter < 2) {
 			counter++;
-			logger.debug("创建连接,counter:{}",counter);
+			logger.debug("创建连接,counter:{}", counter);
 			ctx.sendUpstream(e);
 		} else {
 			logger.error("超过最大连接数,{}/{}", counter, 2);
+			Channel channel = ctx.getChannel();
+			channel.write("exceedMaxConnect");
 			Channels.disconnect(ctx.getChannel());
 		}
 	}

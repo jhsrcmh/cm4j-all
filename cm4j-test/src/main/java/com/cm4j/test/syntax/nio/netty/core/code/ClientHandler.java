@@ -1,4 +1,4 @@
-package com.cm4j.test.syntax.nio.netty.core;
+package com.cm4j.test.syntax.nio.netty.core.code;
 
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
@@ -8,6 +8,7 @@ import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * Netty 3.1 中文用户手册 例子
  * 
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @since 2011-4-29 上午10:35:14
  * 
  */
-public class T4_TimerClientHandler extends SimpleChannelUpstreamHandler {
+public class ClientHandler extends SimpleChannelUpstreamHandler {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -29,7 +30,7 @@ public class T4_TimerClientHandler extends SimpleChannelUpstreamHandler {
 	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
 		logger.debug("messageReceived():{}", getClass().getSimpleName());
 
-		T4_UnixTime time = (T4_UnixTime) e.getMessage();
+		UnixTime time = (UnixTime) e.getMessage();
 		logger.debug("client:{}", time.getValue());
 	}
 

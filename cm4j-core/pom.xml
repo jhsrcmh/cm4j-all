@@ -10,6 +10,12 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+		<!-- apache commons -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+
 		<!-- logging -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
@@ -18,6 +24,12 @@
 		<dependency><!-- 覆盖ACL -->
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+
+		<!-- jackson -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-lgpl</artifactId>
 		</dependency>
 
 		<!-- test -->

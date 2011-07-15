@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 public class ClassTest {
 	private static Logger logger = LoggerFactory.getLogger(ClassTest.class);
 
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) throws Exception {
 		args = new String[] { "java.util.LinkedList" }; // 有内部类
 		// args = new String[] { "java.util.LinkedList$DescendingIterator" }; //
@@ -33,35 +34,18 @@ public class ClassTest {
 		sb.append(c.getSimpleName());
 		logger.debug("修饰符:{}", sb.toString());
 
-		// 3.找出parameterized types(范型)的名称
-		TypeVariable<?>[] typeParameters = c.getTypeParameters();
-		for (TypeVariable<?> typeVariable : typeParameters) {
-			logger.debug("范型:{}", typeVariable.getName());
-		}
-
-		// 获取带范型的接口
-		Type[] genericInterfaces = c.getGenericInterfaces();
-		// 转化为 参数化类型 -> List<E>
-		ParameterizedType parameterizedType = (ParameterizedType) genericInterfaces[0];
-		if (genericInterfaces.length > 0) {
-			logger.debug("第一个范型父接口:{}", parameterizedType);
-			// getActualTypeArguments()返回的实际上就是TypeVariableImpl
-			logger.debug("参数化类型 - 代表范型：{}", (TypeVariable<?>) parameterizedType.getActualTypeArguments()[0]);
-			logger.debug("参数化类型 - 代表的类：{}", parameterizedType.getRawType());
-		}
-
-		// 4.找出base class(父类)
+		// 3.找出base class(父类)
 		Class<?> superclass = c.getSuperclass();
 		if (superclass != null)
 			logger.debug("父类：{}", superclass.getName());
 
-		// 5.找出实现接口
+		// 4.找出实现接口
 		Class<?>[] interfaces = c.getInterfaces();
 		for (Class<?> inface : interfaces) {
 			logger.debug("实现接口：{}", inface.getName());
 		}
 
-		// 6.找出inner classes 和outer class
+		// 5.找出inner classes 和outer class
 		Class<?>[] declaredClasses = c.getDeclaredClasses();
 		Class<?> declaringClass = c.getDeclaringClass();
 		for (Class<?> declaredClass : declaredClasses) {
@@ -71,7 +55,7 @@ public class ClassTest {
 			logger.debug("外部类:{}", declaringClass);
 		}
 
-		// 7.找出所有methods
+		// 6.找出所有methods
 		Method[] declaredMethods = c.getDeclaredMethods();
 		for (Method method : declaredMethods) {
 			sb = new StringBuffer();
@@ -96,13 +80,53 @@ public class ClassTest {
 			logger.debug("方法:{}", method.toGenericString() + "\n");
 		}
 
-		// 8.找出所有构造函数
+		// 7.找出所有构造函数
 		c.getDeclaredConstructors();
 
-		// 9.找出所有的方法
+		// 8.找出所有的方法
 		c.getDeclaredMethods();
 
-		// 10.找出所有的字段
+		// 9.找出所有的字段
 		c.getDeclaredFields();
+
+		/**
+		 * ===============范型相关=============
+		 */
+		// 10.找出parameterized types(范型)的名称
+		TypeVariable<?>[] typeParameters = c.getTypeParameters();
+		for (TypeVariable<?> typeVariable : typeParameters) {
+			logger.debug("范型:{}", typeVariable.getName());
+		}
+
+		// 获取带范型的接口
+		Type[] genericInterfaces = c.getGenericInterfaces();
+		// 转化为 参数化类型 -> List<E>
+		ParameterizedType parameterizedType = (ParameterizedType) genericInterfaces[0];
+		if (genericInterfaces.length > 0) {
+			logger.debug("第一个范型父接口:{}", parameterizedType);
+			// getActualTypeArguments()返回的实际上就是TypeVariableImpl
+			logger.debug("参数化类型 - 代表范型：{}", (TypeVariable<?>) parameterizedType.getActualTypeArguments()[0]);
+			logger.debug("参数化类型 - 代表的类：{}", parameterizedType.getRawType());
+		}
+
+		// 问题：下面为什么第一种获得的是E，而第二种获得的是对象？
+		// 解答：getGenericInterfaces()获得的是本类直接实现的接口，只由本类的定义所决定，和具体对象无关，也和接口定义无关
+		Father<Object> fx = new ClassTest().new Son<Object>();
+		Class<?> cls = fx.getClass();
+		logger.debug("Son参数化类型 - 代表范型：{}",
+				((ParameterizedType) cls.getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+		Father fx2 = new ClassTest().new Son2();
+		Class cls2 = fx2.getClass();
+		logger.debug("Son2参数化类型 - 代表范型：{}",
+				((ParameterizedType) cls2.getGenericInterfaces()[0]).getActualTypeArguments()[0]);
+	}
+
+	interface Father<E> {
+	}
+
+	class Son<E> implements Father<E> {
+	}
+
+	class Son2 implements Father<Object> {
 	}
 }

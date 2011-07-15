@@ -1,0 +1,9 @@
+package com.cm4j.drools.lhs
+import java.util.List; 
+rule "rule1"
+   when 
+      $customer:Customer(name matches "李.*"); 
+   then
+	  $customer.setAge(12);
+      System.out.println($customer.getName()); 
+end 

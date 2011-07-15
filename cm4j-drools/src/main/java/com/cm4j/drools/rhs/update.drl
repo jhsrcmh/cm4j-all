@@ -1,0 +1,33 @@
+package com.cm4j.drools.func
+import com.cm4j.drools.lhs.Customer;
+
+# 查询工作内存中Customer对象的数量
+query "query fact count" 
+   Customer(); 
+end 
+
+# 这是一个循环通知的过程
+# rule1设置一个帐号插入，在insert时会通知工作内存中所有规则
+# rule2收到消息，判断年龄<10，则对年龄+1，通知所有工作內存中的fact
+ 
+rule "rule1" 
+   salience 2 
+   when 
+      eval(true); 
+   then  
+   	  System.out.println("rule1...");
+      Customer cus=new Customer(); 
+      cus.setName("张三"); 
+      cus.setAge(1); 
+      insert(cus); 
+end 
+rule "rule2" 
+   salience 1 
+   no-loop false
+   when 
+      $customer:Customer(name=="张三",age<10); 
+   then  
+      System.out.println("customer:"+$customer.getName() + "->" + $customer.getAge()); 
+      $customer.setAge($customer.getAge()+1); 
+      update($customer); 
+end 

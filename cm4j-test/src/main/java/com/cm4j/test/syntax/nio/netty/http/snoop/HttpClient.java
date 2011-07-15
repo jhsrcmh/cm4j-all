@@ -7,6 +7,9 @@ import java.util.concurrent.Executors;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 import org.jboss.netty.handler.codec.http.CookieEncoder;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
@@ -28,7 +31,23 @@ public class HttpClient {
 				Executors.newCachedThreadPool(), Executors.newCachedThreadPool()));
 
 		// Set up the event pipeline factory.
-		bootstrap.setPipelineFactory(new HttpClientPipelineFactory());
+		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+			
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+				ChannelPipeline pipeline = Channels.pipeline();
+
+				pipeline.addLast("codec", new HttpClientCodec());
+				// Remove the following line if you don't want automatic content
+				// decompression.
+				// 内容解压
+				// pipeline.addLast("inflater", new HttpContentDecompressor());
+				
+				pipeline.addLast("handler", new HttpResponseHandler());
+
+				return pipeline;
+			}
+		});
 
 		// Start the connection attempt.
 		ChannelFuture future = bootstrap.connect(new InetSocketAddress(host, port));

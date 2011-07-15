@@ -1,0 +1,25 @@
+package com.cm4j.drools.func
+import com.cm4j.drools.lhs.Customer;
+
+query "query fact count" 
+   Customer(); 
+end 
+
+#retract作用是删除工作内存中的对象
+rule "rule1" 
+   salience 2 
+   when 
+      eval(true); 
+   then  
+      Customer cus=new Customer(); 
+      cus.setName("张三"); 
+      cus.setAge(1); 
+      insert(cus); 
+end 
+rule "rule2" 
+   salience 1 
+   when 
+      $customer:Customer(name=="张三"); 
+   then  
+      retract($customer); 
+end 

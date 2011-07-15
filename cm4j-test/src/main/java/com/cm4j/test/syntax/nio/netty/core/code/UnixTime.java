@@ -1,11 +1,11 @@
-package com.cm4j.test.syntax.nio.netty.core;
+package com.cm4j.test.syntax.nio.netty.core.code;
 
 import java.util.Date;
 
-public class T4_UnixTime {
+public class UnixTime {
 	private int value;
 
-	public T4_UnixTime(int value) {
+	public UnixTime(int value) {
 		this.value = value;
 	}
 

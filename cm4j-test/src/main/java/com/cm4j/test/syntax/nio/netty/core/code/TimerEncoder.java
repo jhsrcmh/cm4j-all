@@ -1,4 +1,4 @@
-package com.cm4j.test.syntax.nio.netty.core;
+package com.cm4j.test.syntax.nio.netty.core.code;
 
 import org.jboss.netty.buffer.ChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffers;
@@ -11,13 +11,14 @@ import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 @Sharable
-public class T4_TimerEncoder extends OneToOneEncoder {
+public class TimerEncoder extends OneToOneEncoder {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	// @Override
 	public void writeRequested(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
-		T4_UnixTime time = (T4_UnixTime) e.getMessage();
+		UnixTime time = (UnixTime) e.getMessage();
 		ChannelBuffer buffer = ChannelBuffers.buffer(4);
 		buffer.writeInt(time.getValue());
 		Channels.write(ctx, e.getFuture(), buffer);
@@ -27,7 +28,7 @@ public class T4_TimerEncoder extends OneToOneEncoder {
 	protected Object encode(ChannelHandlerContext ctx, Channel channel, Object msg) throws Exception {
 		logger.debug("encode:{}" ,getClass().getSimpleName());
 		
-		T4_UnixTime time = (T4_UnixTime) msg;
+		UnixTime time = (UnixTime) msg;
 		ChannelBuffer buffer = ChannelBuffers.buffer(4);
 		buffer.writeInt(time.getValue());
 		return buffer;
