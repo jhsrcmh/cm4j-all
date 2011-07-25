@@ -21,6 +21,7 @@ import com.taobao.api.internal.util.codec.Base64;
  * @since 2011-7-25 上午09:51:42
  * 
  */
+@SuppressWarnings("restriction")
 public class IdentityContext {
 
 	/**
@@ -42,7 +43,6 @@ public class IdentityContext {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
-	@SuppressWarnings("restriction")
 	public static boolean verifyTopResponse(String topParams, String topSession, String topSign, String appKey,
 			String appSecret) throws NoSuchAlgorithmException, IOException {
 		StringBuilder result = new StringBuilder();
