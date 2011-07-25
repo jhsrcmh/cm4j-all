@@ -7,6 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>cm4j-taobao</artifactId>
+	<packaging>war</packaging>
 	<name>cm4j-taobao</name>
 
 	<properties>
@@ -31,11 +32,40 @@
 			<artifactId>log4j-over-slf4j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- web -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+
 		<!-- test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-
 	</dependencies>
+
+	<build>
+		<finalName>cm4j-test</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native2ascii-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
