@@ -1,11 +1,19 @@
-package com.cm4j.taobao.web.idcontext;
+package com.cm4j.taobao.web.login;
+
+import com.cm4j.taobao.api.common.VisitorPrivilege;
 
 public class UserSession {
 
+	/**
+	 * 存放于session中的Name
+	 */
+	public static final String SESSION_NAME = "userSession";
+	
 	private String top_session;
 	private String visitor_id;
 	private String visitor_nick;
 	private String visitor_role;
+	private VisitorPrivilege visitor_privilege;
 
 	public String getTop_session() {
 		return top_session;
@@ -37,6 +45,14 @@ public class UserSession {
 
 	public void setVisitor_role(String visitor_role) {
 		this.visitor_role = visitor_role;
+	}
+
+	public VisitorPrivilege getVisitor_privilege() {
+		return visitor_privilege;
+	}
+
+	public void setVisitor_privilege(VisitorPrivilege visitor_privilege) {
+		this.visitor_privilege = visitor_privilege;
 	}
 
 }

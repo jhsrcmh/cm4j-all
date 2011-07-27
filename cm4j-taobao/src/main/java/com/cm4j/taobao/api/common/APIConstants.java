@@ -1,4 +1,6 @@
-package com.cm4j.taobao.api.utils;
+package com.cm4j.taobao.api.common;
+
+import org.apache.commons.lang.math.NumberUtils;
 
 import com.cm4j.core.utils.ConfigurableConstants;
 
@@ -30,6 +32,31 @@ public class APIConstants extends ConfigurableConstants {
 	 * 当前用户角色 - 5-未登录用户
 	 */
 	public static final String VISITOR_ROLE = "visitor_role";
+	/**
+	 * 当前用户权限
+	 */
+	public static final String VISITOR_PRIVILEGE = "visitor_privilege";
+
+	/**
+	 * 淘宝容器地址 -> 自动登陆使用
+	 * 
+	 * @return
+	 */
+	public static String getTaobaoContainerUrl() {
+		return getValue("taobao.api.container.url");
+	}
+
+	/*
+	 * ====================Properties获取============================
+	 */
+	/**
+	 * 调用淘宝API超时时间
+	 * 
+	 * @return
+	 */
+	public static int getApplicationTimeout() {
+		return NumberUtils.toInt(getValue("taobao.api.timeout"));
+	}
 
 	/**
 	 * 淘宝应用key
@@ -50,7 +77,7 @@ public class APIConstants extends ConfigurableConstants {
 	}
 
 	/**
-	 * 淘宝应用地址
+	 * 淘宝应用地址 -> 调用api使用
 	 * 
 	 * @return
 	 */

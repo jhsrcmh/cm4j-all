@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.idcontext;
+package com.cm4j.taobao.api.identity;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

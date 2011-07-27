@@ -11,13 +11,15 @@
 <body>
 	<div>
 		<h2>成功消息显示：</h2>
+		session:${sessionScope.userSession.top_session }<br /> 
+		session:${requestScope.userSession.top_session }<br /> 
+		session:${param.userSession.top_session }<br /> 
 		session:${userSession.top_session }<br /> 
 		id:${userSession.visitor_id }<br /> 
 		nick:${userSession.visitor_nick }<br /> 
 		role:${userSession.visitor_role }<br /> 
 		
-		<a href="/safe/user_login_out">退出系统</a>
-		
+		<a href="/safe/marketing/promotion/add">add</a>
 		<input type="button" value="立即关闭"
 			onclick="window.opener=null;window.close();" style="cursor: pointer" />
 	</div>

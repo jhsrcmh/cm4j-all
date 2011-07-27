@@ -11,7 +11,7 @@
 	<name>cm4j-taobao</name>
 
 	<properties>
-		<com.taobao.version>20110613</com.taobao.version>
+		<com.taobao.version>20110711</com.taobao.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -56,6 +56,11 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -11,20 +11,23 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.WebUtils;
 
-import com.cm4j.taobao.web.login.LoginAction;
+import com.cm4j.taobao.api.common.VisitorPrivilege;
 import com.cm4j.taobao.web.login.UserSession;
 
-public class LoginFilter implements Filter {
-
-	private Logger logger = LoggerFactory.getLogger(getClass());
+/**
+ * 权限过滤器
+ * 
+ * @author yang.hao
+ * @since 2011-7-27 下午06:14:31
+ * 
+ */
+public class PrivilegeFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		logger.debug("登陆过滤器init...");
 	}
 
 	@Override
@@ -33,20 +36,23 @@ public class LoginFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse rep = (HttpServletResponse) response;
 
-		// 登录校验
 		UserSession userSession = (UserSession) WebUtils.getSessionAttribute(req, UserSession.SESSION_NAME);
-		if (userSession == null) {
-			String url = LoginAction.getLoginUrl();
-			logger.debug("用户没有登陆,跳转页面:{}", url);
-			rep.sendRedirect(url);
+
+		// 校验权限
+		VisitorPrivilege privilege = userSession.getVisitor_privilege();
+		String uri = req.getRequestURI();
+		if (StringUtils.startsWith(uri, privilege.name())) {
+			// 权限不对...
+			req.setAttribute(BaseDispatchAction.ERROR_KEY, "您的权限不够，无法使用此功能，请购买高级版本！");
+			req.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(req, rep);
 		} else {
-			chain.doFilter(request, response);
+			chain.doFilter(req, rep);
 		}
+
 	}
 
 	@Override
 	public void destroy() {
-		logger.debug("登陆过滤器destory...");
 	}
 
 }

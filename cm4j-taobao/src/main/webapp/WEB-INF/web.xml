@@ -43,4 +43,23 @@
 		<filter-name>loginFilter</filter-name>
 		<url-pattern>/safe/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- 权限过滤器 -->
+	<filter>
+		<filter-name>privilegeFilter</filter-name>
+		<filter-class>com.cm4j.taobao.web.base.PrivilegeFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>privilegeFilter</filter-name>
+		<url-pattern>/safe/senior/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>privilegeFilter</filter-name>
+		<url-pattern>/safe/middle/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>privilegeFilter</filter-name>
+		<url-pattern>/safe/junior/*</url-pattern>
+	</filter-mapping>
 </web-app>
