@@ -16,6 +16,12 @@
 			<artifactId>commons-lang</artifactId>
 		</dependency>
 
+		<!-- google 工具类 -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+
 		<!-- logging -->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

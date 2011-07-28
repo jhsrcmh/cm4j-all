@@ -47,6 +47,7 @@
 			<artifactId>standard</artifactId>
 		</dependency>
 
+		<!-- spring mvc -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>

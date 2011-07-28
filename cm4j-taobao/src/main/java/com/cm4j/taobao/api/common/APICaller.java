@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cm4j.core.utils.JsonBinder;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
@@ -24,6 +25,8 @@ import com.taobao.api.response.TimeGetResponse;
 public class APICaller {
 
 	public static final Logger logger = LoggerFactory.getLogger(APICaller.class);
+
+	public static final JsonBinder jsonBinder = JsonBinder.NON_NULL;
 
 	/**
 	 * 调用API服务

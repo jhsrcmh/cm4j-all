@@ -25,6 +25,7 @@
 		<mail.version>1.4.1</mail.version>
 		<hamcrest.version>1.1</hamcrest.version>
 		<netty.version>3.2.4.Final</netty.version>
+		<google.guava.version>r09</google.guava.version>
 		<!-- 数据库 -->
 		<h2database.version>1.2.135</h2database.version>
 		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version>
@@ -115,6 +116,14 @@
 				<version>${commons-pool.version}</version>
 			</dependency>
 			<!-- apache commons end -->
+
+			<!-- google -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${google.guava.version}</version>
+			</dependency>
+			<!-- google end -->
 
 			<!-- spring begin -->
 			<dependency>

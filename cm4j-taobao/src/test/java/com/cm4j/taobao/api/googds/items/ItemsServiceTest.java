@@ -1,30 +1,24 @@
 package com.cm4j.taobao.api.googds.items;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import java.util.Map;
 
-import com.cm4j.core.utils.JsonBinder;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.cm4j.taobao.TestContext;
+import com.cm4j.taobao.api.common.APICaller;
 import com.taobao.api.ApiException;
 import com.taobao.api.request.ItemsOnsaleGetRequest;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:spring/applicationContext.xml" })
-public class ItemsServiceTest {
-
-	public final Logger logger = LoggerFactory.getLogger(getClass());
+public class ItemsServiceTest extends TestContext {
 
 	@Autowired
-	private ItemsService itemsService;
+	private ItemsService itemsService = new ItemsService();
 
 	@Test
 	public void onsale_getTest() throws ApiException {
-		Object[] result = itemsService.onsale_get(new ItemsOnsaleGetRequest(), TestContext.TAOBAO_SESSION_KEY);
-		logger.debug("result:{}", JsonBinder.NON_NULL.toJson(result));
+		Map<String, Object> result = itemsService.onsale_get(new ItemsOnsaleGetRequest(),
+				TestContext.TAOBAO_SESSION_KEY);
+		logger.debug("result:{}", APICaller.jsonBinder.toJson(result));
 	}
 }

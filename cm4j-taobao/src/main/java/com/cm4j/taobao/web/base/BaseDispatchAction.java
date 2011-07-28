@@ -69,7 +69,7 @@ public class BaseDispatchAction {
 	}
 
 	/**
-	 * 执行淘宝应用API
+	 * 直接调用淘宝应用API，不经过Service层的校验和判断
 	 * 
 	 * @param request
 	 * @param needSession
@@ -77,7 +77,7 @@ public class BaseDispatchAction {
 	 * @return
 	 * @throws ApiException
 	 */
-	public <T extends TaobaoResponse> T exec(TaobaoRequest<T> request, boolean needSession) throws ApiException {
+	protected <T extends TaobaoResponse> T exec(TaobaoRequest<T> request, boolean needSession) throws ApiException {
 		String sessionKey = null;
 		if (needSession) {
 			sessionKey = getSessionKey();
@@ -91,7 +91,7 @@ public class BaseDispatchAction {
 	 * @return
 	 * @throws ApiException
 	 */
-	public String getSessionKey() throws ApiException {
+	protected String getSessionKey() throws ApiException {
 		String sessionKey = null;
 		UserSession userSession = (UserSession) WebUtils.getSessionAttribute(getRequest(), UserSession.SESSION_NAME);
 		if (userSession != null) {
