@@ -37,7 +37,7 @@ public class MealService {
 	 * @since 2011-7-28 下午04:52:20
 	 * 
 	 */
-	public class Simple_item_list {
+	public static class SimpleItemList {
 		private List<SimpleItem> item_list;
 
 		public List<SimpleItem> getItem_list() {
@@ -48,9 +48,19 @@ public class MealService {
 			this.item_list = item_list;
 		}
 
-		public class SimpleItem {
+		public static class SimpleItem {
 			private String item_id;
 			private String item_show_name;
+			
+			public SimpleItem() {
+				super();
+			}
+
+			public SimpleItem(String item_id, String item_show_name) {
+				super();
+				this.item_id = item_id;
+				this.item_show_name = item_show_name;
+			}
 
 			public String getItem_id() {
 				return item_id;
@@ -182,7 +192,7 @@ public class MealService {
 			throw new ValidationException("搭配套餐描述长度必须为1-30位");
 		}
 
-		Simple_item_list item_list = APICaller.jsonBinder.fromJson(request.getItemList(), Simple_item_list.class);
+		SimpleItemList item_list = APICaller.jsonBinder.fromJson(request.getItemList(), SimpleItemList.class);
 		if (item_list == null || item_list.getItem_list() == null) {
 			throw new ValidationException("搭配套餐商品列表不合法");
 		}
@@ -223,7 +233,7 @@ public class MealService {
 			throw new ValidationException("搭配套餐描述长度必须为1-30位");
 		}
 
-		Simple_item_list item_list = APICaller.jsonBinder.fromJson(request.getItemList(), Simple_item_list.class);
+		SimpleItemList item_list = APICaller.jsonBinder.fromJson(request.getItemList(), SimpleItemList.class);
 		if (item_list == null || item_list.getItem_list() == null) {
 			throw new ValidationException("搭配套餐商品列表不合法");
 		}

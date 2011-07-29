@@ -35,6 +35,8 @@ public class ItemsService {
 		if (StringUtils.isBlank(request.getFields())) {
 			request.setFields("approve_status,num_iid,title,nick,type,cid,pic_url,num,props,valid_thru,list_time,price,has_discount,has_invoice,has_warranty,has_showcase,modified,delist_time,postage_id,seller_cids,outer_id");
 		}
+		
+		// todo get 校验
 
 		ItemsOnsaleGetResponse response = APICaller.call(request, sessionKey);
 		APICaller.resolveResponseException(response);
