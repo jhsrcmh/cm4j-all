@@ -18,10 +18,12 @@ import com.taobao.api.ApiException;
 import com.taobao.api.domain.Promotion;
 import com.taobao.api.request.MarketingPromotionAddRequest;
 import com.taobao.api.request.MarketingPromotionDeleteRequest;
+import com.taobao.api.request.MarketingPromotionKfcRequest;
 import com.taobao.api.request.MarketingPromotionUpdateRequest;
 import com.taobao.api.request.MarketingPromotionsGetRequest;
 import com.taobao.api.response.MarketingPromotionAddResponse;
 import com.taobao.api.response.MarketingPromotionDeleteResponse;
+import com.taobao.api.response.MarketingPromotionKfcResponse;
 import com.taobao.api.response.MarketingPromotionUpdateResponse;
 import com.taobao.api.response.MarketingPromotionsGetResponse;
 
@@ -49,7 +51,18 @@ public class PromotionService {
 	 */
 	public Map<String, Object> add(MarketingPromotionAddRequest request, String sessionKey) throws ApiException,
 			ValidationException {
+		if (StringUtils.isBlank(request.getPromotionTitle())) {
+			request.setPromotionTitle("商家促销");
+		}
+		if (StringUtils.isBlank(request.getPromotionDesc())) {
+			request.setPromotionDesc("商家促销，欲购从速");
+		}
+
 		checkAddRequest(request);
+		// 违禁词检查
+		if (!kfc(request.getPromotionTitle(), request.getPromotionDesc(), sessionKey)) {
+			throw new ValidationException("活动标题或描述中包含违禁词，请检查后重试");
+		}
 
 		MarketingPromotionAddResponse response = APICaller.call(request, sessionKey);
 		APICaller.resolveResponseException(response);
@@ -63,9 +76,8 @@ public class PromotionService {
 
 	/**
 	 * taobao.marketing.promotion.update 更新商品定向优惠策略<br />
-	 * 
-	 * 注意：对于promotion_desc, promotion_title, decrease_num
-	 * 这3个可选项，如果不填值默认是未更新前的值，其他都是比填值
+	 * <b>注意：对于promotion_desc, promotion_title, decrease_num
+	 * 这3个可选项，如果不填值默认是未更新前的值，其他都是必填值<b>
 	 * 
 	 * @param request
 	 * @param sessionKey
@@ -76,7 +88,18 @@ public class PromotionService {
 	 */
 	public Map<String, Object> update(MarketingPromotionUpdateRequest request, String sessionKey) throws ApiException,
 			ValidationException {
+		if (StringUtils.isBlank(request.getPromotionTitle())) {
+			request.setPromotionTitle("商家促销");
+		}
+		if (StringUtils.isBlank(request.getPromotionDesc())) {
+			request.setPromotionDesc("商家促销，欲购从速");
+		}
+
 		checkUpdateRequest(request);
+		// 违禁词检查
+		if (!kfc(request.getPromotionTitle(), request.getPromotionDesc(), sessionKey)) {
+			throw new ValidationException("活动标题或描述中包含违禁词，请检查后重试");
+		}
 
 		MarketingPromotionUpdateResponse response = APICaller.call(request, sessionKey);
 		APICaller.resolveResponseException(response);
@@ -115,12 +138,11 @@ public class PromotionService {
 
 		MarketingPromotionsGetRequest request = new MarketingPromotionsGetRequest();
 		request.setNumIid(num_iid);
-		if (StringUtils.isNotBlank(fields)) {
-			request.setFields(fields);
-		} else {
+		if (StringUtils.isBlank(fields)) {
 			List<String> values = DomainResolver.getApiFieldValues(Promotion.class);
-			String joinedFields = Joiner.on(",").join(values);
-			request.setFields(joinedFields);
+			request.setFields(Joiner.on(",").join(values));
+		} else {
+			request.setFields(fields);
 		}
 		request.setStatus(status);
 		request.setTagId(tag_id);
@@ -155,6 +177,34 @@ public class PromotionService {
 	}
 
 	/**
+	 * taobao.marketing.promotion.kfc 定向优惠活动名称与描述违禁词检查<br />
+	 * 注意：此目录放在商品API下
+	 * 
+	 * @param promotion_title
+	 *            不可空
+	 * @param promotion_desc
+	 *            不可空
+	 * @return
+	 * @throws ApiException
+	 * @throws ValidationException
+	 */
+	public boolean kfc(String promotion_title, String promotion_desc, String sessionKey) throws ApiException,
+			ValidationException {
+		if (StringUtils.isBlank(promotion_title) || StringUtils.isBlank(promotion_desc)) {
+			throw new ValidationException("定向优惠活动名称与描述都不可为空");
+		}
+
+		MarketingPromotionKfcRequest request = new MarketingPromotionKfcRequest();
+		request.setPromotionTitle(promotion_title);
+		request.setPromotionDesc(promotion_desc);
+
+		MarketingPromotionKfcResponse response = APICaller.call(request, sessionKey);
+		APICaller.resolveResponseException(response);
+
+		return response.getIsSuccess();
+	}
+
+	/**
 	 * 校验AddRequest参数 <br />
 	 * <b>注意：商品折扣价不能超过原价，这里由于是多个商品的促销活动，无法限制，故建议前台限制</b>
 	 * 
@@ -177,7 +227,7 @@ public class PromotionService {
 			// 不满足 1.0-9.9 精确到小数后1位
 			throw new ValidationException("折扣比率不合法");
 		} else if ("PRICE".equals(request.getDiscountType())) {
-			if (!ValidateUtils.validateDecimal(request.getDiscountValue())) {
+			if (!ValidateUtils.validateDecimal(request.getDiscountValue(), 2)) {
 				throw new ValidationException("优惠价格不合法");
 			}
 		}
@@ -220,7 +270,7 @@ public class PromotionService {
 			// 不满足 1.0-9.9 精确到小数后1位
 			throw new ValidationException("折扣比率不合法");
 		} else if ("PRICE".equals(request.getDiscountType())) {
-			if (!ValidateUtils.validateDecimal(request.getDiscountValue())) {
+			if (!ValidateUtils.validateDecimal(request.getDiscountValue(), 2)) {
 				throw new ValidationException("优惠价格不合法");
 			}
 		}

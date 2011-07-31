@@ -28,6 +28,9 @@ public class APICaller {
 
 	public static final JsonBinder jsonBinder = JsonBinder.NON_NULL;
 
+	private static final TaobaoClient client = new DefaultTaobaoClient(APIConstants.getTaobaoServiceUrl(),
+			APIConstants.getAppKey(), APIConstants.getAppSecret());
+
 	/**
 	 * 调用API服务
 	 * 
@@ -39,8 +42,6 @@ public class APICaller {
 	 * @throws ApiException
 	 */
 	public static <T extends TaobaoResponse> T call(TaobaoRequest<T> request, String sessionKey) throws ApiException {
-		TaobaoClient client = new DefaultTaobaoClient(APIConstants.getTaobaoServiceUrl(), APIConstants.getAppKey(),
-				APIConstants.getAppSecret());
 		if (StringUtils.isNotBlank(sessionKey)) {
 			return client.execute(request, sessionKey);
 		} else {

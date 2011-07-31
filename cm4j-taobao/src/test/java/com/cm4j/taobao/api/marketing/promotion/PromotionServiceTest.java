@@ -25,7 +25,7 @@ public class PromotionServiceTest extends TestContext {
 	private PromotionService promotionService = new PromotionService();
 
 	@SuppressWarnings("unchecked")
-	private Long[] getIds() throws ApiException {
+	private Long[] getIds() throws ApiException, ValidationException {
 		Map<String, Object> onsale_get = itemsService.onsale_get(new ItemsOnsaleGetRequest(), TAOBAO_SESSION_KEY);
 		List<Item> onsales = (List<Item>) onsale_get.get("items");
 		Long[] ids = new Long[] {};

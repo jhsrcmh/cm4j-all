@@ -51,7 +51,7 @@ public class MealService {
 		public static class SimpleItem {
 			private String item_id;
 			private String item_show_name;
-			
+
 			public SimpleItem() {
 				super();
 			}
@@ -183,7 +183,7 @@ public class MealService {
 			throw new ValidationException("搭配套餐名称长度必须为1-30位");
 		}
 
-		if (!ValidateUtils.validateDecimal(request.getMealPrice())) {
+		if (!ValidateUtils.validateDecimal(request.getMealPrice(), 2)) {
 			throw new ValidationException("搭配套餐一口价格式不合法，精确到小数后两位");
 		}
 
@@ -224,7 +224,7 @@ public class MealService {
 			throw new ValidationException("搭配套餐名称长度必须为1-30位");
 		}
 
-		if (!ValidateUtils.validateDecimal(request.getMealPrice())) {
+		if (!ValidateUtils.validateDecimal(request.getMealPrice(), 2)) {
 			throw new ValidationException("搭配套餐一口价格式不合法，精确到小数后两位");
 		}
 

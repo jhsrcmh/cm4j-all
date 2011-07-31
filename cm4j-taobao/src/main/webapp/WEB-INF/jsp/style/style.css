@@ -1,0 +1,838 @@
+/*
+  ---------------------------------------------------------------
+  1. base (全局基本属性)
+  ---------------------------------------------------------------
+  2.link (链接)
+  ---------------------------------------------------------------
+  3.font (字体)
+  ---------------------------------------------------------------
+  4. layout (框架)
+  ---------------------------------------------------------------
+  5. header (头部)
+  ---------------------------------------------------------------
+  6.content (页中)
+  ---------------------------------------------------------------
+  7.footer (页底)
+  ---------------------------------------------------------------
+  8. search (当前位置/文章搜索)
+  ---------------------------------------------------------------
+  9.assist (辅助)
+  ---------------------------------------------------------------
+  10.tab (切换)
+  ---------------------------------------------------------------
+  11.ad (广告)
+  ---------------------------------------------------------------
+  
+*/
+
+
+/* 
+  --------------------------------------
+  *****  1. base(全局基本属性)   *****
+  --------------------------------------
+*/
+
+html {
+  scrollbar-face-color : #F3E7FB;
+}
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  font:12px Arial,微软雅黑,Helvetica,sans-serif;
+  line-height:180%;
+  color:#8343A4;
+  text-align:left;
+  background:#FFF url(../imgs/bg.gif) left 348px repeat-x;
+  white-space:normal; 
+  word-break:break-all;
+}
+
+div,form,img,ul,ol,li,dl,dt,dd,p {
+  margin:0;
+  padding:0;
+  border:0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  margin:0;
+  padding:0;
+  font-size:100%;
+  color:#555;
+}
+
+h1 span,h2 span,h3 span,h4 span, h5 span {
+  color:#999;
+  padding-left:6px;
+  font-weight:normal;
+}
+
+table,td,tr,th{
+  font-size:12px;
+}
+
+ul,ol,li {
+  list-style:none;
+}
+
+img {
+  border:0;
+}
+
+.clear {
+  clear:both;
+}
+
+.floatleft {
+  float:left;
+}
+
+.floatright {
+  float:right;
+}
+
+.clear {
+  clear:both;
+}
+
+img {border:none;}
+
+/* table */
+
+table { width:80%; margin:10px auto 7px; font-size:12px; overflow:hidden; border:1px solid #DDD; border-collapse:collapse; }
+table * td{ padding:6px; border:1px solid #EEE; } .table thead * th{ background:#FFF url(../imgs/table_tbg.gif) 0px 1px repeat-x; border:1px solid #E3E3E3; padding:6px; color:#999; } .table tbody * th{ text-align:left; background:#FFA; border:1px solid #DDD; } .table tbody * th strong{ line-height:21px; text-indent:10px; color:#999; } .td1{ text-align:right; color:#8343a4; } .td2,.td3,.td4,.td5,.td6,.td7,.td8,.td9{ text-align:center; } .td5{ background:#FAFAFA; } .td6,.td7,.td8,.td9{ background:#F5F9F0; }
+
+/* 
+  --------------------------------------
+  *****  2. link(链接)   *****
+  --------------------------------------
+*/
+
+a {
+  text-decoration: none;
+  color:#8343A4;
+}
+
+a:hover {
+  color:#8343A4;
+  text-decoration: underline; 
+}
+
+/* 
+  --------------------------------------
+  *****  3. font (字体)   *****
+  --------------------------------------
+*/
+
+.green {
+  color:#8343a4;
+}
+
+.orange {
+  color:#FF9933;
+}
+
+.gray {
+  color:#ccc;
+}
+
+/* 
+  --------------------------------------
+  *****  4. layout (框架)   *****
+  --------------------------------------
+*/
+
+#main,.center {
+  margin:0px auto;
+  padding:0px auto;
+  width:910px;
+  overflow:hidden;
+}
+
+/* 
+  --------------------------------------
+  *****  5. header (页头)   *****
+  --------------------------------------
+*/
+
+#logo {
+  float:left;
+  margin:52px 10px 0px 0px;
+background:url(../imgs/logo.png) left top no-repeat;
+}
+#logo a{ display:block; width:311px; height:44px;}
+#logo span{ display:none;}
+
+#top {
+  float:right;
+  margin:10px;
+}
+
+
+/* 
+  --------------------------------------
+  *****  6. content (页中)   *****
+  --------------------------------------
+*/
+#banner {
+  clear:both;
+  height:252px;
+}
+
+#bg {background:url(../imgs/bg.jpg) center top no-repeat;}
+
+#nav {
+  clear:both;
+  height:27px;
+  line-height:27px;
+  text-align:center;
+  color:white;
+  padding-left:2px;
+  background:url(../imgs/nav_line.gif) left top no-repeat;
+}
+
+#nav a {
+  float:left;
+  display:block;
+  width:120px;
+  height:27px;
+  color:white;
+  background:url(../imgs/nav_line.gif) right top no-repeat;
+}
+
+#nav a:hover,#nav .on {
+  background:#8343a4;
+  color:white;
+}
+
+
+#left {
+  float:left;
+  width:200px;
+  margin:15px 0px 0px;
+}
+
+#left h3 {
+  height:50px;
+  line-height:50px;
+  font-size:14px;
+  background:url(../imgs/h3_bg.gif) left bottom no-repeat;
+  color:#8343a4;
+}
+
+#contact {
+  float:left;
+  width:200px;
+  margin:30px 0px;
+}
+
+#contact div {
+  height:25px;
+  line-height:25px;
+  margin:5px 0px;
+  padding:5px 5px 5px 35px;
+  border:1px solid #EEE;
+}
+
+#right {
+  float:right;
+  width:680px;
+  margin:30px 0px 0px;
+  overflow:hidden;
+}
+
+#position {
+  height:26px;
+  line-height:26px;
+  padding-bottom:15px;
+  border-bottom:1px solid #EEE;
+  background:url(../imgs/position_bg.gif) left top no-repeat;
+  text-align:right;
+}
+
+#position a {
+  height:26px;
+  line-height:26px;
+  padding:0px 10px;
+  background:url(../imgs/icon_arrow.gif) left center no-repeat;
+  color:#999;
+}
+
+#position h5 {
+  float:left;
+  width:200px;
+  padding-left:35px;
+  text-align:left;
+  color:#8343a4;
+}
+
+#introduce {
+  clear:both;
+  margin:30px 0px;
+}
+
+#introduce h1,#introduce h4 {
+  line-height:30px;
+  padding-left:35px;
+  color:#FF9933;
+  font-size:18px;
+  font-weight:bold;
+  background:url(../imgs/h4_bg.gif) left top no-repeat;
+}
+
+.news_list {
+  line-height:30px;
+  margin:5px 0px;
+  padding:10px 20px;
+}
+
+.news_list .date {
+  padding-left:10px;
+  color:#999;
+}
+
+.news_list dd {
+  /*text-indent : 20px;*/
+  line-height:20px;
+  color:#ccc;
+}
+
+.news_list a {
+  color:#8343a4;
+  font-weight:bold;
+  font-size:14px;
+  line-height:20px;
+}
+
+.news_list h5 {
+  float:left;
+  padding:0px 5px;
+  font-size:18px;
+  font-weight:bold;
+  color:#8343a4;
+}
+
+.news_list a.more {
+  font-size:12px;
+  font-weight:normal;
+}
+
+/************* 分页 */
+
+.pages {
+  clear:both;
+}
+
+.pages strong {
+  color:#8343a4;
+  display:block;
+  float:left;
+  height:18px;
+  line-height:18px;
+  float:left;
+  padding:0px 8px;
+  background:#F5F5F5;
+  border:1px solid #8343a4;
+  margin: 0px 3px 0px 0px;
+}
+.pages a {
+  display:block;
+  float:left;
+  height:18px;
+  line-height:18px;
+  float:left;
+  padding:0px 8px;
+  border:1px solid #8343a4;
+  text-decoration:none;
+  margin: 0px 3px 0px 0px;
+  color:#8343a4;
+}
+
+.pages span {
+  float:right;
+  padding-right:10px;
+}
+
+/****************评论*/
+#comment {
+  margin-top:20px;
+}
+
+#comment .input {
+  width:108px;
+  height:27px;
+  border:none;
+  background:url(../imgs/search_btn.gif) left top no-repeat;
+  font-weight:bold;
+  color:#8343a4;
+  font-size:12px;
+}
+
+.comm {
+  height:28px;
+  line-height:28px;
+  padding-left:35px;
+  border-top:1px solid #ccc;
+  background:url(../imgs/comment.gif) 10px 7px no-repeat;
+}
+
+#textarea {
+  width:665px;
+  height:50px;
+  background:#FFF url(../imgs/cmslogo.jpg) right bottom no-repeat;
+  border:1px solid #D4E3A4;
+}
+
+/* 
+  --------------------------------------
+  *****  7. footer (页底)   *****
+  --------------------------------------
+*/
+#footer {
+  clear:both;
+  margin-top:30px;
+  padding:15px 0px;
+  border-top:1px solid #EEE;
+  text-align:center;
+  color:#BBB;
+  background:url(../imgs/footer_line.gif) center top no-repeat;
+}
+
+#footer a {
+  text-decoration: underline; 
+  color:#BBB;
+}
+
+.copy {
+  float:left;
+  width:500px;
+  text-align:left;
+}
+
+
+
+/* 
+  --------------------------------------
+  *****  8. search (搜索)   *****
+  --------------------------------------
+*/
+#search h5 {
+  height:30px;
+  line-height:26px;
+  margin:10px 0px;
+  padding-left:30px;
+  font-weight:bold;
+  background:url(../imgs/title2.gif) left top no-repeat;
+  color:#FFF;
+}
+
+#keyword {
+  width:198px;
+  border:1px solid #C756AD;
+}
+
+#search p {
+  height:30px;
+  line-height:30px;
+}
+
+#search_btn {
+  float:right;
+  width:108px;
+  height:27px;
+  border:none;
+  background:url(../imgs/search_btn.gif) left top no-repeat;
+  font-weight:bold;
+  font-size:12px;
+  color:#8343a4;
+}
+
+/* 
+  --------------------------------------
+  *****  9. assist (辅助)   *****
+  --------------------------------------
+*/
+.p5 {
+  padding:5px;
+}
+
+.p10 {
+  padding:10px;
+}
+
+.blank5 {
+  clear:both;
+  height:5px;
+  overflow:hidden;
+}
+
+.blank10,.blank30 {
+  clear:both;
+  height:10px;
+  overflow:hidden;
+}
+
+.blank20 {
+  height:20px;
+}
+
+.blank30 {
+  height:30px;
+}
+
+.padding10 {
+  padding:10px;
+}
+
+.margin5 {
+  margin:5px;
+}
+
+.padding5 {
+  padding:5px;
+}
+
+.blank5 {
+  clear:both;
+  height:5px;
+  overflow:hidden;
+}
+
+.hr {
+  clear:both;
+  height:1px;
+  background:url(../imgs/point.gif) repeat-x;
+}
+
+
+/* 
+  --------------------------------------
+  *****  10. tab (切换)   *****
+  --------------------------------------
+*/
+
+
+.dis {
+ display:block;
+}
+
+.undis {
+ display:none;
+}
+
+
+
+
+
+
+/* 
+  --------------------------------------
+  *****  11. ad (广告)   *****
+  --------------------------------------
+*/
+
+.date {float:right;}
+
+
+#tool {
+	font-size:12px;
+	line-height:20px;
+	border-top:1px solid #DDD;
+	border-bottom:1px solid #DDD;
+	height:20px;
+	margin:10px 0;
+	padding:10px 0 10px 10px;
+	overflow: hidden;
+}
+#tool ul {
+	float:left;
+}
+#tool ul li {
+	float:left;
+	width:90px;
+	line-height:20px;
+}
+#tool .commentary, #tool .print, #tool .copy, #tool .email, #tool .close, #tool .rss_2, #tool .t_1, #tool .t_2, #tool .t_3 {
+	background-image: url(../imgs/tool.gif);
+	background-repeat: no-repeat;
+	background-position: left -20px;
+	height:20px;
+	line-height:20px;
+	padding:0 0 0 25px;
+	display:block;
+	margin:0 10px 0 0;
+	color:#8343a4;
+}
+#tool .print {
+	background-position: left -40px;
+}
+#tool .copy {
+	background-position: left -80px;
+}
+#tool .email {
+	background-position: left -100px;
+}
+#tool .close {
+	background-position: left -60px;
+}
+#tool .rss_2 {
+	background-position: left -120px;
+}
+#tool .t_1 {
+	background-position: left -140px;
+}
+#tool .t_2 {
+	background-position: left -160px;
+}
+#tool .t_3 {
+	background-position: left -180px;
+}
+
+#tool .t_4 {padding-left:20px;background:url(../imgs/comment.gif) left 3px no-repeat;}
+#tool .orders {padding-left:20px;background:url(../imgs/orders.gif) left 2px no-repeat;}
+#tool .sinaicon {padding-left:20px;background:url(../imgs/sinaicon.png) left 1px no-repeat;}
+
+/************* 分类列表 */
+.news_list {
+  padding:10px;
+}
+
+.news_list li {
+  clear:both;
+  line-height:28px;
+  padding-left:15px;
+  font-size:14px;
+  border-bottom:1px dotted #F5F5F5;
+  background:url(../imgs/dot.gif) left 12px no-repeat;
+}
+
+.news_list li a {
+  color:#8343a4;
+}
+
+.news_text h5,.news_text_pic h5 {
+  float:right;
+  width:525px;
+  font-weight:bold;
+  font-size:12px;
+  text-align:left;
+  color:#8343a4;
+  padding-left:10px;
+  background:url(../imgs/dot_r.gif) left 6px no-repeat;
+}
+
+.news_text h5 {
+  width:750px;
+}
+
+.news_text h5,.news_text_pic h5 a {
+  color:#8343a4;
+}
+
+.news_list .date,.news_text h5 .date,.news_text_pic h5 .date,.strgrade {
+  float:right;
+  padding-right:15px;
+  color:#999;
+  font-weight:normal;
+}
+
+.strgrade {
+  display:block;
+  width:160px;
+  text-align:left;
+}
+
+.news_list p {
+  margin:5px;
+  padding:5px 5px 5px 20px;
+  background:#FFF;
+  text-indent:2em;
+}
+
+.news_text,.news_text_pic {
+  clear:both;
+  height:auto;
+  padding:10px 0px;
+  border-bottom:1px dotted #ccc;
+}
+
+
+.news_text p,.news_text_pic p {
+  float:right;
+  width:540px;
+  text-align:left;
+  color:#999;
+  padding:5px;
+  text-indent:2em;
+}
+
+.news_text p {
+  width:750px;
+}
+
+a.news_text_img {
+  display:block;
+  float:left;
+  height:100px;
+  overflow:hidden;
+  border:1px solid #ccc;
+  margin-right:15px;
+}
+/************* 产品 */
+.product_box {
+  float:left;
+  width:142px;
+  height:166px;
+  margin:5px 8px;
+  padding:5px;
+  background:url(../imgs/piclist_1.png) right top no-repeat;
+  text-align:center;/*水平居中*/
+	display: table-cell;
+	vertical-align:middle;
+	overflow:hidden;
+}
+
+.p_box {height:110px;_height:130px; /*非IE的主流浏览器识别的垂直居中的方法*/
+        display: table-cell;
+        vertical-align:middle;
+        /*设置水平居中*/
+        text-align:center;
+        /* 针对IE的Hack */
+        *display: block;
+        *font-size: 114px;/*约为高度的0.873，200*0.873 约为175*/
+        *font-family:Arial;/*防止非utf-8引起的hack失效问题，如gbk编码*/
+		}
+
+.product_box a {
+  display:block;
+  width:142px;
+  height:114px;
+  
+	overflow:hidden;
+  color:#8343a4;
+  /*非IE的主流浏览器识别的垂直居中的方法*/
+        display: table-cell;
+        vertical-align:middle;
+        /*设置水平居中*/
+        text-align:center;
+        /* 针对IE的Hack */
+        *display: block;
+        *font-size: 114px;/*约为高度的0.873，200*0.873 约为175*/
+        *font-family:Arial;/*防止非utf-8引起的hack失效问题，如gbk编码*/
+ 
+}
+
+
+.product_box h5 a {
+  width:142px;
+  overflow:hidden;
+  height:54px;
+  line-height:18px;
+  font-size:12px;
+   text-align:center;
+  font-weight:normal;
+}
+
+.p_info {
+  height:20px;
+  line-height:20px;
+  padding-left:30px;
+  background:url(../imgs/bullet1.gif) left top no-repeat;
+  color:#0D61BA;
+  font-size:14px;
+  font-weight:bold;
+}
+
+ul#navmenu li { 
+margin: 0; 
+border: 0 none; 
+padding: 0; 
+float: left; /*For Gecko*/ 
+display: inline; 
+list-style: none; 
+position: relative; 
+
+} 
+ul#navmenu ul { 
+margin: 0; 
+border: 0 none; 
+padding: 0; 
+width: 120px; 
+list-style: none; 
+display: none; 
+position: absolute; 
+top: 27px; 
+left: 0; 
+background:url(../imgs/navmenu_bg.png) repeat-y left top;
+_background:#333;
+} 
+ul#navmenu ul li { 
+line-height:27px;
+float: none; /*For Gecko*/ 
+display: block !important; 
+display: inline; /*For IE*/ 
+
+_border:none;
+border-bottom: 1px solid #CCC; 
+} 
+
+/* 2nd Menu */ 
+ul#navmenu li:hover li a, 
+ul#navmenu li.iehover li a { 
+float: none; 
+color: #FFF; 
+font-size:12px;
+line-height:27px;
+font-weight:normal;
+} 
+/* 2nd Menu Hover Persistence */ 
+ul#navmenu li:hover li a:hover, 
+ul#navmenu li:hover li:hover a, 
+ul#navmenu li.iehover li a:hover, 
+ul#navmenu li.iehover li.iehover a { 
+color: #FF7900; 
+} 
+/* 3rd Menu */ 
+ul#navmenu li:hover li:hover li a, 
+ul#navmenu li.iehover li.iehover li a { 
+color: #FFF; 
+} 
+/* 3rd Menu Hover Persistence */ 
+ul#navmenu li:hover li:hover li a:hover, 
+ul#navmenu li:hover li:hover li:hover a, 
+ul#navmenu li.iehover li.iehover li a:hover, 
+ul#navmenu li.iehover li.iehover li.iehover a { 
+color: #FF7900; 
+} 
+/* 4th Menu */ 
+ul#navmenu li:hover li:hover li:hover li a, 
+ul#navmenu li.iehover li.iehover li.iehover li a { 
+color: #FFF; 
+} 
+/* 4th Menu Hover */ 
+ul#navmenu li:hover li:hover li:hover li a:hover, 
+ul#navmenu li.iehover li.iehover li.iehover li a:hover { 
+color: #FF7900; 
+} 
+ul#navmenu ul ul, 
+ul#navmenu ul ul ul { 
+display: none; 
+position: absolute; 
+top: 0; 
+left: 120px; 
+} 
+/* Do Not Move - Must Come Before display:block for Gecko */ 
+ul#navmenu li:hover ul ul, 
+ul#navmenu li:hover ul ul ul, 
+ul#navmenu li.iehover ul ul, 
+ul#navmenu li.iehover ul ul ul { 
+display: none; 
+} 
+ul#navmenu li:hover ul, 
+ul#navmenu ul li:hover ul, 
+ul#navmenu ul ul li:hover ul, 
+ul#navmenu li.iehover ul, 
+ul#navmenu ul li.iehover ul, 
+ul#navmenu ul ul li.iehover ul { 
+display: block; 
+} 

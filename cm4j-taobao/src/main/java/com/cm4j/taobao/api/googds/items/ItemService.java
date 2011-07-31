@@ -43,6 +43,8 @@ public class ItemService {
 		if (StringUtils.isBlank(fields)) {
 			List<String> values = DomainResolver.getApiFieldValues(Item.class);
 			request.setFields(Joiner.on(",").join(values));
+		} else {
+			request.setFields(fields);
 		}
 		
 		ItemGetResponse response = APICaller.call(request, sessionKey);
