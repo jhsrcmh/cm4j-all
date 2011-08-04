@@ -33,9 +33,10 @@
 		<oracle-jdk1.4.version>10.2.0.4.0</oracle-jdk1.4.version>
 		<oracle-jdk6.version>11.2.0.1.0</oracle-jdk6.version>
 		<c3p0.version>0.9.1.2</c3p0.version>
+		<proxool.version>0.9.1</proxool.version>
 		<mybatis.version>1.0.0</mybatis.version>
 		<jta.version>1.1</jta.version>
-		<hsqldb.version>1.8.0.10</hsqldb.version>
+		<!-- <hsqldb.version>1.8.0.10</hsqldb.version> -->
 		<!-- Test -->
 		<junit.version>4.8.1</junit.version>
 		<esaymock.version>3.0</esaymock.version>
@@ -122,6 +123,7 @@
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${google.guava.version}</version>
+				<scope>compile</scope>
 			</dependency>
 			<!-- google end -->
 
@@ -185,6 +187,16 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
@@ -311,6 +323,12 @@
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
+				<groupId>net.sf</groupId>
+				<artifactId>proxool</artifactId>
+				<version>${proxool.version}</version>
+				<type>jar</type>
+			</dependency>
+			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${mysql.version}</version>
@@ -332,22 +350,23 @@
 				<groupId>javax.transaction</groupId>
 				<artifactId>jta</artifactId>
 				<version>${jta.version}</version>
+				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mybatis</groupId>
 				<artifactId>mybatis-spring</artifactId>
 				<version>${mybatis.version}</version>
+				<scope>runtime</scope>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
 				<version>${hsqldb.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
 				<version>${h2database.version}</version>
-				<scope>test</scope>
 			</dependency>
 
 			<!-- Web -->
@@ -403,7 +422,7 @@
 				<!-- compiler插件, 设定JDK版本 -->
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3</version>
+					<version>2.3.1</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.codehaus.plexus</groupId>
