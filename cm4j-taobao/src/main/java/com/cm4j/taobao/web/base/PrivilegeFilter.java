@@ -39,12 +39,13 @@ public class PrivilegeFilter implements Filter {
 		UserSession userSession = (UserSession) WebUtils.getSessionAttribute(req, UserSession.SESSION_NAME);
 
 		// 校验权限
-		VisitorPrivilege privilege = userSession.getVisitor_privilege();
+		VisitorPrivilege privilege = null;
+//		userSession.getVisitor_privilege();
 		String uri = req.getRequestURI();
 		if (StringUtils.startsWith(uri, privilege.name())) {
 			// 权限不对...
 			req.setAttribute(BaseDispatchAction.ERROR_KEY, "您的权限不够，无法使用此功能，请购买高级版本！");
-			req.getRequestDispatcher("/WEB-INF/jsp/error.jsp").forward(req, rep);
+			req.getRequestDispatcher("error.jsp").forward(req, rep);
 		} else {
 			chain.doFilter(req, rep);
 		}

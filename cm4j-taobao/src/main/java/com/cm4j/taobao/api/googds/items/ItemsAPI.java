@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Service;
 
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.exception.ValidationException;
@@ -13,14 +12,13 @@ import com.taobao.api.request.ItemsOnsaleGetRequest;
 import com.taobao.api.response.ItemsOnsaleGetResponse;
 
 /**
- * API包：taobao.items...
+ * 商品API包：taobao.items...
  * 
  * @author yang.hao
  * @since 2011-7-27 上午10:57:27
  * 
  */
-@Service
-public class ItemsService {
+public class ItemsAPI {
 
 	/**
 	 * taobao.items.onsale.get 获取当前会话用户出售中的商品列表
@@ -33,7 +31,7 @@ public class ItemsService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public Map<String, Object> onsale_get(ItemsOnsaleGetRequest request, String sessionKey) throws ApiException,
+	public static Map<String, Object> onsale_get(ItemsOnsaleGetRequest request, String sessionKey) throws ApiException,
 			ValidationException {
 		checkOnsaleGetRequest(request);
 
@@ -50,8 +48,8 @@ public class ItemsService {
 		return result;
 	}
 
-	public void checkOnsaleGetRequest(ItemsOnsaleGetRequest request) throws ValidationException {
-		if (request.getPageNo() <= 0) {
+	private static void checkOnsaleGetRequest(ItemsOnsaleGetRequest request) throws ValidationException {
+		if (request.getPageNo() != null && request.getPageNo() <= 0) {
 			throw new ValidationException("页码取值至少为1");
 		}
 

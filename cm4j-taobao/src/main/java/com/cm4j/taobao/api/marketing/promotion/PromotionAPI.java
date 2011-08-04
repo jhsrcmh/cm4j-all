@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.springframework.stereotype.Service;
 
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.api.common.DomainResolver;
@@ -34,8 +33,7 @@ import com.taobao.api.response.MarketingPromotionsGetResponse;
  * @since 2011-7-27 下午01:05:45
  * 
  */
-@Service
-public class PromotionService {
+public class PromotionAPI {
 
 	/**
 	 * taobao.marketing.promotion.add 设置商品定向优惠策略
@@ -49,7 +47,7 @@ public class PromotionService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public Map<String, Object> add(MarketingPromotionAddRequest request, String sessionKey) throws ApiException,
+	public static Map<String, Object> add(MarketingPromotionAddRequest request, String sessionKey) throws ApiException,
 			ValidationException {
 		if (StringUtils.isBlank(request.getPromotionTitle())) {
 			request.setPromotionTitle("商家促销");
@@ -86,8 +84,8 @@ public class PromotionService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public Map<String, Object> update(MarketingPromotionUpdateRequest request, String sessionKey) throws ApiException,
-			ValidationException {
+	public static Map<String, Object> update(MarketingPromotionUpdateRequest request, String sessionKey)
+			throws ApiException, ValidationException {
 		if (StringUtils.isBlank(request.getPromotionTitle())) {
 			request.setPromotionTitle("商家促销");
 		}
@@ -129,7 +127,7 @@ public class PromotionService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public Map<String, Object> get(String num_iid, String fields, String status, Long tag_id, String sessionKey)
+	public static Map<String, Object> get(String num_iid, String fields, String status, Long tag_id, String sessionKey)
 			throws ApiException, ValidationException {
 
 		if (StringUtils.isBlank(num_iid) || !NumberUtils.isNumber(num_iid)) {
@@ -166,7 +164,7 @@ public class PromotionService {
 	 * @return 是否成功
 	 * @throws ApiException
 	 */
-	public boolean delete(long promotion_id, String sessionKey) throws ApiException {
+	public static boolean delete(long promotion_id, String sessionKey) throws ApiException {
 		MarketingPromotionDeleteRequest request = new MarketingPromotionDeleteRequest();
 		request.setPromotionId(promotion_id);
 
@@ -188,7 +186,7 @@ public class PromotionService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public boolean kfc(String promotion_title, String promotion_desc, String sessionKey) throws ApiException,
+	public static boolean kfc(String promotion_title, String promotion_desc, String sessionKey) throws ApiException,
 			ValidationException {
 		if (StringUtils.isBlank(promotion_title) || StringUtils.isBlank(promotion_desc)) {
 			throw new ValidationException("定向优惠活动名称与描述都不可为空");
@@ -211,7 +209,7 @@ public class PromotionService {
 	 * @param request
 	 * @throws ValidationException
 	 */
-	private void checkAddRequest(MarketingPromotionAddRequest request) throws ValidationException {
+	private static void checkAddRequest(MarketingPromotionAddRequest request) throws ValidationException {
 		String[] num_ids = StringUtils.split(request.getNumIids(), ",");
 		if (num_ids == null || num_ids.length > 10) {
 			throw new ValidationException("设置商品个数不允许为0或超过10个");
@@ -255,7 +253,7 @@ public class PromotionService {
 	 * @param request
 	 * @throws ValidationException
 	 */
-	private void checkUpdateRequest(MarketingPromotionUpdateRequest request) throws ValidationException {
+	private static void checkUpdateRequest(MarketingPromotionUpdateRequest request) throws ValidationException {
 		if (request.getPromotionId() == null) {
 			throw new ValidationException("优惠活动ID不能为空");
 		}

@@ -10,11 +10,11 @@ import com.taobao.api.domain.UserTag;
 
 public class TagsServiceTest extends TestContext {
 
-	private TagsService tagsService = new TagsService();
+	private TagsAPI tagsAPI = new TagsAPI();
 
 	@Test
 	public void getTest() throws ApiException {
-		List<UserTag> userTags = tagsService.get(TestContext.TAOBAO_SESSION_KEY);
+		List<UserTag> userTags = tagsAPI.get(TestContext.TAOBAO_SESSION_KEY);
 		logger.debug("result:{}", userTags);
 	}
 }

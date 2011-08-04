@@ -12,12 +12,10 @@ import com.taobao.api.request.ItemsOnsaleGetRequest;
 
 public class ItemsServiceTest extends TestContext {
 
-	private ItemsService itemsService = new ItemsService();
-
 	@Test
 	public void onsale_getTest() throws ApiException, ValidationException {
-		Map<String, Object> result = itemsService.onsale_get(new ItemsOnsaleGetRequest(),
+		Map<String, Object> result = ItemsAPI.onsale_get(new ItemsOnsaleGetRequest(),
 				TestContext.TAOBAO_SESSION_KEY);
-		logger.debug("result:{}", APICaller.jsonBinder.toJson(result));
+		logger.debug("taobao.items.onsale.get:{}", APICaller.jsonBinder.toJson(result));
 	}
 }

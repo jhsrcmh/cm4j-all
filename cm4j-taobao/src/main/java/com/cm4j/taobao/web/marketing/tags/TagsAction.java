@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cm4j.core.utils.JsonBinder;
-import com.cm4j.taobao.api.marketing.tags.TagsService;
+import com.cm4j.taobao.api.marketing.tags.TagsAPI;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.UserTag;
@@ -18,7 +18,7 @@ import com.taobao.api.domain.UserTag;
 public class TagsAction extends BaseDispatchAction {
 
 	@Autowired
-	private TagsService tagsService;
+	private TagsAPI tagsAPI;
 
 	/**
 	 * 查询人群标签
@@ -29,7 +29,7 @@ public class TagsAction extends BaseDispatchAction {
 	@RequestMapping("/get")
 	public @ResponseBody
 	String get() throws ApiException {
-		List<UserTag> list = tagsService.get(super.getSessionKey());
+		List<UserTag> list = tagsAPI.get(super.getSessionKey());
 		if (list == null) {
 			return "{}";
 		} else {

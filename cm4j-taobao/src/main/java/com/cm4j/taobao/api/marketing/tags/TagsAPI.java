@@ -19,7 +19,7 @@ import com.taobao.api.response.MarketingTagsGetResponse;
  * 
  */
 @Service
-public class TagsService {
+public class TagsAPI {
 
 	/**
 	 * taobao.marketing.tags.get 查询人群标签

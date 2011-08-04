@@ -1,19 +1,27 @@
 package com.cm4j.taobao.web.login;
 
-import com.cm4j.taobao.api.common.VisitorPrivilege;
+import java.util.Collection;
 
-public class UserSession {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+public class UserSession implements UserDetails {
+
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 存放于session中的Name
 	 */
 	public static final String SESSION_NAME = "userSession";
-	
+
 	private String top_session;
 	private String visitor_id;
 	private String visitor_nick;
 	private String visitor_role;
-	private VisitorPrivilege visitor_privilege;
+	/**
+	 * 用户权限
+	 */
+	private Collection<GrantedAuthority> authorities;
 
 	public String getTop_session() {
 		return top_session;
@@ -47,12 +55,42 @@ public class UserSession {
 		this.visitor_role = visitor_role;
 	}
 
-	public VisitorPrivilege getVisitor_privilege() {
-		return visitor_privilege;
+	public Collection<GrantedAuthority> getAuthorities() {
+		return authorities;
 	}
 
-	public void setVisitor_privilege(VisitorPrivilege visitor_privilege) {
-		this.visitor_privilege = visitor_privilege;
+	public void setAuthorities(Collection<GrantedAuthority> authorities) {
+		this.authorities = authorities;
+	}
+
+	@Override
+	public String getPassword() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.visitor_nick;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 }

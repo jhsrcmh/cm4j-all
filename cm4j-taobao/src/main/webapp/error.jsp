@@ -12,7 +12,7 @@
 <body>
 	<div>
 		<h2>错误消息</h2>
-		<c:if test="${param.error == 'loginTimeOut' }">用户登陆超时请登陆重试!</c:if>
+		<c:if test="${param.err == 'timeout' }">用户登陆超时请登陆重试!</c:if>
 		${msg }<br /> <input type="button" value="立即关闭"
 			onclick="window.opener=null;window.close();" style="cursor: pointer" />
 	</div>

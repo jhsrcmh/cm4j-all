@@ -1,5 +1,7 @@
 package com.cm4j.taobao.web.base;
 
+import java.util.Collections;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -10,7 +12,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.WebUtils;
 
-import com.cm4j.core.utils.JsonBinder;
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.api.common.APIConstants;
 import com.cm4j.taobao.exception.ValidationException;
@@ -23,12 +24,10 @@ public class BaseDispatchAction {
 
 	public static final Logger logger = LoggerFactory.getLogger(BaseDispatchAction.class);
 
-	protected JsonBinder jsonBinder = JsonBinder.NON_NULL;
-
 	/**
 	 * 错误页面
 	 */
-	public static String ERROR_PAGE = "error";
+	public static String ERROR_PAGE = "/error";
 	/**
 	 * 放到request的错误的key
 	 */
@@ -36,8 +35,7 @@ public class BaseDispatchAction {
 	/**
 	 * 成功提示页面
 	 */
-	public static String SUCCESS_PAGE = "success";
-	
+	public static String SUCCESS_PAGE = "/success";
 
 	/**
 	 * 获取request
@@ -47,13 +45,13 @@ public class BaseDispatchAction {
 	protected HttpServletRequest getRequest() {
 		return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 	}
-	
+
 	/**
 	 * 添加错误信息到request
 	 * 
 	 * @param obj
 	 */
-	protected void addRequestErrorMessage (Object obj){
+	protected void addRequestErrorMessage(Object obj) {
 		getRequest().setAttribute(ERROR_KEY, obj);
 	}
 
@@ -110,9 +108,7 @@ public class BaseDispatchAction {
 	 */
 	@ExceptionHandler
 	public ModelAndView validationExceptionHandle(ValidationException exception) {
-		ModelAndView view = new ModelAndView(ERROR_PAGE);
-		view.addObject("msg", "数据不合法：" + exception.getMessage());
-		return view;
+		return new ModelAndView(ERROR_PAGE, Collections.singletonMap(ERROR_KEY, "数据不合法：" + exception.getMessage()));
 	}
 
 	/**
@@ -123,9 +119,7 @@ public class BaseDispatchAction {
 	 */
 	@ExceptionHandler
 	public ModelAndView apiExceptionHandle(ApiException exception) {
-		ModelAndView view = new ModelAndView(ERROR_PAGE);
-		view.addObject("msg", "调用淘宝API异常：" + exception.getMessage());
-		return view;
+		return new ModelAndView(ERROR_PAGE, Collections.singletonMap(ERROR_KEY, "调用淘宝API异常：" + exception.getMessage()));
 	}
 
 	/**
@@ -136,8 +130,6 @@ public class BaseDispatchAction {
 	 */
 	@ExceptionHandler
 	public ModelAndView otherExceptionHandle(Exception exception) {
-		ModelAndView view = new ModelAndView(ERROR_PAGE);
-		view.addObject("msg", "其他异常：" + exception.getMessage());
-		return view;
+		return new ModelAndView(ERROR_PAGE, Collections.singletonMap(ERROR_KEY, "其他异常：" + exception.getMessage()));
 	}
 }

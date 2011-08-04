@@ -19,7 +19,7 @@ import com.taobao.api.response.PostageAddResponse;
  * 
  */
 @Service
-public class PostageService {
+public class PostageAPI {
 
 	/**
 	 * taobao.postage.add 添加邮费模板

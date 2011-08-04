@@ -21,7 +21,7 @@ import com.taobao.api.response.PostagesGetResponse;
  * 
  */
 @Service
-public class PostagesService {
+public class PostagesAPI {
 
 	/**
 	 * taobao.postages.get 获取卖家的运费模板

@@ -11,11 +11,11 @@ import com.taobao.api.domain.Postage;
 
 public class PostagesServiceTest extends TestContext {
 
-	private PostagesService postagesService = new PostagesService();
+	private PostagesAPI postagesService = new PostagesAPI();
 
 	@Test
 	public void getTest() throws ApiException {
 		List<Postage> result = postagesService.get(null, TAOBAO_SESSION_KEY);
-		logger.debug("result:{}", APICaller.jsonBinder.toJson(result));
+		logger.debug("taobao.postages.get:{}", APICaller.jsonBinder.toJson(result));
 	}
 }

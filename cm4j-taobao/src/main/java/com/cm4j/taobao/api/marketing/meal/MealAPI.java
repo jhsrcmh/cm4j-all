@@ -28,7 +28,7 @@ import com.taobao.api.response.PromotionMealUpdateResponse;
  * @since 2011-7-28 下午03:53:55
  * 
  */
-public class MealService {
+public class MealAPI {
 
 	/**
 	 * 简化版item_list，用于add调用方法
@@ -92,7 +92,7 @@ public class MealService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public Map<String, Object> add(PromotionMealAddRequest request, String sessionKey) throws ApiException,
+	public static Map<String, Object> add(PromotionMealAddRequest request, String sessionKey) throws ApiException,
 			ValidationException {
 
 		checkAddRequest(request);
@@ -118,8 +118,8 @@ public class MealService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public Map<String, Object> update(PromotionMealUpdateRequest request, String sessionKey) throws ApiException,
-			ValidationException {
+	public static Map<String, Object> update(PromotionMealUpdateRequest request, String sessionKey)
+			throws ApiException, ValidationException {
 		checkUpdateRequest(request);
 
 		PromotionMealUpdateResponse response = APICaller.call(request, sessionKey);
@@ -141,7 +141,7 @@ public class MealService {
 	 *         modify_time - 必须，修改时间。
 	 * @throws ApiException
 	 */
-	public Map<String, Object> delete(long meal_id, String sessionKey) throws ApiException {
+	public static Map<String, Object> delete(long meal_id, String sessionKey) throws ApiException {
 		PromotionMealDeleteRequest request = new PromotionMealDeleteRequest();
 		request.setMealId(meal_id);
 
@@ -166,7 +166,7 @@ public class MealService {
 	 * @return
 	 * @throws ApiException
 	 */
-	public List<Meal> get(Long meal_id, String status, String sessionKey) throws ApiException {
+	public static List<Meal> get(Long meal_id, String status, String sessionKey) throws ApiException {
 		PromotionMealGetRequest request = new PromotionMealGetRequest();
 		request.setMealId(meal_id);
 		request.setStatus(status);
@@ -177,7 +177,7 @@ public class MealService {
 		return response.getMealList();
 	}
 
-	private void checkAddRequest(PromotionMealAddRequest request) throws ValidationException {
+	private static void checkAddRequest(PromotionMealAddRequest request) throws ValidationException {
 		int mealNameLength = StringUtils.length(request.getMealName());
 		if (mealNameLength <= 0 || mealNameLength > 30) {
 			throw new ValidationException("搭配套餐名称长度必须为1-30位");
@@ -214,7 +214,7 @@ public class MealService {
 		}
 	}
 
-	private void checkUpdateRequest(PromotionMealUpdateRequest request) throws ValidationException {
+	private static void checkUpdateRequest(PromotionMealUpdateRequest request) throws ValidationException {
 		if (request.getMealId() == null) {
 			throw new ValidationException("搭配套餐ID不允许为空");
 		}

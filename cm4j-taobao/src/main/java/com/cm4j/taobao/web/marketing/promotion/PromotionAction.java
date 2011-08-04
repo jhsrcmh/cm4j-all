@@ -2,11 +2,11 @@ package com.cm4j.taobao.web.marketing.promotion;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.cm4j.taobao.api.marketing.promotion.PromotionService;
+import com.cm4j.taobao.api.marketing.promotion.PromotionAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.taobao.api.ApiException;
@@ -16,25 +16,39 @@ import com.taobao.api.request.MarketingPromotionAddRequest;
 @RequestMapping("/safe/marketing/promotion")
 public class PromotionAction extends BaseDispatchAction {
 
-	@Autowired
-	private PromotionService promotionService;
-
 	/**
 	 * 设置商品定向优惠策略
 	 * 
-	 * @param num_iids
-	 * @param discount_type
-	 * @param discount_value
-	 * @param start_date
-	 * @param end_date
-	 * @param promotion_title
-	 * @param tag_id
-	 * @param promotion_desc
+	 * @param request
+	 * @throws ValidationException
 	 * @throws ApiException
 	 */
 	@RequestMapping("/add")
 	public void add(MarketingPromotionAddRequest request) throws ValidationException, ApiException {
-		Map<String, Object> result = promotionService.add(request, super.getSessionKey());
+		Map<String, Object> result = PromotionAPI.add(request, super.getSessionKey());
 		logger.debug("result:{}", result);
 	}
+
+	/**
+	 * 获取商品定向优惠策略列表
+	 * 
+	 * @param num_iid
+	 *            必须 - 商品数字ID 。根据该ID查询商品下通过第三方工具设置的所有优惠策略
+	 * @param fields
+	 *            必须 - 需返回的优惠策略结构字段列表，不填则默认显示Promotion所有的字段
+	 * @param status
+	 *            非必须 - 可选值：ACTIVE(有效)，UNACTIVE(无效)，若不传或者传入其他值，则默认查询全部
+	 * @param tag_id
+	 *            非必须 - 标签ID
+	 * @return
+	 * @throws ValidationException
+	 * @throws ApiException
+	 */
+	@RequestMapping("/get")
+	public ModelAndView get(String num_iid, String fields, String status, Long tag_id) throws ValidationException,
+			ApiException {
+		Map<String, Object> result = PromotionAPI.get(num_iid, fields, status, tag_id, super.getSessionKey());
+		return new ModelAndView("", result);
+	}
+
 }

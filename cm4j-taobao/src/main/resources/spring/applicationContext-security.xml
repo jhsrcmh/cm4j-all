@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- - Sample namespace-based configuration - -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<global-method-security pre-post-annotations="enabled">
+		<!-- AspectJ pointcut expression that locates our "post" method and applies 
+			security that way <protect-pointcut expression="execution(* bigbank.*Service.post*(..))" 
+			access="ROLE_TELLER"/> -->
+	</global-method-security>
+
+	<http use-expressions="true" auto-config="true">
+		<intercept-url pattern="/secure/extreme/**" access="hasRole('ROLE_SUPERVISOR')" />
+		<intercept-url pattern="/secure/**" access="isAuthenticated()" />
+		<!-- Disable web URI authorization, as we're using <global-method-security> 
+			and have @Secured the services layer instead <intercept-url pattern="/listAccounts.html" 
+			access="isRememberMe()" /> <intercept-url pattern="/post.html" access="hasRole('ROLE_TELLER')" 
+			/> -->
+		<intercept-url pattern="/**" access="permitAll" />
+		<http-basic />
+		<logout />
+		<remember-me />
+		<!-- Uncomment to enable X509 client authentication support <x509 /> -->
+		<!-- Uncomment to limit the number of sessions a user can have -->
+		<session-management invalid-session-url="/error.jsp?err=timeout">
+			<concurrency-control max-sessions="1"
+				error-if-maximum-exceeded="true" />
+		</session-management>
+
+		<!-- 自定义拦截器（这里和spring security2的配置有点不同） -->
+		<custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="securityFilter" />
+	</http>
+
+	<!-- 自定义拦截器 -->
+	<beans:bean id="securityFilter"
+		class="com.cm4j.taobao.web.login.authentication.SecurityFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="accessDecisionManager" ref="securityAccessDecisionManager" />
+		<beans:property name="securityMetadataSource" ref="securityMetadataSource" />
+	</beans:bean>
+
+	<!-- 认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 -->
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="securityUserDetailService" />
+	</authentication-manager>
+
+</beans:beans>

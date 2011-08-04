@@ -77,7 +77,7 @@ public class LoginAction extends BaseDispatchAction {
 
 		if (versionNo == null) {
 			// todo 公网必须去掉，也就是所有的都必须校验版本
-			userSession.setVisitor_privilege(VisitorPrivilege.junior);
+//			userSession.setVisitor_privilege(VisitorPrivilege.junior);
 		} else {
 			VisitorPrivilege privilege = VisitorPrivilege.getPrivilege(versionNo);
 			if (privilege == null) {
@@ -86,7 +86,7 @@ public class LoginAction extends BaseDispatchAction {
 				model.addAttribute(ERROR_KEY, "权限获取为空，请联系管理员");
 				return ERROR_PAGE;
 			}
-			userSession.setVisitor_privilege(privilege);
+//			userSession.setVisitor_privilege(privilege);
 		}
 
 		WebUtils.setSessionAttribute(getRequest(), UserSession.SESSION_NAME, userSession);

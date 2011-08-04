@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.cm4j.taobao.TestContext;
 import com.cm4j.taobao.api.common.APICaller;
-import com.cm4j.taobao.api.googds.items.ItemsService;
+import com.cm4j.taobao.api.googds.items.ItemsAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.google.common.base.Joiner;
 import com.taobao.api.ApiException;
@@ -21,12 +21,9 @@ import com.taobao.api.request.MarketingPromotionUpdateRequest;
 
 public class PromotionServiceTest extends TestContext {
 
-	private ItemsService itemsService = new ItemsService();
-	private PromotionService promotionService = new PromotionService();
-
 	@SuppressWarnings("unchecked")
 	private Long[] getIds() throws ApiException, ValidationException {
-		Map<String, Object> onsale_get = itemsService.onsale_get(new ItemsOnsaleGetRequest(), TAOBAO_SESSION_KEY);
+		Map<String, Object> onsale_get = ItemsAPI.onsale_get(new ItemsOnsaleGetRequest(), TAOBAO_SESSION_KEY);
 		List<Item> onsales = (List<Item>) onsale_get.get("items");
 		Long[] ids = new Long[] {};
 		for (Item item : onsales) {
@@ -50,7 +47,7 @@ public class PromotionServiceTest extends TestContext {
 		request.setPromotionTitle("特价促销");
 		request.setPromotionDesc("促销描述，促销描述促销描述促销描述促销描述促销描述促销描述");
 
-		Map<String, Object> result = promotionService.add(request, TAOBAO_SESSION_KEY);
+		Map<String, Object> result = PromotionAPI.add(request, TAOBAO_SESSION_KEY);
 		logger.debug("result:{}", APICaller.jsonBinder.toJson(result));
 	}
 
@@ -68,20 +65,19 @@ public class PromotionServiceTest extends TestContext {
 		request.setPromotionTitle("特价2促销");
 		// request.setPromotionDesc("促销描述，促销描述促销描述促销描述促销描述促销描述促销描述");
 
-		Map<String, Object> result = promotionService.update(request, TAOBAO_SESSION_KEY);
+		Map<String, Object> result = PromotionAPI.update(request, TAOBAO_SESSION_KEY);
 		logger.debug("result:{}", APICaller.jsonBinder.toJson(result));
 	}
 
 	@Test
 	public void getTest() throws ApiException, ValidationException {
-		Map<String, Object> result = promotionService.get(String.valueOf(getIds()[0]), null, null, 1L,
-				TAOBAO_SESSION_KEY);
+		Map<String, Object> result = PromotionAPI.get(String.valueOf(getIds()[0]), null, null, 1L, TAOBAO_SESSION_KEY);
 		logger.debug("result:{}", APICaller.jsonBinder.toJson(result));
 	}
 
 	@Test
 	public void deleteTest() throws ApiException {
-		boolean is_success = promotionService.delete(63928058L, TAOBAO_SESSION_KEY);
+		boolean is_success = PromotionAPI.delete(63928058L, TAOBAO_SESSION_KEY);
 		logger.debug("is_success:{}", APICaller.jsonBinder.toJson(is_success));
 	}
 }
