@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.util.WebUtils;
 
-import com.cm4j.taobao.api.common.VisitorPrivilege;
 import com.cm4j.taobao.web.login.UserSession;
 
 /**

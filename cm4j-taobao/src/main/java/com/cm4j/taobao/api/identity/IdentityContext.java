@@ -8,6 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 
 import sun.misc.BASE64Encoder;
@@ -46,18 +47,44 @@ public class IdentityContext {
 	public static boolean verifyTopResponse(String topParams, String topSession, String topSign, String appKey,
 			String appSecret) throws NoSuchAlgorithmException, IOException {
 		StringBuilder result = new StringBuilder();
-		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		result.append(appKey).append(topParams).append(topSession).append(appSecret);
+
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		byte[] bytes = md5.digest(result.toString().getBytes("UTF-8"));
+
 		BASE64Encoder encoder = new BASE64Encoder();
 		return encoder.encode(bytes).equals(topSign);
+	}
+
+	/**
+	 * 校验版本信息是否合法
+	 * 
+	 * @param sercret
+	 * @param appkey
+	 * @param leaseId
+	 * @param timestamp
+	 * @param versionNo
+	 * @param sign
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
+	 */
+	public static boolean verifyVersionResponse(String sercret, String appkey, Long leaseId, String timestamp,
+			Integer versionNo, String sign) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+		StringBuilder sb = new StringBuilder(sercret);
+		sb.append("appkey").append(appkey).append("leaseId").append(leaseId).append("timestamp").append(timestamp)
+				.append("versionNo").append(versionNo).append(sercret);
+
+		String md5 = StringUtils.upperCase(DigestUtils.md5Hex(sb.toString()));
+		return md5.equals(sign);
 	}
 
 	/**
 	 * 解析top_parameters
 	 * 
 	 * @param top_parameters
-	 * @param keyName 根据此keyName获取key的值
+	 * @param keyName
+	 *            根据此keyName获取key的值
 	 * @return
 	 */
 	public static String resolveParameters(String top_parameters, String keyName) {

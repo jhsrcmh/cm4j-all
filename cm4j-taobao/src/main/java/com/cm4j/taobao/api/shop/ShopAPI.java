@@ -25,7 +25,7 @@ public class ShopAPI {
 	 * @return 返回例子：{"allCount":15,"remainCount":15,"usedCount":0}
 	 * @throws ApiException
 	 */
-	public Shop remainshowcase_get(String sessionKey) throws ApiException {
+	public static Shop remainshowcase_get(String sessionKey) throws ApiException {
 		ShopRemainshowcaseGetResponse response = APICaller.call(new ShopRemainshowcaseGetRequest(), sessionKey);
 		APICaller.resolveResponseException(response);
 		return response.getShop();

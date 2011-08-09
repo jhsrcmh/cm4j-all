@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.cm4j.taobao.web.base.VisitorPrivilege;
+
 public class UserSession implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
@@ -15,9 +17,10 @@ public class UserSession implements UserDetails {
 	public static final String SESSION_NAME = "userSession";
 
 	private String top_session;
-	private String visitor_id;
+	private Long visitor_id;
 	private String visitor_nick;
 	private String visitor_role;
+	private VisitorPrivilege visitor_privilege;
 	/**
 	 * 用户权限
 	 */
@@ -29,14 +32,6 @@ public class UserSession implements UserDetails {
 
 	public void setTop_session(String top_session) {
 		this.top_session = top_session;
-	}
-
-	public String getVisitor_id() {
-		return visitor_id;
-	}
-
-	public void setVisitor_id(String visitor_id) {
-		this.visitor_id = visitor_id;
 	}
 
 	public String getVisitor_nick() {
@@ -93,4 +88,19 @@ public class UserSession implements UserDetails {
 		return true;
 	}
 
+	public Long getVisitor_id() {
+		return visitor_id;
+	}
+
+	public void setVisitor_id(Long visitor_id) {
+		this.visitor_id = visitor_id;
+	}
+
+	public VisitorPrivilege getVisitor_privilege() {
+		return visitor_privilege;
+	}
+
+	public void setVisitor_privilege(VisitorPrivilege visitor_privilege) {
+		this.visitor_privilege = visitor_privilege;
+	}
 }

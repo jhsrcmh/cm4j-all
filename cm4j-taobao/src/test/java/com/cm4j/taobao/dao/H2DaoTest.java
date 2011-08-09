@@ -21,7 +21,7 @@ public class H2DaoTest extends TestContext {
 
 	@Resource
 	private SessionDao sessionDao;
-	
+
 	@SuppressWarnings("rawtypes")
 	@Resource
 	private HibernateDao hibernateDao;
@@ -39,7 +39,7 @@ public class H2DaoTest extends TestContext {
 	public void hibernateTest() {
 		Object p = 1;
 		Object result = hibernateDao.find("from dual where 1 = :id", Collections.singletonMap("id", p));
-		
+
 		logger.debug("h2 hibernate test:{}", result);
 	}
 }

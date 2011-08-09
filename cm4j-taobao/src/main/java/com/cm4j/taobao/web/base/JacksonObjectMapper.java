@@ -1,10 +1,16 @@
-package com.cm4j.taobao.api.common;
+package com.cm4j.taobao.web.base;
 
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.beans.factory.FactoryBean;
 
-public class JacksonObjectManager implements FactoryBean<ObjectMapper> {
+import com.taobao.api.request.ItemAddRequest;
+
+public class JacksonObjectMapper implements FactoryBean<ObjectMapper> {
 
 	@Override
 	public ObjectMapper getObject() throws Exception {
@@ -27,4 +33,11 @@ public class JacksonObjectManager implements FactoryBean<ObjectMapper> {
 		return true;
 	}
 
+	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException, Exception {
+		JacksonObjectMapper manager = new JacksonObjectMapper();
+		ItemAddRequest request = new ItemAddRequest();
+		request.setAfterSaleId(10L);
+//		System.out.println(APICaller.jsonBinder.toJson(request));
+		System.out.println(manager.getObject().writeValueAsString(request));
+	}
 }

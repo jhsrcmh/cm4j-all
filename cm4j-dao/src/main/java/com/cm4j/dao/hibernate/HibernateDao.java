@@ -105,7 +105,7 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * @contact <a href="mailto:hao.yhao@gmail.com">hao.yhao@gmail.com</a>
  * @copyright cm4j
  */
-public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDAO<E, ID>, InitializingBean {
+public class HibernateDao<E, ID extends Serializable> implements InitializingBean {
 
 	private HibernateTemplate hibernateTemplate;
 
@@ -117,7 +117,7 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 		return persistentClass;
 	}
 
-	public BaseHibernateDAO<E, ID> setPersistentClass(Class<E> persistentClass) {
+	public HibernateDao<E, ID> setPersistentClass(Class<E> persistentClass) {
 		this.persistentClass = persistentClass;
 		return this;
 	}
@@ -154,7 +154,7 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 	public HibernateDao() {
 		// do nothing
 	}
-	
+
 	/**
 	 * 构造函数，通过spring配置注入持久化对象
 	 */
@@ -706,7 +706,7 @@ public class HibernateDao<E, ID extends Serializable> implements BaseHibernateDA
 	public void deleteById(ID id) throws DataAccessException {
 		E entity = this.findById(id);
 		if (entity == null) {
-			logger.warn("删除对象异常：对象{}未查询到",this.getPersistentClass().getSimpleName());
+			logger.warn("删除对象异常：对象{}未查询到", this.getPersistentClass().getSimpleName());
 			throw new Cm4jDataAccessException("删除对象异常：对象" + this.getPersistentClass().getSimpleName() + "未查询到");
 		}
 		this.delete(entity);

@@ -33,6 +33,7 @@ public class ItemsAPI {
 	 */
 	public static Map<String, Object> onsale_get(ItemsOnsaleGetRequest request, String sessionKey) throws ApiException,
 			ValidationException {
+		
 		checkOnsaleGetRequest(request);
 
 		if (StringUtils.isBlank(request.getFields())) {

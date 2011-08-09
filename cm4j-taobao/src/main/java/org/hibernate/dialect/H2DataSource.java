@@ -3,15 +3,19 @@ package org.hibernate.dialect;
 import javax.sql.DataSource;
 
 import org.h2.jdbcx.JdbcConnectionPool;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 
-public class H2DataSource implements FactoryBean<DataSource> {
+public class H2DataSource implements FactoryBean<DataSource>, DisposableBean {
 
 	private String url, user, password;
 
+	private JdbcConnectionPool connectionPool;
+
 	@Override
 	public DataSource getObject() throws Exception {
-		return JdbcConnectionPool.create(url, user, password);
+		this.connectionPool = JdbcConnectionPool.create(url, user, password);
+		return connectionPool;
 	}
 
 	@Override
@@ -46,6 +50,11 @@ public class H2DataSource implements FactoryBean<DataSource> {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	@Override
+	public void destroy() throws Exception {
+		this.connectionPool.dispose();
 	}
 
 }

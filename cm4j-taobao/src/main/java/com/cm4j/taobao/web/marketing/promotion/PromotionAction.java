@@ -3,6 +3,7 @@ package com.cm4j.taobao.web.marketing.promotion;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,9 +12,10 @@ import com.cm4j.taobao.exception.ValidationException;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.taobao.api.ApiException;
 import com.taobao.api.request.MarketingPromotionAddRequest;
+import com.taobao.api.request.MarketingPromotionUpdateRequest;
 
 @Controller
-@RequestMapping("/safe/marketing/promotion")
+@RequestMapping("/secure/promotion")
 public class PromotionAction extends BaseDispatchAction {
 
 	/**
@@ -26,6 +28,19 @@ public class PromotionAction extends BaseDispatchAction {
 	@RequestMapping("/add")
 	public void add(MarketingPromotionAddRequest request) throws ValidationException, ApiException {
 		Map<String, Object> result = PromotionAPI.add(request, super.getSessionKey());
+		logger.debug("result:{}", result);
+	}
+
+	/**
+	 * 设置商品定向优惠策略
+	 * 
+	 * @param request
+	 * @throws ValidationException
+	 * @throws ApiException
+	 */
+	@RequestMapping("/update")
+	public void update(MarketingPromotionUpdateRequest request) throws ValidationException, ApiException {
+		Map<String, Object> result = PromotionAPI.update(request, super.getSessionKey());
 		logger.debug("result:{}", result);
 	}
 
@@ -44,10 +59,10 @@ public class PromotionAction extends BaseDispatchAction {
 	 * @throws ValidationException
 	 * @throws ApiException
 	 */
-	@RequestMapping("/get")
-	public ModelAndView get(String num_iid, String fields, String status, Long tag_id) throws ValidationException,
-			ApiException {
-		Map<String, Object> result = PromotionAPI.get(num_iid, fields, status, tag_id, super.getSessionKey());
+	@RequestMapping("/get/{num_iid}/{status}/{tag_id}")
+	public ModelAndView get(@PathVariable String num_iid, @PathVariable String status, @PathVariable Long tag_id)
+			throws ValidationException, ApiException {
+		Map<String, Object> result = PromotionAPI.get(num_iid, null, status, tag_id, super.getSessionKey());
 		return new ModelAndView("", result);
 	}
 

@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.common;
+package com.cm4j.taobao.web.base;
 
 /**
  * 用户权限 - 淘宝用户购买软件版本

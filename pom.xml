@@ -14,7 +14,7 @@
 		<perf4j.version>0.9.13</perf4j.version>
 		<!-- 工具库 -->
 		<commons-lang.version>2.5</commons-lang.version>
-		<commons-codec.version>1.4</commons-codec.version>
+		<commons-codec.version>1.5</commons-codec.version>
 		<commons-collections.version>3.2.1</commons-collections.version>
 		<commons-pool.version>1.5.5</commons-pool.version>
 		<spring.version>3.0.5.RELEASE</spring.version>
@@ -26,6 +26,7 @@
 		<hamcrest.version>1.1</hamcrest.version>
 		<netty.version>3.2.4.Final</netty.version>
 		<google.guava.version>r09</google.guava.version>
+		<quartz.version>2.0.2</quartz.version>
 		<!-- 数据库 -->
 		<h2database.version>1.2.135</h2database.version>
 		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version>
@@ -304,6 +305,33 @@
 				<scope>compile</scope>
 			</dependency>
 
+			<!-- <dependency>
+				<groupId>quartz</groupId>
+				<artifactId>quartz</artifactId>
+				<version>${quartz.version}</version>
+			</dependency> -->
+
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz</artifactId>
+				<version>${quartz.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz-oracle</artifactId>
+				<version>${quartz.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz-weblogic</artifactId>
+				<version>${quartz.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.quartz-scheduler</groupId>
+				<artifactId>quartz-jboss</artifactId>
+				<version>${quartz.version}</version>
+			</dependency>
+
 			<!-- 数据库 -->
 			<dependency>
 				<groupId>org.hibernate</groupId>
@@ -358,11 +386,8 @@
 				<version>${mybatis.version}</version>
 				<scope>runtime</scope>
 			</dependency>
-			<!-- <dependency>
-				<groupId>hsqldb</groupId>
-				<artifactId>hsqldb</artifactId>
-				<version>${hsqldb.version}</version>
-			</dependency> -->
+			<!-- <dependency> <groupId>hsqldb</groupId> <artifactId>hsqldb</artifactId> 
+				<version>${hsqldb.version}</version> </dependency> -->
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>

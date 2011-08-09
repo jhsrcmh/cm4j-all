@@ -13,19 +13,24 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
+	<!-- 配置属性文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:taobao-api.properties" />
+	</bean>
 
-	<bean
+	<bean id="customObjectMapper" class="com.cm4j.taobao.web.base.JacksonObjectMapper" />
+	<bean id="annotationMethodHandlerAdapter"
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
 				<bean
 					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-					<property name="objectMapper" ref="jacksonObjectManager" />
+					<property name="objectMapper" ref="customObjectMapper" />
 				</bean>
 			</list>
 		</property>
 	</bean>
-	<bean id="jacksonObjectManager" class="com.cm4j.taobao.api.common.JacksonObjectManager" />
 
 	<!-- ①：对web包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 在applicationContext已配置 -->
 	<context:component-scan base-package="com.cm4j.taobao" />
@@ -38,11 +43,19 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	<!-- spring提供的线程池 -->
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="25" />
+	</bean>
+
 	<!-- 数据源 -->
 	<bean id="dataSource" class="org.hibernate.dialect.H2DataSource">
-		<property name="url" value="jdbc:h2:~/test" />
-		<property name="user" value="sa" />
-		<property name="password" value="" />
+		<property name="url" value="${h2.url}" />
+		<property name="user" value="${h2.user}" />
+		<property name="password" value="${h2.password}" />
 	</bean>
 
 	<!-- Hibernate Session Factory -->

@@ -13,9 +13,13 @@ import com.taobao.api.domain.Item;
 import com.taobao.api.request.ItemGetRequest;
 import com.taobao.api.request.ItemRecommendAddRequest;
 import com.taobao.api.request.ItemRecommendDeleteRequest;
+import com.taobao.api.request.ItemUpdateDelistingRequest;
+import com.taobao.api.request.ItemUpdateListingRequest;
 import com.taobao.api.response.ItemGetResponse;
 import com.taobao.api.response.ItemRecommendAddResponse;
 import com.taobao.api.response.ItemRecommendDeleteResponse;
+import com.taobao.api.response.ItemUpdateDelistingResponse;
+import com.taobao.api.response.ItemUpdateListingResponse;
 
 /**
  * 商品API包：taobao.item...
@@ -32,7 +36,7 @@ public class ItemAPI {
 	 * @param num_iid
 	 * @param fields
 	 * @param sessionKey
-	 * @return 
+	 * @return
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
@@ -48,13 +52,13 @@ public class ItemAPI {
 		} else {
 			request.setFields(fields);
 		}
-		
+
 		ItemGetResponse response = APICaller.call(request, sessionKey);
 		APICaller.resolveResponseException(response);
-		
+
 		return response.getItem();
 	}
-	
+
 	/**
 	 * taobao.item.recommend.add 橱窗推荐一个商品
 	 * 
@@ -64,18 +68,18 @@ public class ItemAPI {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public static Item recommend_add (Long num_iid,String sessionKey)throws ApiException, ValidationException {
-		if (num_iid == null){
+	public static Item recommend_add(Long num_iid, String sessionKey) throws ApiException, ValidationException {
+		if (num_iid == null) {
 			throw new ValidationException("商品ID不允许为空");
 		}
 		ItemRecommendAddRequest request = new ItemRecommendAddRequest();
 		request.setNumIid(num_iid);
 		ItemRecommendAddResponse response = APICaller.call(request, sessionKey);
 		APICaller.resolveResponseException(response);
-		
+
 		return response.getItem();
 	}
-	
+
 	/**
 	 * taobao.item.recommend.delete 取消橱窗推荐一个商品
 	 * 
@@ -85,15 +89,57 @@ public class ItemAPI {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public static Item recommend_delete (Long num_iid,String sessionKey)throws ApiException, ValidationException {
-		if (num_iid == null){
+	public static Item recommend_delete(Long num_iid, String sessionKey) throws ApiException, ValidationException {
+		if (num_iid == null) {
 			throw new ValidationException("商品ID不允许为空");
 		}
 		ItemRecommendDeleteRequest request = new ItemRecommendDeleteRequest();
 		request.setNumIid(num_iid);
 		ItemRecommendDeleteResponse response = APICaller.call(request, sessionKey);
 		APICaller.resolveResponseException(response);
-		
+
+		return response.getItem();
+	}
+
+	/**
+	 * taobao.item.update.listing 一口价商品上架
+	 * 
+	 * @param num_iid
+	 * @param sessionKey
+	 * @return
+	 * @throws ApiException
+	 * @throws ValidationException
+	 */
+	public static Item update_listing(Long num_iid, String sessionKey) throws ApiException, ValidationException {
+		if (num_iid == null) {
+			throw new ValidationException("商品ID不允许为空");
+		}
+		ItemUpdateListingRequest request = new ItemUpdateListingRequest();
+		request.setNumIid(num_iid);
+		ItemUpdateListingResponse response = APICaller.call(request, sessionKey);
+		APICaller.resolveResponseException(response);
+
+		return response.getItem();
+	}
+
+	/**
+	 * taobao.item.update.delisting 商品下架
+	 * 
+	 * @param num_iid
+	 * @param sessionKey
+	 * @return
+	 * @throws ApiException
+	 * @throws ValidationException
+	 */
+	public static Item update_delisting(Long num_iid, String sessionKey) throws ApiException, ValidationException {
+		if (num_iid == null) {
+			throw new ValidationException("商品ID不允许为空");
+		}
+		ItemUpdateDelistingRequest request = new ItemUpdateDelistingRequest();
+		request.setNumIid(num_iid);
+		ItemUpdateDelistingResponse response = APICaller.call(request, sessionKey);
+		APICaller.resolveResponseException(response);
+
 		return response.getItem();
 	}
 }

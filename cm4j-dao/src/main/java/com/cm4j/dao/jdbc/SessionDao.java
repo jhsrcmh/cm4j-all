@@ -44,7 +44,7 @@ import com.cm4j.dao.exception.Cm4jDataAccessException;
  * @Contact <a href="mailto:hao.yh@qq.com">hao.yh@qq.com</a>
  * @copyright Woniu.com
  */
-public class SessionDao implements BaseSessionDAO {
+public class SessionDao {
 
 	// log4j日志
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -236,7 +236,6 @@ public class SessionDao implements BaseSessionDAO {
 		return data;
 	}
 
-	@Override
 	public Long findForLong(String sql) throws DataAccessException {
 		return jdbcTemplate.queryForLong(sql);
 	}
