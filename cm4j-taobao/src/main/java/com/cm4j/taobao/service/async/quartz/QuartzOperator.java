@@ -1,9 +1,6 @@
-package com.cm4j.taobao.service.asyc.quartz;
+package com.cm4j.taobao.service.async.quartz;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -17,20 +14,28 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.stereotype.Service;
 
 /**
- * 定时触发器
+ * 定时任务操作者
  * 
  * @author yang.hao
- * @since 2011-8-5 下午04:33:11
+ * @since 2011-8-10 上午11:28:14
  * 
  */
-public class QuartzService {
+@Service
+public class QuartzOperator implements DisposableBean {
+	
+	/**
+	 * 常量 - jobDetail数据的key
+	 */
+	public static final String JOBDETAIL_DATA_KEY = "JOB_DATA_KEY";
 
 	private Scheduler scheduler;
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public QuartzService() throws SchedulerException {
+	public QuartzOperator() throws SchedulerException {
 		scheduler = new StdSchedulerFactory().getScheduler();
 	}
 
@@ -46,19 +51,14 @@ public class QuartzService {
 	 * @throws SchedulerException
 	 */
 	public void addJob(Class<? extends Job> handlerClazz, ScheduleBuilder<?> scheduleBuilder, String groupName,
-			Map<String, Object> params, Date startDate, Date endDate) throws SchedulerException {
+			QuartzJobData data, Date startDate, Date endDate) throws SchedulerException {
 		JobKey jobKey = new JobKey(handlerClazz.getSimpleName(), groupName);
 		scheduler.deleteJob(jobKey);
 		JobDetail jobDetail = JobBuilder.newJob(handlerClazz).withIdentity(jobKey).build();
 
-		if (params != null) {
-			Set<Entry<String, Object>> entrySet = params.entrySet();
-			for (Entry<String, Object> entry : entrySet) {
-				String key = entry.getKey();
-				Object value = entry.getValue();
-				// jobDetail设置参数
-				jobDetail.getJobDataMap().put(key, value);
-			}
+		// 传递参数
+		if (data != null) {
+			jobDetail.getJobDataMap().put(JOBDETAIL_DATA_KEY, data);
 		}
 
 		TriggerBuilder<?> builder = TriggerBuilder.newTrigger().withIdentity(handlerClazz.getSimpleName())
@@ -80,24 +80,19 @@ public class QuartzService {
 		if (scheduler.getJobGroupNames().size() > 0) {
 			// 定时任务
 			scheduler.start();
-			distroyHook();
 		} else {
 			logger.warn("no job to do.");
 			scheduler.shutdown();
 		}
 	}
 
-	private void distroyHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				logger.info("sched will be shutdown,waiting all jobs finished");
-				try {
-					scheduler.shutdown(true);
-				} catch (SchedulerException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	@Override
+	public void destroy() throws Exception {
+		logger.info("sched will be shutdown,waiting all jobs finished");
+		try {
+			scheduler.shutdown(true);
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
 	}
 }

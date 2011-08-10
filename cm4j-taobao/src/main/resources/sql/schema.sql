@@ -1,6 +1,10 @@
-/* 初始化部分 
+/* 初始化部分 */
 drop table user_info if exists;
-*/
+drop table sync_task if exists;
+drop sequence sync_task_sq if exists;
+drop table sync_task_log if exists;
+drop sequence sync_task_log_sq if exists;
+
 
 /* 创建表部分 */
 -- 用户信息表
@@ -15,37 +19,33 @@ CREATE TABLE IF NOT EXISTS user_info(
 	update_date timestamp not null default sysdate, 	-- 更新时间(淘宝时间)
 );
 
--- 异步任务表
-CREATE TABLE IF NOT EXISTS sync_task(
+-- 定时任务表
+CREATE TABLE IF NOT EXISTS cron_task(
 	task_id bigint not null PRIMARY KEY, 		-- 主键ID
-	task_type varchar(20) not null, 			-- 任务类型
+	task_type varchar(25) not null, 			-- 任务类型
 	user_id bigint, 							-- 淘宝ID
-	task_cron varchar(100)						-- 计划执行cron
-	task_data varchar(500) , 					-- 任务相关数据
+	task_cron varchar(100),						-- 计划执行cron
+	task_data varchar(500), 					-- 任务相关数据
 	start_date timestamp not null default sysdate, 	-- 开始时间 
-	end_date timestamp, 						-- 结束时间，没有则表示无结束时间 
-	task_state varchar(1) not null, 			-- 0-禁用 1-启用
+	end_date timestamp not null, 					-- 结束时间，永久则插入2099年 
+	state varchar(1) not null, 					-- 0-禁用 1-启用
+);
+
+create sequence IF NOT EXISTS cron_task_sq
+start with 1
+increment by 1 
+cache 20;
+
+-- 异步任务执行记录表
+CREATE TABLE IF NOT EXISTS cron_task_log(
+	log_id bigint not null PRIMARY KEY, 		-- 主键日志ID
+	task_id bigint not null, 					-- 任务ID
+	state varchar(1) not null, 					-- 执行结果 0-失败 1-成功
+	exec_info varchar(200),						-- 执行相关信息
 	exec_date timestamp not null default sysdate 	-- 执行时间 
 );
 
-create sequence IF NOT EXISTS sync_task_sq
+create sequence IF NOT EXISTS cron_task_log_sq
 start with 1
 increment by 1 
 cache 20;
-
-/* 发送记录
-CREATE TABLE IF NOT EXISTS email_send_record(
-	n_id INTEGER not null PRIMARY KEY,
-	n_outbox_id INTEGER not null,
-	n_inbox_id INTEGER not null,
-	s_send_state varchar(1) not null,
-	s_feedback_code varchar(32), -- 反馈编码
-	s_feedback_info varchar(32), -- 反馈信息
-	d_update date not null default sysdate
-);
-
-create sequence IF NOT EXISTS email_send_record_sq
-start with 1
-increment by 1 
-cache 20;
-*/

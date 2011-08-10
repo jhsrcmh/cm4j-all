@@ -14,10 +14,10 @@ import org.springframework.validation.support.BindingAwareModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.WebUtils;
 
+import com.cm4j.dao.hibernate.HibernateDao;
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.api.common.APIConstants;
 import com.cm4j.taobao.api.identity.IdentityContext;
-import com.cm4j.taobao.dao.UserInfoDao;
 import com.cm4j.taobao.pojo.UserInfo;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.cm4j.taobao.web.base.VisitorPrivilege;
@@ -35,7 +35,7 @@ public class LoginAction extends BaseDispatchAction {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Resource
-	private UserInfoDao userInfoDao;
+	private HibernateDao<UserInfo, Long> userInfoDao;
 
 	/**
 	 * 登陆系统

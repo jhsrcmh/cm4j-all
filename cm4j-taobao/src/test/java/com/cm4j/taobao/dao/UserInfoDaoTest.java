@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.cm4j.dao.hibernate.HibernateDao;
 import com.cm4j.taobao.pojo.UserInfo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -15,7 +16,7 @@ import com.cm4j.taobao.pojo.UserInfo;
 public class UserInfoDaoTest {
 
 	@Autowired
-	private UserInfoDao userInfoDao;
+	private HibernateDao<UserInfo, Long> userInfoDao;
 	
 	@Test
 	public void testSaveorupdate (){

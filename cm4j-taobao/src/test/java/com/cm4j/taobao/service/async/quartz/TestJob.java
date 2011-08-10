@@ -1,4 +1,4 @@
-package com.cm4j.taobao.service.asyc.quartz;
+package com.cm4j.taobao.service.async.quartz;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
