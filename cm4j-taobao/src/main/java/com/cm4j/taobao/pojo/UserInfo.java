@@ -15,12 +15,12 @@ public class UserInfo {
 	 * 状态 - 冻结 - 0
 	 */
 	public static String STATE_FREEZED = "0";
-	
+
 	/**
 	 * 状态 - 正常 - 1
 	 */
 	public static String STATE_NORMAL = "1";
-	
+
 	@Id
 	@Column(name = "user_id")
 	private Long userId;
@@ -36,9 +36,12 @@ public class UserInfo {
 
 	@Column(name = "version_no")
 	private int versionNo;
-	
+
 	@Column(name = "lease_id")
-	private Long leaseId; 
+	private Long leaseId;
+
+	@Column(name = "notify_email", length = 40)
+	private String notifyEmail;
 
 	@Column(name = "state")
 	private String state;
@@ -108,5 +111,13 @@ public class UserInfo {
 
 	public void setLeaseId(Long leaseId) {
 		this.leaseId = leaseId;
+	}
+
+	public String getNotifyEmail() {
+		return notifyEmail;
+	}
+
+	public void setNotifyEmail(String notifyEmail) {
+		this.notifyEmail = notifyEmail;
 	}
 }

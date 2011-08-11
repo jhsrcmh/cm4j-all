@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS user_info(
 	user_session_key varchar(60), 				-- 淘宝sessionKey
 	version_no int not null default 1, 			-- 用户购买版本
 	lease_id bigint, 							-- 租赁实体ID：应用ID或者应用包ID
+	notify_email varchar(40),					-- 通知邮箱
 	state varchar(1) not null default '1',		-- 0-禁用 1-启用 
 	update_date timestamp not null default sysdate, 	-- 更新时间(淘宝时间)
 );

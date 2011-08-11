@@ -32,7 +32,7 @@ public class PromotionAction extends BaseDispatchAction {
 	}
 
 	/**
-	 * 设置商品定向优惠策略
+	 * 修改商品定向优惠策略
 	 * 
 	 * @param request
 	 * @throws ValidationException
@@ -59,8 +59,8 @@ public class PromotionAction extends BaseDispatchAction {
 	 * @throws ValidationException
 	 * @throws ApiException
 	 */
-	@RequestMapping("/get/{num_iid}/{status}/{tag_id}")
-	public ModelAndView get(@PathVariable String num_iid, @PathVariable String status, @PathVariable Long tag_id)
+	@RequestMapping("/get/{num_iid}")
+	public ModelAndView get(@PathVariable String num_iid, String status, Long tag_id)
 			throws ValidationException, ApiException {
 		Map<String, Object> result = PromotionAPI.get(num_iid, null, status, tag_id, super.getSessionKey());
 		return new ModelAndView("", result);

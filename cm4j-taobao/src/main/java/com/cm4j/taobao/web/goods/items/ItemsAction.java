@@ -109,7 +109,7 @@ public class ItemsAction extends BaseDispatchAction {
 	}
 
 	/**
-	 * 将List<String>转换为List<Long>
+	 * 将List的String类型转换为List的Long类型
 	 * 
 	 * @param list
 	 * @return
