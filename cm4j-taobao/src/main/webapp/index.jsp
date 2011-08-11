@@ -10,19 +10,19 @@
 <meta name="author" content="yang.hao" />
 <link rel="icon" href="imgs/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="imgs/favicon.ico" type="image/x-icon" />
-<link href="style/style.css" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 	<div id="bg">
 		<div id="main">
-			
+
 			<!-- 顶部 -->
-			<%@include file="commons/top.jsp" %>
+			<%@include file="commons/top.jsp"%>
 			<!-- 左侧 -->
-			<%@include file="commons/left.jsp" %>
+			<%@include file="commons/left.jsp"%>
 
 			<div id="right">
-				
+
 				<!-- 当前位置和广告位 -->
 				<jsp:include page="commons/position_ad.jsp?current_position=关于我们" />
 
@@ -38,18 +38,17 @@
 				</div>
 				<!-- 正文结束 -->
 
+				<%@ include file="commons/bottom_ad.jsp" %>
+
 			</div>
 			<div class="clear"></div>
 		</div>
 
 		<!-- 底部 -->
-		<%@include file="commons/footer.jsp" %>
+		<%@include file="commons/footer.jsp"%>
 	</div>
 
-	<script type="text/javascript" src="app/png.js"></script>
-	<!-- 背景透明 -->
-	<script type="text/javascript">
-		DD_belatedPNG.fix('#logo');
-	</script>
+	<!-- 公共代码引用 -->
+	<%@include file="commons/comm_include.jsp"%>
 </body>
 </html>
