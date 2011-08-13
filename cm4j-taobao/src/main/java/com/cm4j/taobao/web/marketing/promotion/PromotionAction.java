@@ -63,7 +63,7 @@ public class PromotionAction extends BaseDispatchAction {
 	public ModelAndView get(@PathVariable String num_iid, String status, Long tag_id)
 			throws ValidationException, ApiException {
 		Map<String, Object> result = PromotionAPI.get(num_iid, null, status, tag_id, super.getSessionKey());
-		return new ModelAndView("", result);
+		return new ModelAndView("/promotion/list.jsp", result);
 	}
 
 }

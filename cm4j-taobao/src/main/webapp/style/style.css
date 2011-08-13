@@ -380,6 +380,8 @@ a:hover {
 
 .contenttext {
 	color: #007EBB;
+	border: 1px dashed gray;
+	padding: 5px;
 }
 
 /************* 分页 */

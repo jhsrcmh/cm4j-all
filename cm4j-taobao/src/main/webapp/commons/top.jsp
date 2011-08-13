@@ -18,7 +18,7 @@
 				<li><a title="创建活动" href="#">创建活动</a>
 					<ul></ul>
 				</li>
-				<li><a title="活动查看" href="#">活动查看</a>
+				<li><a title="活动查看" href="/secure/promotion/">活动查看</a>
 					<ul></ul>
 				</li>
 			</ul>

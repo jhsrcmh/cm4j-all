@@ -14,11 +14,11 @@
 	</ul>
 	<div id="contact">
 		<div
-			style="background: url(imgs/address.gif) 5px center no-repeat;">
+			style="background: url(/imgs/address.gif) 5px center no-repeat;">
 			商家小管家</div>
-		<div style="background: url(imgs/tel.gif) 5px center no-repeat;">
+		<div style="background: url(/imgs/tel.gif) 5px center no-repeat;">
 			010-87740230</div>
-		<div style="background: url(imgs/mail.gif) 5px center no-repeat;">
+		<div style="background: url(/imgs/mail.gif) 5px center no-repeat;">
 			hao.yh@qq.com</div>
 	</div>
 

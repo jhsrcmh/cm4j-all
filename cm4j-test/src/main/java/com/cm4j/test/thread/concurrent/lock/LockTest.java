@@ -5,6 +5,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <pre>
+ * 指同一个线程中，可以重入的锁，就是同一个线程可循环调用lock.lock()而不被锁住，
+ * 并且多次调用后必须多次lock.unlock()去解锁
+ * 
  * 测试锁的可重入性
  * 运行后：前三行表示main线程，重入3次获得该锁。
  * 第四行表示Thread-0线程，先获得锁，使共享数据+1，然后显示信息，然后释放锁。
@@ -13,21 +16,21 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * @author yang.hao
  * @since 2011-4-7 上午10:42:03
- *
+ * 
  */
-public class TestLock {
+public class LockTest {
 	private ReentrantLock lock = null;
 	// 用于线程同步访问的共享数据
 	public int data = 100;
 
-	public TestLock() {
+	public LockTest() {
 		// 创建一个自由竞争的可重入锁
 		lock = new ReentrantLock();
 	}
 
 	public static void main(String[] args) {
 
-		TestLock tester = new TestLock();
+		LockTest tester = new LockTest();
 
 		// 测试可重入，函数testReentry() 执行获取锁后，显示信息的功能
 		tester.testReentry();
@@ -88,9 +91,9 @@ public class TestLock {
 // 工作线程，调用TestServer.testRun
 class workerThread implements Runnable {
 
-	private TestLock tester = null;
+	private LockTest tester = null;
 
-	public workerThread(TestLock testLock) {
+	public workerThread(LockTest testLock) {
 		this.tester = testLock;
 	}
 
