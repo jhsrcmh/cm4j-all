@@ -16,7 +16,7 @@ import com.cm4j.taobao.service.async.quartz.QuartzService;
  * @since 2011-8-10 下午04:27:43
  * 
  */
-@Service
+//@Service
 public class WebInitialzer implements BeanFactoryAware {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());

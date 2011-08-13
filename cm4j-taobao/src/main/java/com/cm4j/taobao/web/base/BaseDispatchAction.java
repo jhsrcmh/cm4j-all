@@ -1,7 +1,10 @@
 package com.cm4j.taobao.web.base;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -98,6 +101,34 @@ public class BaseDispatchAction {
 			throw new ApiException("can not find 'userSession' in session,please login first!");
 		}
 		return sessionKey;
+	}
+
+	/**
+	 * 写json串
+	 * 
+	 * @param response
+	 * @param obj
+	 */
+	public static void writeJson(ServletResponse response, Object obj) {
+		write(response, APICaller.jsonBinder.toJson(obj));
+	}
+
+	/**
+	 * 写String
+	 * @param response
+	 * @param content
+	 */
+	public static void write(ServletResponse response, String content) {
+		PrintWriter printer = null;
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			printer = response.getWriter();
+			printer.write(content);
+		} catch (IOException e) {
+			logger.error("response write error", e);
+		} finally {
+			printer.close();
+		}
 	}
 
 	/**
