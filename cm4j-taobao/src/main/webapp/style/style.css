@@ -902,3 +902,13 @@ ul#navmenu li:hover ul,ul#navmenu ul li:hover ul,ul#navmenu ul ul li:hover ul,ul
 	{
 	display: block;
 }
+
+/* 商品显示样式 */
+.productFlow ul{
+	float: left;
+	margin: 10px;
+	cursor: pointer;
+}
+.productFlow ul li{
+	margin: 0px auto;
+}

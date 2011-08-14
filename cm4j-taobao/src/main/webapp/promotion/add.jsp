@@ -12,22 +12,7 @@
 <link rel="icon" href="/imgs/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="/imgs/favicon.ico" type="image/x-icon" />
 
-<script type="text/javascript" src="/app/jquery-1.6.2.min.js"></script>
-<!-- jquery分页 -->
-<script src="/app/jquery-pagination.js"></script>
-<link href="/app/css/jquery-pagination.css" rel="stylesheet" type="text/css"/>
-<!-- jquery ui -->
-<script src="/app/jquery-ui-1.8.15.custom.min.js"></script>
-<link href="/app/css/jquery-ui-south-street.css" rel="stylesheet" type="text/css"/>
-
-<style type="text/css">
-<!--
-	.productFlow ul{
-		float: left;
-		margin: 10px;
-	}
--->
-</style>
+<%@include file="/commons/comm_inc_top.jsp" %>
 
 </head>
 <body>
@@ -48,8 +33,14 @@
 				<div id="text" class="contenttext">
 					<p>
 						<form action="/secure/promotion/add" method="post">
+							<input type="hidden" name="items" id="items"/>
+							
 							<b>Step1:选择促销商品：</b><br />
-							<input type="button" id="productsSelect" value="选择商品"/><br />
+							<!-- 测试分页 -->
+							<div id="Searchresult" class="productFlow" align="center"></div>
+							<div class="clear"></div>
+							<div id="Pagination"></div>
+							<div class="clear"></div>
 							
 							<br /><b>Step2:设定标题和描述：</b><br />
 							活动名称：<input type="text" name="promotionTitle"/>(最多5个字符)<br />
@@ -81,9 +72,9 @@
 							</select> (未进行客户分类?点这里指定)
 							<br />
 							
-							<br /><input type="button" id="formSubmit" value="提交"/>
+							<br /><input type="button" id="formSubmit" value="提交"/> <input type="reset" value="重置"/>
 							
-							<!-- 测试显示商品 -->
+							<!-- 测试显示商品
 							<div class="productFlow" align="center">
 								<ul>
 									<li><img src="/imgs/address.gif" /></li>
@@ -95,13 +86,8 @@
 									<li>商品名</li>
 									<li>100元</li>
 								</ul>
-								<div class="clear"></div>
-								<div>首页 上一页 下一页 尾页 跳转到<input type="text" id="pageNo" style="width: 30px;" />页</div>
-							</div>
-							<!-- 测试显示商品结束 -->
-							<!-- 测试分页 -->
-							<div id="Pagination"></div> 
-							<div id="Searchresult"></div> 
+							</div> -->
+							
 						</form>
 					</p>
 
@@ -119,41 +105,13 @@
 	</div>
 
 	<!-- 公共代码引用 -->
-	<%@include file="/commons/comm_include.jsp"%>
+	<%@include file="/commons/comm_inc_bottom.jsp" %>
+	
+	<!-- jquery分页 -->
+	<script src="/app/jquery-pagination.js"></script>
+	<link href="/app/css/jquery-pagination.css" rel="stylesheet" type="text/css"/>
 	
 	<script type="text/javascript">
-		// 设定弹出框
-		var $dialog = $("<div></div>")
-		.dialog({
-			autoOpen: false,
-			modal: true,
-			buttons:[{
-				text: "关闭",
-				click: function() { $(this).dialog("close"); }
-			}]
-		});
-		
-		// 校验ajax请求
-		function checkJson (json){
-			if (json.code == -1){
-				$dialog
-				.html("用户未登陆或身份过期，请点击<a href='" + json.objInfo + "'>这里登陆</a>")
-				.dialog({
-					title: '身份失效提醒',
-				})
-				.dialog('open');
-				return false;
-			} else if (json.code == 0){
-				$dialog
-				.html(json.message)
-				.dialog({
-					title: '错误提醒',
-				})
-				.dialog('open');
-				return false;
-			}
-			return true;
-		}
 		
 		$(document).ready(function() {  
 			// 打折-优惠选择
@@ -195,26 +153,33 @@
 		    	minDate: '+0',  
 		    });
 			
-			// 查询商品按钮事件
-			$("#productsSelect").click(function(){
-				$dialog
-				.html("显示内容!")
-				.dialog({
-					title: '选择促销商品',
-					buttons: [{
-						text: "确定",
-						click: function() { $(this).dialog("close"); }
-					}]
-				}).dialog('open');
-			});
+		 	// 初始化分页
+			var page_size = 1;
+			initPagination();
+			function initPagination() {
+				// 显示第一页
+				var total_results = showItems(page_size,1);
+                // 初始化页码
+                $("#Pagination").pagination(total_results, {
+                    callback: pageselectCallback,
+                    items_per_page:page_size,
+                    prev_text:'上一页',
+                    next_text:'下一页',
+                });
+             }
+			
+			// 分页回调
+			function pageselectCallback(page_index, jq){
+				showItems(page_size,page_index + 1);
+            }
 			
 			// 查询在售商品
-			function queryItems (page_size,page_no){
-				var returned = '';
+			function showItems (page_size,page_no){
+				var total_results = 0;
 				$.ajax({
 					url: "/secure/items/list_onsale",
 					dataType :"json",
-					async : false, // 同步
+					async : false, // 同步，因为要返回值
 					data:{
 						page_size : page_size,
 						page_no : page_no,
@@ -222,46 +187,47 @@
 					},
 					success: function(json){
 						if (checkJson(json)){
-							returned = json;
+							total_results = json.total_results;
+							
+							$('#Searchresult').empty();
+							$(json.items).each (function(index,item){
+								$('#Searchresult').append('<ul item_id=' + item.numIid + '><li><img width="100px" src="' + item.picUrl + '" /></li><li>' + item.title + '(' + item.price + '元)</li></ul>');
+							});
+							
+							// call 绑定点击商品事件
+							bindClickEvent();
 						}
 					},
 					error: function(error){
 						alert('error:' + error);
 					},
 				});
-				return returned;
+				return total_results;
 			}
 			
 			
-			function initPagination() {
-				var json = queryItems(1,1);
-                // Create content inside pagination element
-                $("#Pagination").pagination(json.total_results, {
-                    callback: pageselectCallback,
-                    items_per_page:1,
-                    prev_text:'上一页',
-                    next_text:'下一页',
-                });
-             }
-			
-			function pageselectCallback(page_index, jq){
-				var json = queryItems(1,page_index + 1);
-				var items = json.items;
+			// 绑定点击商品事件
+			function bindClickEvent(){
+				$("#Searchresult ul").toggle(function(){
+					$(this).css("border","1px solid");
+					
+					/* alert($("#items").val());
+					if ($("#items").val() != '' && $("#items").val() != ','){
+						$("#items").val($("#items").val() + "," + $(this).attr("item_id") + ",");
+					} else {
+						$("#items").val($(this).attr("item_id") + ",");
+					} */
+				},function(){
+					$(this).css("border","0px solid");
+					// $("#items").val($("#items").val().replace($(this).attr("item_id") + ",",''));
+				});
 				
-				$('#Searchresult').empty();
-				for (var i=0;i< items.length; i++){
-					var item = items[i];
-					$('#Searchresult').append(item.title);
-				}
-				
-                var new_content = (json.items)[0].title;
-                
-                return false;
-            }
-            
-			initPagination();
-			
-			
+				/* if ($("#items").val() != '' && $("#items").val() != ','){
+					$($("#items").val().toArray().each(function(index,item){
+						$("#Searchresult ul[item_id=' + item + ']").toggle();
+					}));
+				} */
+			}
 		}); 
 	</script>
 </body>
