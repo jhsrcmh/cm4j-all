@@ -38,7 +38,7 @@ public class LoginFilter implements Filter {
 		if (userSession == null) {
 			String url = LoginAction.getLoginUrl();
 			logger.debug("用户没有登陆,跳转页面:{}", url);
-			if ("true".equals(req.getParameter("isJson"))) {
+			if ("true".equals(req.getParameter("is_json"))) {
 				BaseDispatchAction.writeJson(rep, new ResultObject(-1, "用户未登陆", url));
 				return;
 			} else {

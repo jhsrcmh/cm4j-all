@@ -2,22 +2,20 @@ package com.cm4j.taobao.web.base;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.WebUtils;
 
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.api.common.APIConstants;
-import com.cm4j.taobao.exception.ValidationException;
 import com.cm4j.taobao.web.login.UserSession;
 import com.taobao.api.ApiException;
 import com.taobao.api.TaobaoRequest;
@@ -115,6 +113,7 @@ public class BaseDispatchAction {
 
 	/**
 	 * 写String
+	 * 
 	 * @param response
 	 * @param content
 	 */
@@ -138,29 +137,27 @@ public class BaseDispatchAction {
 	 * @return
 	 */
 	@ExceptionHandler
-	public ModelAndView validationExceptionHandle(ValidationException exception) {
-		return new ModelAndView(ERROR_PAGE, Collections.singletonMap(ERROR_KEY, "数据不合法：" + exception.getMessage()));
+	public String otherExceptionHandle(Exception exception, HttpServletRequest request, HttpServletResponse response) {
+		if (checkJsonException(exception, request, response)) {
+			return null;
+		}
+		request.setAttribute(ERROR_KEY, "哎呦，系统抽风了，异常信息[" + exception.getMessage() + "]");
+		return ERROR_PAGE;
 	}
-
+	
 	/**
-	 * 异常捕获
+	 * 处理为json的异常请求
 	 * 
 	 * @param exception
+	 * @param request
+	 * @param response
 	 * @return
 	 */
-	@ExceptionHandler
-	public ModelAndView apiExceptionHandle(ApiException exception) {
-		return new ModelAndView(ERROR_PAGE, Collections.singletonMap(ERROR_KEY, "调用淘宝API异常：" + exception.getMessage()));
-	}
-
-	/**
-	 * 异常捕获
-	 * 
-	 * @param exception
-	 * @return
-	 */
-	@ExceptionHandler
-	public ModelAndView otherExceptionHandle(Exception exception) {
-		return new ModelAndView(ERROR_PAGE, Collections.singletonMap(ERROR_KEY, "其他异常：" + exception.getMessage()));
+	private boolean checkJsonException(Exception exception, HttpServletRequest request, HttpServletResponse response) {
+		if ("true".equals(request.getParameter("is_json"))) {
+			writeJson(response, new ResultObject(0, exception.getMessage()));
+			return true;
+		}
+		return false;
 	}
 }

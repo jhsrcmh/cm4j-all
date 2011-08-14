@@ -13,8 +13,22 @@
 <link rel="shortcut icon" href="/imgs/favicon.ico" type="image/x-icon" />
 
 <script type="text/javascript" src="/app/jquery-1.6.2.min.js"></script>
+<!-- jquery分页 -->
+<script src="/app/jquery-pagination.js"></script>
+<link href="/app/css/jquery-pagination.css" rel="stylesheet" type="text/css"/>
+<!-- jquery ui -->
 <script src="/app/jquery-ui-1.8.15.custom.min.js"></script>
 <link href="/app/css/jquery-ui-south-street.css" rel="stylesheet" type="text/css"/>
+
+<style type="text/css">
+<!--
+	.productFlow ul{
+		float: left;
+		margin: 10px;
+	}
+-->
+</style>
+
 </head>
 <body>
 	<div id="bg">
@@ -68,6 +82,26 @@
 							<br />
 							
 							<br /><input type="button" id="formSubmit" value="提交"/>
+							
+							<!-- 测试显示商品 -->
+							<div class="productFlow" align="center">
+								<ul>
+									<li><img src="/imgs/address.gif" /></li>
+									<li>商品名</li>
+									<li>100元</li>
+								</ul>
+								<ul>
+									<li><img src="/imgs/address.gif" /></li>
+									<li>商品名</li>
+									<li>100元</li>
+								</ul>
+								<div class="clear"></div>
+								<div>首页 上一页 下一页 尾页 跳转到<input type="text" id="pageNo" style="width: 30px;" />页</div>
+							</div>
+							<!-- 测试显示商品结束 -->
+							<!-- 测试分页 -->
+							<div id="Pagination"></div> 
+							<div id="Searchresult"></div> 
 						</form>
 					</p>
 
@@ -86,7 +120,7 @@
 
 	<!-- 公共代码引用 -->
 	<%@include file="/commons/comm_include.jsp"%>
-
+	
 	<script type="text/javascript">
 		// 设定弹出框
 		var $dialog = $("<div></div>")
@@ -108,6 +142,7 @@
 					title: '身份失效提醒',
 				})
 				.dialog('open');
+				return false;
 			} else if (json.code == 0){
 				$dialog
 				.html(json.message)
@@ -160,35 +195,73 @@
 		    	minDate: '+0',  
 		    });
 			
+			// 查询商品按钮事件
 			$("#productsSelect").click(function(){
-				$.ajax({
-					url: "/secure/items/list_onsale/20/1",
-					dataType :"json",
-					data:{
-						isJson :true,
-					},
-					success: function(msg){
-						if (checkJson(msg)){
-							// todo 继续执行后续操作
-						}
-					},
-					error: function(error){
-						alert(error);
-					},
-				});
-				return; 
 				$dialog
-					.html("显示内容!")
-					.dialog({
+				.html("显示内容!")
+				.dialog({
 					title: '选择促销商品',
 					buttons: [{
 						text: "确定",
 						click: function() { $(this).dialog("close"); }
 					}]
 				}).dialog('open');
-				// prevent the default action, e.g., following a link
-				return false;
 			});
+			
+			// 查询在售商品
+			function queryItems (page_size,page_no){
+				var returned = '';
+				$.ajax({
+					url: "/secure/items/list_onsale",
+					dataType :"json",
+					async : false, // 同步
+					data:{
+						page_size : page_size,
+						page_no : page_no,
+						is_json :true,
+					},
+					success: function(json){
+						if (checkJson(json)){
+							returned = json;
+						}
+					},
+					error: function(error){
+						alert('error:' + error);
+					},
+				});
+				return returned;
+			}
+			
+			
+			function initPagination() {
+				var json = queryItems(1,1);
+                // Create content inside pagination element
+                $("#Pagination").pagination(json.total_results, {
+                    callback: pageselectCallback,
+                    items_per_page:1,
+                    prev_text:'上一页',
+                    next_text:'下一页',
+                });
+             }
+			
+			function pageselectCallback(page_index, jq){
+				var json = queryItems(1,page_index + 1);
+				var items = json.items;
+				
+				$('#Searchresult').empty();
+				for (var i=0;i< items.length; i++){
+					var item = items[i];
+					$('#Searchresult').append(item.title);
+				}
+				
+                var new_content = (json.items)[0].title;
+                
+                return false;
+            }
+            
+			initPagination();
+			
+			
 		}); 
 	</script>
 </body>

@@ -35,9 +35,9 @@ public class ItemsAction extends BaseDispatchAction {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	@RequestMapping("/list_onsale/{page_size}/{page_no}")
+	@RequestMapping("/list_onsale")
 	public @ResponseBody
-	Map<String, Object> list_onsale_items(@PathVariable Long page_size, @PathVariable Long page_no)
+	Map<String, Object> list_onsale_items( Long page_size, Long page_no)
 			throws ApiException, ValidationException {
 		return ItemService.listOnsaleItems(page_size, page_no, null, getSessionKey());
 	}
