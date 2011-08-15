@@ -130,6 +130,7 @@
 				$("#discountShowSpan").html('');
 			});
 			
+			// 默认选择第一项
 			$(":radio[name='discountType']:first").click();
 			
 			// 显示价格提示
@@ -168,7 +169,7 @@
                 });
              }
 			
-			// 分页回调
+			// 分页回调,page_index是从0开始的
 			function pageselectCallback(page_index, jq){
 				showItems(page_size,page_index + 1);
             }
@@ -195,7 +196,9 @@
 							});
 							
 							// call 绑定点击商品事件
-							bindClickEvent();
+							bindClickEvent(page_no);
+							// call 选中当前页所有已绑定数据的标签(模拟click)
+							showAllSelectedItems(page_no);
 						}
 					},
 					error: function(error){
@@ -205,28 +208,63 @@
 				return total_results;
 			}
 			
-			function bindClickEvent(){
-				// 绑定点击商品事件
-				$("#Searchresult ul").toggle(function(){
-					$(this).css("border","1px solid");
-					
-					/* alert($("#items").val());
-					if ($("#items").val() != '' && $("#items").val() != ','){
-						$("#items").val($("#items").val() + "," + $(this).attr("item_id") + ",");
+			/**
+			 * 商品标签点击事件绑定
+			 * 选择的商品都绑定在#items对象上，按page_{no}为键存放
+			 * @param page_no 当前页
+			 */ 
+			function bindClickEvent(page_no){
+				$("#Searchresult ul").click(function(){
+					if ($(this).attr("class") == 'productSelect'){
+						// 点击事件，去除边框，删除数据
+						$(this).removeClass("productSelect");
+						
+						var array = $("#items").data("page_" + page_no);
+						if (array != undefined){
+							array.deleElement($(this).attr("item_id")).deleElement("");
+						}
+						$("#items").data("page_" + page_no, array);
 					} else {
-						$("#items").val($(this).attr("item_id") + ",");
-					} */
-				},function(){
-					$(this).css("border","0px solid");
-					// $("#items").val($("#items").val().replace($(this).attr("item_id") + ",",''));
+						// 点击事件，添加边框，记录数据
+						$(this).addClass("productSelect");
+						
+						var array = $("#items").data("page_" + page_no);
+						if (array == undefined){
+							array = [];
+						}
+						array.push($(this).attr("item_id"));
+						$("#items").data("page_" + page_no, $.unique(array));
+					}
 				});
-				
-				// 当前页数据绑定
-				/* if ($("#items").val() != '' && $("#items").val() != ','){
-					$($("#items").val().toArray().each(function(index,item){
-						$("#Searchresult ul[item_id=' + item + ']").toggle();
-					}));
-				} */
+			}
+			
+			/**
+			 * 选中当前页所有已绑定数据的标签(模拟click)
+			 * @param page_no 当前页
+			 */ 
+			function showAllSelectedItems (page_no){
+				var array = $("#items").data("page_" + page_no);
+				if (array != undefined){
+					$(array).each(function(index,element){
+						// css("border","1px solid");
+						$("#Searchresult ul[item_id='"+ element +"']").click();
+					});
+				}
+			}
+			
+			/**
+			 * 设置所有选中商品数据
+			 * @param total_page_size 总页数
+			 */ 
+			function setAllSelectedItems (total_page_size){
+				var result = [];
+				for (var i=0; i < total_page_size; i++) {
+					var page_array = $("#items").data("page_" + (i + 1));
+					if (page_array != undefined){
+						result = $.merge(result,page_array);
+					}
+				};
+				$("#items").val($.unique(result).toString());
 			}
 		}); 
 	</script>

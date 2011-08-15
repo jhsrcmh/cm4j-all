@@ -912,3 +912,7 @@ ul#navmenu li:hover ul,ul#navmenu ul li:hover ul,ul#navmenu ul ul li:hover ul,ul
 .productFlow ul li{
 	margin: 0px auto;
 }
+/*商品选中样式*/
+.productSelect {
+	border:1px solid;
+}
