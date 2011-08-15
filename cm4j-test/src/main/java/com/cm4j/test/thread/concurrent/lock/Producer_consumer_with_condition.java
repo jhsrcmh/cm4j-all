@@ -8,6 +8,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <pre>
+ * {@link Condition}配合{@link Lock}的使用
+ * 
  * 1 开始，A调用plate.putEgg方法，此时eggs.size()为0，因此顺利将鸡蛋放到盘子，
  *      还执行了notify()方法，唤醒锁的阻塞队列 的线程，此时阻塞队列还没有线程。
  * 2 又有一个A线程对象调用plate.putEgg方法，此时eggs.size()不为0，

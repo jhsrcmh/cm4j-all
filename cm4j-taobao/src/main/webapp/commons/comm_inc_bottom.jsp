@@ -39,6 +39,27 @@
 		}
 		return true;
 	}
+	
+	// 删除元素
+	function deleteArray (array,element){
+		for (var i=0;i< array.length;i++){
+			if (element == array[i]){
+				array = array.slice(i,1);
+			}
+		}
+		return array;
+	}
+	
+	alert(deleteArray([1,2,3,4],1));
+	
+	// string to array,以,分隔
+	function str2array(str){
+		if (str == undefined){
+			return ;
+		}
+		var array = str.split(",");
+		
+	}
 </script>		
 
 

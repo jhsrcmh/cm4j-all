@@ -205,9 +205,8 @@
 				return total_results;
 			}
 			
-			
-			// 绑定点击商品事件
 			function bindClickEvent(){
+				// 绑定点击商品事件
 				$("#Searchresult ul").toggle(function(){
 					$(this).css("border","1px solid");
 					
@@ -222,6 +221,7 @@
 					// $("#items").val($("#items").val().replace($(this).attr("item_id") + ",",''));
 				});
 				
+				// 当前页数据绑定
 				/* if ($("#items").val() != '' && $("#items").val() != ','){
 					$($("#items").val().toArray().each(function(index,item){
 						$("#Searchresult ul[item_id=' + item + ']").toggle();
