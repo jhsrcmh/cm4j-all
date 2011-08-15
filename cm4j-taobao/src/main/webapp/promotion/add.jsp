@@ -47,7 +47,7 @@
 							活动描述：<input name="promotionDesc" style="width: 400px;"/>(最多30个字符)<br />
 							
 							<br /><b>Step3:优惠类型和额度：</b><br />
-							优惠类型：<input type="radio" name="discountType" value="DISCOUNT"/> 打折
+							优惠类型：<input type="radio" name="discountType" value="DISCOUNT" checked="checked"/> 打折
 									<input type="radio" name="discountType" value="PRICE"/> 特价<br />
 									
 							优惠额度：<select name="discountValue" style="width: 80px;">
@@ -107,52 +107,26 @@
 	<!-- 公共代码引用 -->
 	<%@include file="/commons/comm_inc_bottom.jsp" %>
 	
+	<style>
+		/* css for timepicker */
+		.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+		.ui-timepicker-div dl{ text-align: left; }
+		.ui-timepicker-div dl dt{ height: 25px; }
+		.ui-timepicker-div dl dd{ margin: -25px 0 10px 65px; }
+		.ui-timepicker-div td { font-size: 90%; }
+	</style>
+	
+	<!-- 时间插件 -->
+	<script src="/app/jquery-ui-timepicker-addon.js"></script>
+	
 	<!-- jquery分页 -->
 	<script src="/app/jquery-pagination.js"></script>
 	<link href="/app/css/jquery-pagination.css" rel="stylesheet" type="text/css"/>
 	
 	<script type="text/javascript">
-		
-		$(document).ready(function() {  
-			// 打折-优惠选择
-			$(":radio[name='discountType']").click(function(){
-				if ($(this).val() == 'DISCOUNT'){
-					$("select[name='discountValue']").removeAttr('disable','');
-					$("select[name='discountValue']").show();
-					$("input[name='discountValue']").attr('disable','disable');
-					$("#discountSpan").hide();
-				} else if ($(this).val() == 'PRICE'){
-					$("select[name='discountValue']").attr('disable','disable');
-					$("select[name='discountValue']").hide();
-					$("input[name='discountValue']").removeAttr('disable');
-					$("#discountSpan").show();
-				}
-				$("#discountShowSpan").html('');
-			});
-			
-			// 默认选择第一项
-			$(":radio[name='discountType']:first").click();
-			
-			// 显示价格提示
-			var showPrice = 10000;
-			var showContent = '&nbsp;&nbsp;&nbsp;&nbsp;例子：假设商品原价为' + 10000 + '元，则折后价为：';
-			$("select[name='discountValue']").change(function(){
-				var title = '';
-				title += showContent + ' * ' + $(this).val() + '折 = ' + (showPrice/10 * $(this).val()) + ' 元<br />';
-				$("#discountShowSpan").html(title);
-			});
-			$("input[name='discountValue']").change(function(){
-				var price = (showPrice - $(this).val());
-				var title = '';
-				title  += showContent + (price < 0 ? '商品价格超出' + showPrice + '元原价' : showPrice + '元 - ' + $(this).val() + '元 = ' + price + '元') + '<br />';
-				$("#discountShowSpan").html(title);
-			});
-			
-			// 日期加载
-		    $("input[name='startDate']").datepicker({
-		    	dateFormat: 'yy-mm-dd',
-		    	minDate: '+0',  
-		    });
+		$(document).ready(function() {
+			// 页面初始化
+			page_init();
 			
 		 	// 初始化分页
 			var page_size = 1;
@@ -184,7 +158,7 @@
 					data:{
 						page_size : page_size,
 						page_no : page_no,
-						is_json :true,
+						is_json : true,
 					},
 					success: function(json){
 						if (checkJson(json)){
@@ -215,16 +189,7 @@
 			 */ 
 			function bindClickEvent(page_no){
 				$("#Searchresult ul").click(function(){
-					if ($(this).attr("class") == 'productSelect'){
-						// 点击事件，去除边框，删除数据
-						$(this).removeClass("productSelect");
-						
-						var array = $("#items").data("page_" + page_no);
-						if (array != undefined){
-							array.deleElement($(this).attr("item_id")).deleElement("");
-						}
-						$("#items").data("page_" + page_no, array);
-					} else {
+					if ($(this).attr("class") != 'productSelect'){
 						// 点击事件，添加边框，记录数据
 						$(this).addClass("productSelect");
 						
@@ -234,6 +199,15 @@
 						}
 						array.push($(this).attr("item_id"));
 						$("#items").data("page_" + page_no, $.unique(array));
+					} else {
+						// 点击事件，去除边框，删除数据
+						$(this).removeClass("productSelect");
+						
+						var array = $("#items").data("page_" + page_no);
+						if (array != undefined){
+							array.deleElement($(this).attr("item_id")).deleElement("");
+						}
+						$("#items").data("page_" + page_no, array);
 					}
 				});
 			}
@@ -267,6 +241,56 @@
 				$("#items").val($.unique(result).toString());
 			}
 		}); 
+		
+		
+		/**
+		 * 页面初始化
+		 */ 
+		function page_init (){
+			// 打折-优惠选择
+			$(":radio[name='discountType']").click(function(){
+				if ($(this).val() == 'DISCOUNT'){
+					$("select[name='discountValue']").removeAttr('disable','');
+					$("select[name='discountValue']").show();
+					$("input[name='discountValue']").attr('disable','disable');
+					$("#discountSpan").hide();
+				} else if ($(this).val() == 'PRICE'){
+					$("select[name='discountValue']").attr('disable','disable');
+					$("select[name='discountValue']").hide();
+					$("input[name='discountValue']").removeAttr('disable');
+					$("#discountSpan").show();
+				}
+				$("#discountShowSpan").html('');
+			});
+			
+			// 默认选择第一项,隐藏首件打折选项
+			$(":radio[name='discountType']:first").click();
+			
+			// 显示价格提示
+			var showPrice = 10000;
+			var showContent = '&nbsp;&nbsp;&nbsp;&nbsp;例子：假设商品原价为' + 10000 + '元，则折后价为：';
+			$("select[name='discountValue']").change(function(){
+				var title = '';
+				title += showContent + ' * ' + $(this).val() + '折 = ' + (showPrice/10 * $(this).val()) + ' 元<br />';
+				$("#discountShowSpan").html(title);
+			});
+			$("input[name='discountValue']").change(function(){
+				var price = (showPrice - $(this).val());
+				var title = '';
+				title  += showContent + (price < 0 ? '商品价格超出' + showPrice + '元原价' : showPrice + '元 - ' + $(this).val() + '元 = ' + price + '元') + '<br />';
+				$("#discountShowSpan").html(title);
+			});
+			
+			// 日期加载
+			$("input[name='startDate']").datetimepicker({
+				dateFormat: 'yy-mm-dd',
+				minDate: '+0',
+			});
+			$("input[name='endDate']").datetimepicker({
+				dateFormat: 'yy-mm-dd',
+				minDate: '+0',
+			});
+		}
 	</script>
 </body>
 </html>

@@ -16,7 +16,7 @@
 		nick:${userSession.visitor_nick }<br /> 
 		role:${userSession.visitor_role }<br /> 
 		
-		<a href="/promotion/add.jsp">add</a>
+		<a href="/promotion/add.jsp" target="_blank">add</a>
 		<input type="button" value="立即关闭"
 			onclick="window.opener=null;window.close();" style="cursor: pointer" />
 	</div>
