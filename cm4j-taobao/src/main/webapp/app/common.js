@@ -10,23 +10,36 @@ var $dialog = $('<div></div>')
 	}]
 });
 
-// 校验ajax请求
+/**
+ * 弹出框
+ * 
+ * @param html
+ * @returns
+ */
+function dialog_error(htmlMsg){
+	dialog("错误提醒",htmlMsg);
+}
+function dialog(title,htmlMsg) {
+	$dialog
+	.html(htmlMsg)
+	.dialog({
+	title: title
+	})
+	.dialog('open');
+}
+
+/**
+ * 校验ajax请求
+ * 
+ * @param json
+ * @returns {Boolean}
+ */
 function checkJson(json) {
 	if(json.code == -1) {
-		$dialog
-		.html("用户未登陆或身份过期，请点击<a href='" + json.objInfo + ">这里登陆</a>")
-		.dialog({
-		title: '身份失效提醒'
-		})
-		.dialog('open');
+		dialog('身份失效提醒',"用户未登陆或身份过期，请点击<a href='" + json.objInfo + "'>这里登陆</a>");
 		return false;
 	} else if(json.code == 0) {
-		$dialog
-		.html(json.message)
-		.dialog({
-		title: '错误提醒',
-		})
-		.dialog('open');
+		dialog(json.message);
 		return false;
 	}
 	return true;

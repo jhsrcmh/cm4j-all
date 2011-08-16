@@ -12,11 +12,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.quartz.Job;
+
+import com.cm4j.taobao.service.async.quartz.jobs.IdentityMantain;
 
 @Entity()
-@Table(name = "cron_task", schema = "")
-@SequenceGenerator(name = "SEQ_GEN", sequenceName = "cron_task_sq")
-public class CronTask {
+@Table(name = "async_task", schema = "")
+@SequenceGenerator(name = "SEQ_GEN", sequenceName = "async_task_sq")
+public class AsyncTask {
 
 	/**
 	 * 状态 - 禁用 - 0
@@ -46,22 +49,67 @@ public class CronTask {
 	@Column(name = "task_type", length = 25)
 	private String taskType;
 
-	@Column(name = "user_id")
-	private Long userId;
+	/**
+	 * 任务类型枚举
+	 * 
+	 * @author yang.hao
+	 * @since 2011-8-16 上午10:45:16
+	 * 
+	 */
+	public static enum TaskType {
+		/**
+		 * 定时任务
+		 */
+		cron,
+		/**
+		 * 异步任务
+		 */
+		async
+	}
+
+	@Column(name = "task_sub_type", length = 25)
+	private String taskSubType;
 
 	/**
-	 * 计划执行cron
+	 * 子任务类型枚举
+	 * 
+	 * @author yang.hao
+	 * @since 2011-8-16 上午10:45:04
+	 * 
 	 */
-	@Column(name = "task_cron", length = 100)
+	public static enum TaskSubType {
+		/**
+		 * 身份维持
+		 */
+		identity_mantain(IdentityMantain.class);
+
+		/**
+		 * 对应处理类
+		 */
+		private Class<? extends Job> handleClazz;
+
+		private TaskSubType(Class<? extends Job> handleClazz) {
+			this.handleClazz = handleClazz;
+		}
+
+		public Class<? extends Job> getHandleClazz() {
+			return handleClazz;
+		}
+	}
+
+	@Column(name = "related_id")
+	private Long relatedId;
+
+	@Column(name = "task_cron", nullable = true)
 	private String taskCron;
 
 	@Column(name = "task_data", length = 500)
 	private String taskData;
 
-	@Column(name = "start_date")
+	@Column(name = "start_date", nullable = false)
 	private Date startDate;
 
-	@Column(name = "end_date")
+	@Column(name = "end_date", nullable = false)
 	private Date endDate;
 
 	@Column(name = "state")
@@ -81,14 +129,6 @@ public class CronTask {
 
 	public void setTaskType(String taskType) {
 		this.taskType = taskType;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 
 	public String getTaskData() {
@@ -121,6 +161,22 @@ public class CronTask {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getTaskSubType() {
+		return taskSubType;
+	}
+
+	public void setTaskSubType(String taskSubType) {
+		this.taskSubType = taskSubType;
+	}
+
+	public Long getRelatedId() {
+		return relatedId;
+	}
+
+	public void setRelatedId(Long relatedId) {
+		this.relatedId = relatedId;
 	}
 
 	public String getTaskCron() {

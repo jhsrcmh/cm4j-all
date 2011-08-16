@@ -1,12 +1,13 @@
 package com.cm4j.taobao.service.async.quartz;
 
-import java.util.Date;
+import java.text.ParseException;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
-import org.quartz.ScheduleBuilder;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -17,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.stereotype.Service;
 
+import com.cm4j.taobao.pojo.AsyncTask;
+
 /**
  * 定时任务操作者
  * 
@@ -26,7 +29,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class QuartzOperator implements DisposableBean {
-	
+
 	/**
 	 * 常量 - jobDetail数据的key
 	 */
@@ -42,34 +45,32 @@ public class QuartzOperator implements DisposableBean {
 	/**
 	 * 添加定时任务
 	 * 
-	 * @param handlerClazz
-	 * @param scheduleBuilder
-	 * @param groupName
-	 * @param params
-	 * @param startDate
-	 * @param endDate
+	 * @param data
 	 * @throws SchedulerException
+	 * @throws ParseException
+	 *             cron 格式不正常
 	 */
-	public void addJob(Class<? extends Job> handlerClazz, ScheduleBuilder<?> scheduleBuilder, String groupName,
-			QuartzJobData data, Date startDate, Date endDate) throws SchedulerException {
-		JobKey jobKey = new JobKey(handlerClazz.getSimpleName(), groupName);
+	public void addJob(QuartzJobData data) throws SchedulerException, ParseException {
+		if (data == null) {
+			throw new IllegalArgumentException("异步任务data参数不允许为空");
+		}
+		
+		Class<? extends Job> handlerClazz = data.getHandlerClazz();
+		JobKey jobKey = new JobKey(handlerClazz.getSimpleName() + RandomStringUtils.randomAlphanumeric(10));
 		scheduler.deleteJob(jobKey);
 		JobDetail jobDetail = JobBuilder.newJob(handlerClazz).withIdentity(jobKey).build();
-
-		// 传递参数
-		if (data != null) {
-			jobDetail.getJobDataMap().put(JOBDETAIL_DATA_KEY, data);
-		}
+		
+		jobDetail.getJobDataMap().put(JOBDETAIL_DATA_KEY, data);
 
 		TriggerBuilder<?> builder = TriggerBuilder.newTrigger().withIdentity(handlerClazz.getSimpleName())
-				.forJob(jobDetail).withSchedule(scheduleBuilder);
-		if (startDate == null) {
-			builder.startAt(new Date());
+				.forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule(data.getCron()));
+		if (data.getStartDate() == null) {
+			builder.startAt(AsyncTask.DATE_NOW);
 		} else {
-			builder.startAt(startDate);
+			builder.startAt(data.getStartDate());
 		}
-		if (endDate != null) {
-			builder.endAt(endDate);
+		if (data.getEndDate() != null) {
+			builder.endAt(data.getEndDate());
 		}
 		Trigger trigger = builder.build();
 

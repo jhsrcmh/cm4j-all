@@ -33,7 +33,8 @@
 				<div id="text" class="contenttext">
 					<p>
 						<form action="/secure/promotion/add" method="post">
-							<input type="hidden" name="items" id="items"/>
+							<input type="hidden" name="numIids" id="items"/>
+							<input type="hidden" name="discountValue" id="items"/>
 							
 							<b>Step1:选择促销商品：</b><br />
 							<!-- 测试分页 -->
@@ -50,12 +51,12 @@
 							优惠类型：<input type="radio" name="discountType" value="DISCOUNT" checked="checked"/> 打折
 									<input type="radio" name="discountType" value="PRICE"/> 特价<br />
 									
-							优惠额度：<select name="discountValue" style="width: 80px;">
+							优惠额度：<select id="discountV" style="width: 80px;">
 										<c:forEach begin="1" end="99" var="result">
 											<option value="${result/10 }">&nbsp;&nbsp;${result/10 }折</option>
 										</c:forEach>
 									</select>
-							<span id="discountSpan"><input type="text" name="discountValue"/>(精确到小数点后2位，不得超过商品原价) <br />
+							<span id="discountSpan"><input type="text" id="priceV"/>(精确到小数点后2位，不得超过商品原价) <br />
 							
 							首件打折：<input type="radio" name="decreaseNum" checked="checked" value="0"/> 否(全部商品打折)
 									<input type="radio" name="decreaseNum" value="1"/> 是(仅首件打折)
@@ -134,6 +135,11 @@
 			function initPagination() {
 				// 显示第一页
 				var total_results = showItems(page_size,1);
+				
+				// 获取总页数并绑定
+				var total_pages = total_results % page_size == 0 ? total_results / page_size : (total_results / page_size + 1);
+				$("#items").data("total_pages", total_pages);
+				
                 // 初始化页码
                 $("#Pagination").pagination(total_results, {
                     callback: pageselectCallback,
@@ -190,6 +196,13 @@
 			function bindClickEvent(page_no){
 				$("#Searchresult ul").click(function(){
 					if ($(this).attr("class") != 'productSelect'){
+						// 设置所有选中商品数据
+						var total_pages = $("#items").data("total_pages", total_pages);
+						if (getAllBindedItems(total_pages).length >= 10){
+							dialog_error("一次活动最多选择10个商品");
+							return;
+						}
+						
 						// 点击事件，添加边框，记录数据
 						$(this).addClass("productSelect");
 						
@@ -228,18 +241,61 @@
 			
 			/**
 			 * 设置所有选中商品数据
-			 * @param total_page_size 总页数
+			 * @param total_pages 总页数
 			 */ 
-			function setAllSelectedItems (total_page_size){
+			function getAllBindedItems (total_pages){
 				var result = [];
-				for (var i=0; i < total_page_size; i++) {
+				for (var i=0; i < total_pages; i++) {
 					var page_array = $("#items").data("page_" + (i + 1));
 					if (page_array != undefined){
 						result = $.merge(result,page_array);
 					}
 				};
-				$("#items").val($.unique(result).toString());
+				return result;
 			}
+			
+			// 点击提交按钮校验
+			$("#formSubmit").click(function(){
+					// 设置所有选中商品数据
+					var total_pages = $("#items").data("total_pages", total_pages);
+					var result = getAllBindedItems(total_pages);
+					$("#items").val($.unique(result).toString());
+					
+					var items = $("#items").val();
+					if (items == undefined || items == ''){
+						dialog_error ("未选中任何商品，请选择参与活动的商品后提交");
+						return ;
+					}
+					
+					// 标题和描述
+					if ($(":input[name='promotionTitle']").val() == '' ||$(":input[name='promotionDesc']").val() == ''){
+						dialog_error ("请填写活动标题和描述");
+						return ;
+					}
+					
+					if ($(":radio[name='discountType'][value='DISCOUNT']").attr("checked") == "checked"){
+						if ($("discountV").val() == ''){
+							dialog_error ("优惠折扣不允许为空");
+							return ;	
+						}
+						$(":input[name='discountValue']").val($("#discountV").val());
+					} else if ($(":radio[name='discountType'][value='PRICE']").attr("checked") == "checked"){
+						if (!$("#priceV").val().match(/^(([1-9]\d+)|(\d))(\.\d{1,2})?$/)){
+							dialog_error ("优惠额度必须为[精确到小数后2位]的数字");
+							return ;
+						}
+						$(":input[name='discountValue']").val($("#priceV").val());
+					}
+					
+					// 开始结束时间
+					if ($(":input[name='startDate']").val() == '' ||$(":input[name='endDate']").val() == ''){
+						dialog_error ("请选择活动开始和结束时间");
+						return ;
+					}
+					
+					$("form:first").submit();
+				}
+			);
 		}); 
 		
 		
@@ -250,14 +306,10 @@
 			// 打折-优惠选择
 			$(":radio[name='discountType']").click(function(){
 				if ($(this).val() == 'DISCOUNT'){
-					$("select[name='discountValue']").removeAttr('disable','');
-					$("select[name='discountValue']").show();
-					$("input[name='discountValue']").attr('disable','disable');
+					$("#discountV").show();
 					$("#discountSpan").hide();
 				} else if ($(this).val() == 'PRICE'){
-					$("select[name='discountValue']").attr('disable','disable');
-					$("select[name='discountValue']").hide();
-					$("input[name='discountValue']").removeAttr('disable');
+					$("#discountV").hide();
 					$("#discountSpan").show();
 				}
 				$("#discountShowSpan").html('');
@@ -268,13 +320,13 @@
 			
 			// 显示价格提示
 			var showPrice = 10000;
-			var showContent = '&nbsp;&nbsp;&nbsp;&nbsp;例子：假设商品原价为' + 10000 + '元，则折后价为：';
-			$("select[name='discountValue']").change(function(){
+			var showContent = '&nbsp;&nbsp;&nbsp;&nbsp;例子：假设商品原价为' + showPrice + '元，则折后价为：';
+			$("#discountV").change(function(){
 				var title = '';
-				title += showContent + ' * ' + $(this).val() + '折 = ' + (showPrice/10 * $(this).val()) + ' 元<br />';
+				title += showContent + showPrice + '元  * ' + $(this).val() + '折 = ' + (showPrice/10 * $(this).val()) + ' 元<br />';
 				$("#discountShowSpan").html(title);
 			});
-			$("input[name='discountValue']").change(function(){
+			$("#priceV").change(function(){
 				var price = (showPrice - $(this).val());
 				var title = '';
 				title  += showContent + (price < 0 ? '商品价格超出' + showPrice + '元原价' : showPrice + '元 - ' + $(this).val() + '元 = ' + price + '元') + '<br />';

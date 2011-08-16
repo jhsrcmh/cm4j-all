@@ -1,9 +1,9 @@
-/* 初始化部分 */
+/* 初始化部分
 drop table user_info if exists;
-drop table sync_task if exists;
-drop sequence sync_task_sq if exists;
-drop table sync_task_log if exists;
-drop sequence sync_task_log_sq if exists;
+drop table async_task if exists;
+drop sequence async_task_sq if exists;
+drop table async_task_log if exists;
+drop sequence async_task_log_sq if exists; */
 
 
 /* 创建表部分 */
@@ -20,33 +20,33 @@ CREATE TABLE IF NOT EXISTS user_info(
 	update_date timestamp not null default sysdate, 	-- 更新时间(淘宝时间)
 );
 
--- 定时任务表
-CREATE TABLE IF NOT EXISTS cron_task(
+-- 异步任务表
+CREATE TABLE IF NOT EXISTS async_task(
 	task_id bigint not null PRIMARY KEY, 		-- 主键ID
-	task_type varchar(25) not null, 			-- 任务类型
-	user_id bigint, 							-- 淘宝ID
-	task_cron varchar(100),						-- 计划执行cron
-	task_data varchar(500), 					-- 任务相关数据
+	task_type varchar(25) not null, 			-- 任务类型 async or cron
+	task_sub_type varchar(25) not null,			-- 具体任务类型
+	related_id bigint, 							-- 相关业务ID
+	task_cron varchar(50), 						-- 定时任务cron表达式
+	task_data varchar(500), 					-- 任务相关数据(包含)
 	start_date timestamp not null default sysdate, 	-- 开始时间 
-	end_date timestamp not null, 					-- 结束时间，永久则插入2099年 
-	state varchar(1) not null, 					-- 0-禁用 1-启用
+	end_date timestamp not null default sysdate, 	-- 结束时间，永久则插入当前年份+100 
+	state varchar(1) not null, 					-- 0-待执行 1-成功 2-失败
 );
-
-create sequence IF NOT EXISTS cron_task_sq
+create sequence IF NOT EXISTS async_task_sq
 start with 1
 increment by 1 
 cache 20;
 
 -- 异步任务执行记录表
-CREATE TABLE IF NOT EXISTS cron_task_log(
+CREATE TABLE IF NOT EXISTS async_task_log(
 	log_id bigint not null PRIMARY KEY, 		-- 主键日志ID
 	task_id bigint not null, 					-- 任务ID
-	state varchar(1) not null, 					-- 执行结果 0-失败 1-成功
-	exec_info varchar(200),						-- 执行相关信息
+	state varchar(1) not null, 					-- 执行状态 0-失败 1-成功
+	exec_info varchar(200),						-- 执行结果
 	exec_date timestamp not null default sysdate 	-- 执行时间 
 );
 
-create sequence IF NOT EXISTS cron_task_log_sq
+create sequence IF NOT EXISTS async_task_log_sq
 start with 1
 increment by 1 
 cache 20;

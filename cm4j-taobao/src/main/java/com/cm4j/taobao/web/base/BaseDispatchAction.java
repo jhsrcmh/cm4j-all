@@ -138,6 +138,7 @@ public class BaseDispatchAction {
 	 */
 	@ExceptionHandler
 	public String otherExceptionHandle(Exception exception, HttpServletRequest request, HttpServletResponse response) {
+		logger.error("action caught exception",exception);
 		if (checkJsonException(exception, request, response)) {
 			return null;
 		}

@@ -1,14 +1,18 @@
 package com.cm4j.taobao.service.async.quartz;
 
-import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
+import java.text.ParseException;
 
-import com.cm4j.taobao.service.async.quartz.QuartzOperator;
+import org.quartz.SchedulerException;
+import org.springframework.scheduling.annotation.Async;
+
+import com.cm4j.taobao.pojo.AsyncTask;
 
 public class QuartzOperatorTest {
-	public static void main(String[] args) throws SchedulerException {
+	public static void main(String[] args) throws SchedulerException, ParseException {
 		QuartzOperator operator = new QuartzOperator();
-		operator.addJob(TestJob.class, SimpleScheduleBuilder.repeatSecondlyForever(), null, null, null, null);
+		QuartzJobData data = new QuartzJobData();
+		data.setCron("0 0/20 * * * ?");
+		operator.addJob(data);
 		operator.startQuartz();
 	}
 }

@@ -11,9 +11,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity()
-@Table(name = "cron_task_log", schema = "")
-@SequenceGenerator(name = "SEQ_GEN", sequenceName = "cron_task_log_sq")
-public class CronTaskLog {
+@Table(name = "async_task_log", schema = "")
+@SequenceGenerator(name = "SEQ_GEN", sequenceName = "async_task_log_sq")
+public class AsyncTaskLog {
 
 	@Id
 	@Column(name = "log_id")

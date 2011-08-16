@@ -1,7 +1,15 @@
 package com.cm4j.taobao.service.async.quartz;
 
+import java.util.Date;
+
+import org.quartz.Job;
+
 public class QuartzJobData {
 
+	/**
+	 * 处理类
+	 */
+	private Class<? extends Job> handlerClazz;
 	/**
 	 * 淘宝ID
 	 */
@@ -11,9 +19,18 @@ public class QuartzJobData {
 	 */
 	private String sessionKey;
 	/**
+	 * 定时任务执行cron
+	 */
+	private String cron;
+	/**
 	 * json数据
 	 */
 	private String jsonData;
+
+	/**
+	 * 开始结束时间
+	 */
+	private Date startDate, endDate;
 
 	public Long getUserId() {
 		return userId;
@@ -37,6 +54,38 @@ public class QuartzJobData {
 
 	public void setJsonData(String jsonData) {
 		this.jsonData = jsonData;
+	}
+
+	public String getCron() {
+		return cron;
+	}
+
+	public void setCron(String cron) {
+		this.cron = cron;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
+	public Class<? extends Job> getHandlerClazz() {
+		return handlerClazz;
+	}
+
+	public void setHandlerClazz(Class<? extends Job> handlerClazz) {
+		this.handlerClazz = handlerClazz;
 	}
 
 }
