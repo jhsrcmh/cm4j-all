@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -117,7 +118,9 @@ public class ItemsAction extends BaseDispatchAction {
 	private List<Long> listConverter(List<String> list) {
 		List<Long> result = new ArrayList<Long>();
 		for (String element : list) {
-			result.add(NumberUtils.toLong(element));
+			if (StringUtils.isNotBlank(element)){
+				result.add(NumberUtils.toLong(element));
+			}
 		}
 		return result;
 	}

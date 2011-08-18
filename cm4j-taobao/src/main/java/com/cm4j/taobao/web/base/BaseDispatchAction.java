@@ -137,7 +137,7 @@ public class BaseDispatchAction {
 	 * @return
 	 */
 	@ExceptionHandler
-	public String otherExceptionHandle(Exception exception, HttpServletRequest request, HttpServletResponse response) {
+	protected String otherExceptionHandle(Exception exception, HttpServletRequest request, HttpServletResponse response) {
 		logger.error("action caught exception",exception);
 		if (checkJsonException(exception, request, response)) {
 			return null;
@@ -160,5 +160,22 @@ public class BaseDispatchAction {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 组装成功ResultObject对象
+	 */
+	protected ResultObject successResultObject(String message) {
+		return successResultObject (message,null);
+	}
+	/**
+	 * 组装成功ResultObject对象
+	 */
+	protected ResultObject successResultObject(String message,Object obj) {
+		if (obj == null){
+			return new ResultObject(1, message);
+		} else {
+			return new ResultObject(1, message ,obj);
+		}
 	}
 }

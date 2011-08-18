@@ -1,5 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -44,16 +44,16 @@
 							<div class="clear"></div>
 							
 							<br /><b>Step2:设定标题和描述：</b><br />
-							活动名称：<input type="text" name="promotionTitle"/>(最多5个字符)<br />
-							活动描述：<input name="promotionDesc" style="width: 400px;"/>(最多30个字符)<br />
+							活动名称：<input type="text" name="promotionTitle"/>([2-5]个字符)<br />
+							活动描述：<input name="promotionDesc" style="width: 400px;"/>([2-30]个字符)<br />
 							
 							<br /><b>Step3:优惠类型和额度：</b><br />
 							优惠类型：<input type="radio" name="discountType" value="DISCOUNT" checked="checked"/> 打折
 									<input type="radio" name="discountType" value="PRICE"/> 特价<br />
 									
 							优惠额度：<select id="discountV" style="width: 80px;">
-										<c:forEach begin="1" end="99" var="result">
-											<option value="${result/10 }">&nbsp;&nbsp;${result/10 }折</option>
+										<c:forEach begin="1" end="999" var="result">
+											<option value="${result/100 }">&nbsp;&nbsp;${result/100 }折</option>
 										</c:forEach>
 									</select>
 							<span id="discountSpan"><input type="text" id="priceV"/>(精确到小数点后2位，不得超过商品原价) <br />
@@ -65,8 +65,8 @@
 							<span id="discountShowSpan"></span>
 						
 							<br /><b>Step4:设定活动开始和结束时间：</b><br />
-							活动开始时间：<input type="text" name="startDate" readonly="readonly"/> <br />
-							活动结束时间：<input type="text" name="endDate" readonly="readonly"/> <br />
+							活动开始时间：<input type="text" name="startTime" readonly="readonly"/> <br />
+							活动结束时间：<input type="text" name="endTime" readonly="readonly"/> <br />
 							客户分类：
 							<select name="tagId" style="width: 80px;">
 								<option value="1" selected="selected">所有用户</option>
@@ -182,7 +182,8 @@
 						}
 					},
 					error: function(error){
-						alert('error:' + error);
+						dialog_error ("未知异常：" + error);
+						return ;
 					},
 				});
 				return total_results;
@@ -268,8 +269,12 @@
 					}
 					
 					// 标题和描述
-					if ($(":input[name='promotionTitle']").val() == '' ||$(":input[name='promotionDesc']").val() == ''){
-						dialog_error ("请填写活动标题和描述");
+					if (!$(":input[name='promotionTitle']").val().lengthRange(2,5)){
+						dialog_error ("活动名称长度限制为[2-5]个字符");
+						return ;
+					}
+					if (!$(":input[name='promotionDesc']").val().lengthRange(2,30)){
+						dialog_error ("活动描述长度限制为[2-30]个字符");
 						return ;
 					}
 					
@@ -288,7 +293,7 @@
 					}
 					
 					// 开始结束时间
-					if ($(":input[name='startDate']").val() == '' ||$(":input[name='endDate']").val() == ''){
+					if ($(":input[name='startTime']").val() == '' ||$(":input[name='endTime']").val() == ''){
 						dialog_error ("请选择活动开始和结束时间");
 						return ;
 					}
@@ -334,11 +339,11 @@
 			});
 			
 			// 日期加载
-			$("input[name='startDate']").datetimepicker({
+			$("input[name='startTime']").datetimepicker({
 				dateFormat: 'yy-mm-dd',
 				minDate: '+0',
 			});
-			$("input[name='endDate']").datetimepicker({
+			$("input[name='endTime']").datetimepicker({
 				dateFormat: 'yy-mm-dd',
 				minDate: '+0',
 			});

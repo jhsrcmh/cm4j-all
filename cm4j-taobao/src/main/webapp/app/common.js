@@ -46,6 +46,35 @@ function checkJson(json) {
 }
 
 /**
+ * 调用jquery的ajax请求，进行一次封装
+ * 1.url添加参数
+ * 2.默认提交格式为json
+ * 3.封装error
+ * 4.封装成功handler，调用者无需判断成功失败
+ * 
+ * @param url
+ * @param data
+ * @param handler
+ * @returns
+ */
+function _ajax(json_params){
+	$.ajax({
+		url: json_params.url + "?is_json=true",
+		dataType : json_params.dataType == undefined ? "json" : json_params.dataType,
+		data:json_params.data,
+		success: function(json){
+			if (checkJson(json)){
+				json_params.success(json);
+			} 
+		},
+		error: function(error){
+			dialog_error ("未知异常：" + error);
+			return ;
+		},
+	});
+}
+
+/**
  * 为数组添加删除元素功能
  * 
  * @return 返回操作后的数组
@@ -71,4 +100,16 @@ String.prototype.str2array = function() {
 	var array = this.split(",");
 	array.deleElement('');
 	return $.unique(array);
+}
+/**
+ * 判断字符长度
+ */
+String.prototype.lengthRange = function (min,max){
+	if (this == undefined){
+		return false;
+	}
+	if (this.length < min || this.length > max){
+		return false;
+	}
+	return true;
 }

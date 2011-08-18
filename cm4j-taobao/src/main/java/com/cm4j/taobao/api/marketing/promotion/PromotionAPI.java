@@ -220,10 +220,12 @@ public class PromotionAPI {
 
 		if (StringUtils.isBlank(request.getDiscountValue())) {
 			throw new ValidationException("优惠额度不能为空");
-		} else if ("DISCOUNT".equals(request.getDiscountType())
-				&& !ValidateUtils.validateDiscount(request.getDiscountValue())) {
-			// 不满足 1.0-9.9 精确到小数后1位
-			throw new ValidationException("折扣比率不合法");
+		} else if ("DISCOUNT".equals(request.getDiscountType())) {
+			float value = NumberUtils.toFloat(request.getDiscountValue());
+			if (!(ValidateUtils.validateDecimal(request.getDiscountValue(), 2) && value < 10)){
+				// 不满足0.01-9.99 精确到小数后1位
+				throw new ValidationException("折扣比率不合法");
+			}
 		} else if ("PRICE".equals(request.getDiscountType())) {
 			if (!ValidateUtils.validateDecimal(request.getDiscountValue(), 2)) {
 				throw new ValidationException("优惠价格不合法");
@@ -265,7 +267,7 @@ public class PromotionAPI {
 			throw new ValidationException("优惠额度不能为空");
 		} else if ("DISCOUNT".equals(request.getDiscountType())
 				&& !ValidateUtils.validateDiscount(request.getDiscountValue())) {
-			// 不满足 1.0-9.9 精确到小数后1位
+			// 不满足 0.01-9.99 精确到小数后2位
 			throw new ValidationException("折扣比率不合法");
 		} else if ("PRICE".equals(request.getDiscountType())) {
 			if (!ValidateUtils.validateDecimal(request.getDiscountValue(), 2)) {

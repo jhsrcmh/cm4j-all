@@ -77,7 +77,7 @@ public class PromotionServiceTest extends TestContext {
 
 	@Test
 	public void deleteTest() throws ApiException {
-		boolean is_success = PromotionAPI.delete(63928058L, TAOBAO_SESSION_KEY);
+		boolean is_success = PromotionAPI.delete(75951239L, TAOBAO_SESSION_KEY);
 		logger.debug("is_success:{}", APICaller.jsonBinder.toJson(is_success));
 	}
 }

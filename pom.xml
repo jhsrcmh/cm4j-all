@@ -27,6 +27,7 @@
 		<netty.version>3.2.4.Final</netty.version>
 		<google.guava.version>r09</google.guava.version>
 		<quartz.version>2.0.2</quartz.version>
+		<joda-time.version>2.0</joda-time.version>
 		<!-- 数据库 -->
 		<h2database.version>1.2.135</h2database.version>
 		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version>
@@ -127,6 +128,11 @@
 				<scope>compile</scope>
 			</dependency>
 			<!-- google end -->
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.version}</version>
+			</dependency>
 
 			<!-- spring begin -->
 			<dependency>
@@ -305,11 +311,8 @@
 				<scope>compile</scope>
 			</dependency>
 
-			<!-- <dependency>
-				<groupId>quartz</groupId>
-				<artifactId>quartz</artifactId>
-				<version>${quartz.version}</version>
-			</dependency> -->
+			<!-- <dependency> <groupId>quartz</groupId> <artifactId>quartz</artifactId> 
+				<version>${quartz.version}</version> </dependency> -->
 
 			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
@@ -513,6 +516,8 @@
 								<port>8080</port>
 							</connector>
 						</connectors>
+						<webDefaultXml>../jetty-webdefault.xml</webDefaultXml>
+						<scanIntervalSeconds>0</scanIntervalSeconds>
 					</configuration>
 					<executions>
 						<execution>
