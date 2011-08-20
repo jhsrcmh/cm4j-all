@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<title>网站标题</title>
+<title>商家小管家 - 创建定向优惠活动</title>
 <meta name="keywords" content="keywords" />
 <meta name="description" content="description" />
 <meta name="author" content="yang.hao" />
@@ -27,14 +27,14 @@
 			<div id="right">
 
 				<!-- 当前位置和广告位 -->
-				<jsp:include page="/commons/position_ad.jsp?current_position=添加活动" />
+				<jsp:include page="/commons/position_ad.jsp?current_position=创建定向优惠活动" />
 
 				<!-- 正文 -->
 				<div id="text" class="contenttext">
 					<p>
 						<form action="/secure/promotion/add" method="post">
-							<input type="hidden" name="numIids" id="items"/>
-							<input type="hidden" name="discountValue" id="items"/>
+							<input type="hidden" name="numIids"/>
+							<input type="hidden" name="discountValue"/>
 							
 							<b>Step1:选择促销商品：</b><br />
 							<!-- 测试分页 -->
@@ -74,20 +74,6 @@
 							<br />
 							
 							<br /><input type="button" id="formSubmit" value="提交"/> <input type="reset" value="重置"/>
-							
-							<!-- 测试显示商品
-							<div class="productFlow" align="center">
-								<ul>
-									<li><img src="/imgs/address.gif" /></li>
-									<li>商品名</li>
-									<li>100元</li>
-								</ul>
-								<ul>
-									<li><img src="/imgs/address.gif" /></li>
-									<li>商品名</li>
-									<li>100元</li>
-								</ul>
-							</div> -->
 							
 						</form>
 					</p>
@@ -131,14 +117,14 @@
 			
 		 	// 初始化分页
 			var page_size = 1;
-			initPagination();
-			function initPagination() {
+			initPagination(page_size);
+			function initPagination(page_size) {
 				// 显示第一页
-				var total_results = showItems(page_size,1);
+				var total_results = page_show(page_size,1);
 				
 				// 获取总页数并绑定
-				var total_pages = total_results % page_size == 0 ? total_results / page_size : (total_results / page_size + 1);
-				$("#items").data("total_pages", total_pages);
+				var total_pages = total_results % page_size == 0 ? total_results / page_size : (Math.floor(total_results / page_size) + 1);
+				$("#Pagination").data("total_pages", total_pages);
 				
                 // 初始化页码
                 $("#Pagination").pagination(total_results, {
@@ -151,11 +137,11 @@
 			
 			// 分页回调,page_index是从0开始的
 			function pageselectCallback(page_index, jq){
-				showItems(page_size,page_index + 1);
+				page_show(page_size,page_index + 1);
             }
 			
 			// 查询在售商品
-			function showItems (page_size,page_no){
+			function page_show (page_size,page_no){
 				var total_results = 0;
 				$.ajax({
 					url: "/secure/items/list_onsale",
@@ -178,7 +164,7 @@
 							// call 绑定点击商品事件
 							bindClickEvent(page_no);
 							// call 选中当前页所有已绑定数据的标签(模拟click)
-							showAllSelectedItems(page_no);
+							showAllSelectedItems(total_results);
 						}
 					},
 					error: function(error){
@@ -191,53 +177,52 @@
 			
 			/**
 			 * 商品标签点击事件绑定
-			 * 选择的商品都绑定在#items对象上，按page_{no}为键存放
+			 * 选择的商品都绑定在#Pagination对象上，按page_{no}为键存放
 			 * @param page_no 当前页
 			 */ 
 			function bindClickEvent(page_no){
 				$("#Searchresult ul").click(function(){
 					if ($(this).attr("class") != 'productSelect'){
 						// 设置所有选中商品数据
-						var total_pages = $("#items").data("total_pages", total_pages);
+						var total_pages = $("#Pagination").data("total_pages", total_pages);
 						if (getAllBindedItems(total_pages).length >= 10){
 							dialog_error("一次活动最多选择10个商品");
 							return;
 						}
 						
-						// 点击事件，添加边框，记录数据
+						// 点击事件，添加边框，绑定数据
 						$(this).addClass("productSelect");
 						
-						var array = $("#items").data("page_" + page_no);
+						var array = $("#Pagination").data("page_" + page_no);
 						if (array == undefined){
 							array = [];
 						}
 						array.push($(this).attr("item_id"));
-						$("#items").data("page_" + page_no, $.unique(array));
+						$("#Pagination").data("page_" + page_no, $.unique(array));
 					} else {
 						// 点击事件，去除边框，删除数据
 						$(this).removeClass("productSelect");
 						
-						var array = $("#items").data("page_" + page_no);
+						var array = $("#Pagination").data("page_" + page_no);
 						if (array != undefined){
 							array.deleElement($(this).attr("item_id")).deleElement("");
 						}
-						$("#items").data("page_" + page_no, array);
+						$("#Pagination").data("page_" + page_no, array);
 					}
 				});
 			}
 			
 			/**
 			 * 选中当前页所有已绑定数据的标签(模拟click)
-			 * @param page_no 当前页
+			 * @param total_pages 总页数
 			 */ 
-			function showAllSelectedItems (page_no){
-				var array = $("#items").data("page_" + page_no);
-				if (array != undefined){
-					$(array).each(function(index,element){
-						// css("border","1px solid");
-						$("#Searchresult ul[item_id='"+ element +"']").click();
-					});
-				}
+			function showAllSelectedItems(total_pages){
+				var array = getAllBindedItems (total_pages)
+				$("#Searchresult ul").each(function(index,element){
+					if ($.inArray($(this).attr("item_id"),array) != -1){
+						$(this).click();
+					}
+				});
 			}
 			
 			/**
@@ -247,7 +232,7 @@
 			function getAllBindedItems (total_pages){
 				var result = [];
 				for (var i=0; i < total_pages; i++) {
-					var page_array = $("#items").data("page_" + (i + 1));
+					var page_array = $("#Pagination").data("page_" + (i + 1));
 					if (page_array != undefined){
 						result = $.merge(result,page_array);
 					}
@@ -258,11 +243,11 @@
 			// 点击提交按钮校验
 			$("#formSubmit").click(function(){
 					// 设置所有选中商品数据
-					var total_pages = $("#items").data("total_pages", total_pages);
+					var total_pages = $("#Pagination").data("total_pages", total_pages);
 					var result = getAllBindedItems(total_pages);
-					$("#items").val($.unique(result).toString());
+					$("input[name='numIids']").val($.unique(result).toString());
 					
-					var items = $("#items").val();
+					var items = $("input[name='numIids']").val();
 					if (items == undefined || items == ''){
 						dialog_error ("未选中任何商品，请选择参与活动的商品后提交");
 						return ;
@@ -341,11 +326,11 @@
 			// 日期加载
 			$("input[name='startTime']").datetimepicker({
 				dateFormat: 'yy-mm-dd',
-				minDate: '+0',
+				minDate: 0,
 			});
 			$("input[name='endTime']").datetimepicker({
 				dateFormat: 'yy-mm-dd',
-				minDate: '+0',
+				minDate: 0,
 			});
 		}
 	</script>

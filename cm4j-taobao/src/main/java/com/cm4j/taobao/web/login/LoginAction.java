@@ -118,6 +118,6 @@ public class LoginAction extends BaseDispatchAction {
 
 		logger.debug("用户登陆成功，userSession:{}", APICaller.jsonBinder.toJson(userSession));
 
-		return SUCCESS_PAGE;
+		return "/index";
 	}
 }

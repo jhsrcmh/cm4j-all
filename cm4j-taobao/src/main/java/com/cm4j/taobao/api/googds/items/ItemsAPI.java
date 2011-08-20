@@ -1,14 +1,20 @@
 package com.cm4j.taobao.api.googds.items;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.cm4j.taobao.api.common.APICaller;
+import com.cm4j.taobao.api.common.DomainResolver;
 import com.cm4j.taobao.exception.ValidationException;
+import com.google.common.base.Joiner;
 import com.taobao.api.ApiException;
+import com.taobao.api.domain.Item;
+import com.taobao.api.request.ItemsListGetRequest;
 import com.taobao.api.request.ItemsOnsaleGetRequest;
+import com.taobao.api.response.ItemsListGetResponse;
 import com.taobao.api.response.ItemsOnsaleGetResponse;
 
 /**
@@ -33,7 +39,7 @@ public class ItemsAPI {
 	 */
 	public static Map<String, Object> onsale_get(ItemsOnsaleGetRequest request, String sessionKey) throws ApiException,
 			ValidationException {
-		
+
 		checkOnsaleGetRequest(request);
 
 		if (StringUtils.isBlank(request.getFields())) {
@@ -47,6 +53,43 @@ public class ItemsAPI {
 		result.put("total_results", response.getTotalResults());
 		result.put("items", response.getItems());
 		return result;
+	}
+
+	/**
+	 * taobao.items.list.get 批量获取商品信息
+	 * 
+	 * @param fields
+	 *            需要返回的商品对象字段。可选值：Item商品结构体中所有字段均可返回(注：目前不能返回props_name)；多个字段用“,
+	 *            ”分隔。如果想返回整个子对象，那字段为itemimg，如果是想返回子对象里面的字段，那字段为itemimg.url。
+	 * @param num_iids
+	 *            商品数字id列表，多个num_iid用逗号隔开，一次不超过20个。
+	 * @param sessionKey
+	 * @return
+	 * @return
+	 * @throws ValidationException
+	 * @throws ApiException
+	 */
+	public static List<Item> list_get(String fields, String num_iids, String sessionKey) throws ValidationException,
+			ApiException {
+		ItemsListGetRequest request = new ItemsListGetRequest();
+		if (StringUtils.isBlank(fields)) {
+			List<String> values = DomainResolver.getApiFieldValues(Item.class);
+			request.setFields(Joiner.on(",").join(values));
+		} else {
+			request.setFields(fields);
+		}
+
+		String[] split = StringUtils.split(num_iids, ",");
+		if (split.length > 20) {
+			throw new ValidationException("卖家店铺内自定义类目ID最多为20个");
+		}
+
+		request.setNumIids(num_iids);
+
+		ItemsListGetResponse response = APICaller.call(request, sessionKey);
+		APICaller.resolveResponseException(response);
+
+		return response.getItems();
 	}
 
 	private static void checkOnsaleGetRequest(ItemsOnsaleGetRequest request) throws ValidationException {

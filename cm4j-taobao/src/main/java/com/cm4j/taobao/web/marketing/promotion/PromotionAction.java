@@ -57,6 +57,10 @@ public class PromotionAction extends BaseDispatchAction {
 	public String add(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date startTime,
 			@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") Date endTime, MarketingPromotionAddRequest request)
 			throws ValidationException, ApiException {
+		if (endTime.before(startTime)){
+			throw new ValidationException("活动结束时间必须大于开始时间");
+		}
+
 		request.setStartDate(startTime);
 		request.setEndDate(endTime);
 		Map<String, Object> result = PromotionAPI.add(request, super.getSessionKey());
@@ -111,10 +115,12 @@ public class PromotionAction extends BaseDispatchAction {
 	@RequestMapping("/update")
 	public void update(MarketingPromotionUpdateRequest request) throws ValidationException, ApiException {
 		// todo 是否要判断？
-		//		PromotionPloy promotionPloy = promotionPloyDao.findById(request.getPromotionId());
-		//		if (PromotionPloyStatus.UNACTIVE.name().equals(promotionPloy.getStatus())){
-		//			throw new ValidationException("此活动已被禁用，无法进行修改操作！");
-		//		}
+		// PromotionPloy promotionPloy =
+		// promotionPloyDao.findById(request.getPromotionId());
+		// if
+		// (PromotionPloyStatus.UNACTIVE.name().equals(promotionPloy.getStatus())){
+		// throw new ValidationException("此活动已被禁用，无法进行修改操作！");
+		// }
 		Map<String, Object> result = PromotionAPI.update(request, super.getSessionKey());
 		logger.debug("result:{}", result);
 	}

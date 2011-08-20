@@ -12,7 +12,7 @@
 
 <div id="nav">
 	<ul id="navmenu">
-		<li><a title="返回首页" href="#" class="one">网站首页</a></li>
+		<li><a title="返回首页" href="/index.jsp" class="one">网站首页</a></li>
 		<li><a title="推广活动" href="#" class="one">推广活动</a>
 			<ul>
 				<li><a title="创建定向优惠活动" href="/secure/promotion/prepare">创建定向优惠活动</a>
@@ -28,7 +28,7 @@
 				<li><a title="智能橱窗推荐" href="#">智能推荐</a>
 					<ul></ul>
 				</li>
-				<li><a title="定时橱窗推荐" href="/secure/promotion/list">分批推荐</a>
+				<li><a title="定时橱窗推荐" href="/secure/items/separate_showcase/prepare">分批推荐</a>
 					<ul></ul>
 				</li>
 			</ul>

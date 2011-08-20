@@ -9,13 +9,13 @@ import com.cm4j.taobao.api.common.APICaller;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Postage;
 
-public class PostagesServiceTest extends TestContext {
+public class PostagesAPITest extends TestContext {
 
-	private PostagesAPI postagesService = new PostagesAPI();
+	private PostagesAPI postagesAPI = new PostagesAPI();
 
 	@Test
 	public void getTest() throws ApiException {
-		List<Postage> result = postagesService.get(null, TAOBAO_SESSION_KEY);
+		List<Postage> result = postagesAPI.get(null, TAOBAO_SESSION_KEY);
 		logger.debug("taobao.postages.get:{}", APICaller.jsonBinder.toJson(result));
 	}
 }

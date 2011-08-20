@@ -34,7 +34,7 @@
 				
 				<table id="promotion_query" style="width: 95%;">
 					<tr style="font-weight: bold;" align="center">
-						<td colspan="8">单个商品定向优惠活动查询</td>
+						<td colspan="8">单个商品定向优惠活动查询 [淘宝系统实时查询]</td>
 					</tr>
 					<tr style="font-weight: bold;" align="center">
 						<td colspan="8">
@@ -63,7 +63,7 @@
 				</table>
 				<table style="width: 95%;">
 					<tr style="font-weight: bold;" align="center">
-						<td colspan="8">定向优惠活动展示</td>
+						<td colspan="8">定向优惠活动展示 [小管家存储活动]</td>
 					</tr>
 					<tr style="font-weight: bold;" align="center">
 						<td>活动ID</td>
@@ -126,47 +126,83 @@
 						status : $("#promotion_status").val(),
 					},
 					success: function(json){
+						$("tr[name='show_ploys']").remove();
+						
 						if (json.total_results == 0){
-							$("#not_found_ploys").html('<td colspan="8">对不起，未查询到此商品活动</td>');
+							$("#not_found_ploys")
+								.html('<td colspan="8">对不起，未查询到此商品活动</td>')
+								.show();
 						} else {
 							var html = [];
-							for(promotion in json.promotions){
-								html.push('<tr style="font-weight: bold;" align="center">');
-								html.push('<td>活动ID</td>');
-								html.push('<td>名称</td>');
-								html.push('<td>类型</td>');
-								html.push('<td>优惠数量</td>');
-								html.push('<td>开始时间</td>');
-								html.push('<td>结束时间</td>');
-								html.push('<td>状态</td>');
-								html.push('<td>操作</td>');
-								html.push('<td>开始时间</td>');
-								html.push('</tr>');
-							}
-							$("#not_found_ploys").append(html.join(''));
+							$(json.promotions).each(function(index, element){
+								var promotion_html = [];
+								promotion_html.push('<tr name="show_ploys" style="font-weight: bold;" align="center">');
+								promotion_html.push('<td>#1</td>');
+								promotion_html.push('<td>#2</td>');
+								promotion_html.push('<td>#3</td>');
+								promotion_html.push('<td>#4</td>');
+								promotion_html.push('<td>#5</td>');
+								promotion_html.push('<td>#6</td>');
+								promotion_html.push('<td>#7</td>');
+								promotion_html.push('<td><a href="#" sid="unactive">禁用</a></td>');
+								promotion_html.push('</tr>');
+								
+								html.push(
+									promotion_html.join("")
+									.replace("#1",element.promotionId)
+									.replace("#2",element.promotionTitle)
+									.replace("#3",element.discountType == "DISCOUNT" ? "打折" : "优惠")
+									.replace("#4",element.discountValue)
+									.replace("#5",new Date(element.startDate).format())
+									.replace("#6",new Date(element.endDate).format())
+									.replace("#7",element.status == "ACTIVE" ? "启用" : "禁用")		
+								);
+							});
+							$("#not_found_ploys").hide();
+							$("#promotion_query").append(html.join(""));
+							
+							unactive_event();
 						}
 					},
 				});
 			});
 			
 			// 禁用活动按钮事件
-			$("a[sid='unactive']").click(function(){
-				var td_line = $(this).parent().parent().children();
-				var promotionId = $(td_line[0]).html();
-				var promotionTitle = $(td_line[1]).html();
-				var status_container = $(td_line[6]);
-				
-				// ajax请求
-				_ajax({url: "/secure/promotion/unactive",
-					data:{
-						promotion_id : promotionId,
-					},
-					success: function(json){
-						dialog ("操作成功","[" + promotionTitle + "]" + "活动禁用成功");
-						status_container.html("禁用");
-					}
+			unactive_event ();
+			function unactive_event(){
+				$("a[sid='unactive']").click(function(){
+					var td_line = $(this).parent().parent().children();
+					var promotionId = $(td_line[0]).html();
+					var promotionTitle = $(td_line[1]).html();
+					var status_container = $(td_line[6]);
+					
+					dialog ("禁用活动确认","是否禁用活动[" + promotionTitle + "] ?")
+					.dialog({
+						buttons : [{
+							text : "确认",
+							click : function() {
+								// 关闭前一个弹出框
+								$(this).dialog("close").dialog("destroy");
+								
+								// ajax请求
+								_ajax({url: "/secure/promotion/unactive",
+									data:{
+										promotion_id : promotionId,
+									},
+									success: function(json){
+										dialog ("操作成功","[" + promotionTitle + "]" + "活动禁用成功");
+										status_container.html("禁用");
+									}
+								});
+							}
+						},{
+							text : "取消",
+							click : function() { $(this).dialog("close");}
+						}]
+					});
 				});
-			});
+			}
+			
 		});
 	</script>
 </body>

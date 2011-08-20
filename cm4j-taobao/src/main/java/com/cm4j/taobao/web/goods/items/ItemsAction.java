@@ -27,7 +27,7 @@ import com.taobao.api.domain.Item;
 @Controller
 @RequestMapping("/secure/items")
 public class ItemsAction extends BaseDispatchAction {
-
+	
 	/**
 	 * 分页显示在销售的商品
 	 * 
@@ -43,6 +43,27 @@ public class ItemsAction extends BaseDispatchAction {
 		return ItemService.listOnsaleItems(page_size, page_no, null, getSessionKey());
 	}
 
+	
+	/**
+	 * 跳转至分批橱窗推荐
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/separate_showcase/prepare")
+	public String separate_showcase_prepare (){
+		return "/showcase/separate_showcase";
+	}
+	
+	/**
+	 * 分批橱窗推荐
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/separate_showcase")
+	public String separate_showcase (){
+		return null;
+	}
+	
 	/**
 	 * 分页显示橱窗推荐的商品
 	 * 

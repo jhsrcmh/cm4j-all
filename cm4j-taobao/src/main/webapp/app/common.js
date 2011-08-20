@@ -1,15 +1,3 @@
-// 设定弹出框
-var $dialog = $('<div></div>')
-.dialog({
-	autoOpen : false,
-	modal : true,
-	buttons : [{
-		text : "关闭",
-		click : function() { $(this).dialog("close");
-		}
-	}]
-});
-
 /**
  * 弹出框
  * 
@@ -20,10 +8,17 @@ function dialog_error(htmlMsg){
 	dialog("错误提醒",htmlMsg);
 }
 function dialog(title,htmlMsg) {
-	$dialog
+	return $('<div></div>')
 	.html(htmlMsg)
 	.dialog({
-	title: title
+		title: title,
+		autoOpen : false,
+		modal : true,
+		buttons : [{
+			text : "关闭",
+			click : function() { $(this).dialog("close");
+			}
+		}]
 	})
 	.dialog('open');
 }
@@ -74,6 +69,7 @@ function _ajax(json_params){
 	});
 }
 
+/* =======================prototype function====================== */
 /**
  * 为数组添加删除元素功能
  * 
@@ -112,4 +108,11 @@ String.prototype.lengthRange = function (min,max){
 		return false;
 	}
 	return true;
+}
+/**
+ * 将日期转换为字符串格式：yy-mm-dd HH:mm:ss
+ */
+Date.prototype.format = function (){
+	return this.getFullYear() + "-" + (this.getMonth() + 1) + "-" + this.getDate() + " " 
+	+ this.getHours() + ":" + this.getMinutes() + ":" + this.getSeconds(); 
 }
