@@ -76,6 +76,10 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>zt-repo</id>
+			<url>http://repos.zeroturnaround.com/maven2</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -91,6 +95,11 @@
 				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>zt-repo</id>
+			<name>Zero turnaround repo</name>
+			<url>http://repos.zeroturnaround.com/maven2</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -580,6 +589,21 @@
 							<configuration>
 								<encoding>UTF8</encoding>
 							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<!-- javarebel 免重启插件 -->
+				<plugin>
+					<groupId>org.zeroturnaround</groupId>
+					<artifactId>javarebel-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>generate-rebel-xml</id>
+							<phase>process-resources</phase>
+							<goals>
+								<goal>generate</goal>
+							</goals>
 						</execution>
 					</executions>
 				</plugin>

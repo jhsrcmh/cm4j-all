@@ -60,7 +60,8 @@ public class ItemsAction extends BaseDispatchAction {
 	 * @return
 	 */
 	@RequestMapping("/separate_showcase")
-	public String separate_showcase (){
+	public String separate_showcase (String numIids_group1,String numIids_group2,int interval){
+		
 		return null;
 	}
 	

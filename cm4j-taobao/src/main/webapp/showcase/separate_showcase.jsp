@@ -46,7 +46,7 @@
 							<br />
 							
 							<b>Step2：选择分批橱窗推荐时间间隔</b><br />
-							两批次轮换时间间隔：<select>
+							两批次轮换时间间隔：<select name="interval">
 								<option value="8">8小时</option>
 								<option value="16">16小时</option>
 								<option value="24" selected="selected">1天</option>
@@ -193,7 +193,7 @@
 						? 0 :  $("#Pagination").data("total_showcase");
 					
 					if (array.length >= total_showcase){
-						dialog_error("本批次最多选择total_showcase个商品");
+						dialog_error("单批次选择商品数量不得超过橱窗推荐总数量：[" + total_showcase + "]");
 						return;
 					}
 					// 添加边框样式
@@ -263,7 +263,19 @@
 			 * 提交按钮
 			 */ 
 			$("#formSubmit").click(function(){
-				alert("group1:" + getAllBindedItems(1) + "\ngroup2:" + getAllBindedItems(2));
+				$("input[name='numIids_group1']").val($.unique(getAllBindedItems(1)).toString());
+				$("input[name='numIids_group2']").val($.unique(getAllBindedItems(2)).toString());
+				if ($("input[name='numIids_group1']").val() == ''){
+					dialog_error ("第1批未选中任何商品，请左击选择商品后提交");
+					return ;
+				} 
+				if ($("input[name='numIids_group2']").val() == ''){
+					dialog_error ("第2批未选中任何商品，请右击选择商品后提交");
+					return ;
+				} 
+				
+				// 提交 
+				$(this).submit();
 			});
 		}); 
 		

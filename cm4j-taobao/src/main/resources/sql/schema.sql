@@ -25,13 +25,13 @@ CREATE TABLE IF NOT EXISTS user_info(
 CREATE TABLE IF NOT EXISTS async_task(
 	task_id bigint not null PRIMARY KEY, 		-- 主键ID
 	task_type varchar(25) not null, 			-- 任务类型 async or cron
-	task_sub_type varchar(25) not null,			-- 具体任务类型
+	task_sub_type varchar(25) not null,		-- 具体任务类型
 	related_id bigint, 							-- 相关业务ID
 	task_cron varchar(50), 						-- 定时任务cron表达式
 	task_data varchar(500), 					-- 任务相关数据(包含)
 	start_date timestamp not null default sysdate, 	-- 开始时间 
 	end_date timestamp not null default sysdate, 	-- 结束时间，永久则插入当前年份+100 
-	state varchar(1) not null, 					-- 0-待执行 1-成功 2-失败
+	state varchar(1) not null, 					-- 0-待执行 1-成功 2-失败 9-禁用
 );
 create sequence IF NOT EXISTS async_task_sq
 start with 1
