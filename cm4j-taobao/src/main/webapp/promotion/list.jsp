@@ -58,7 +58,7 @@
 						<td>操作</td>
 					</tr>
 					<tr id="not_found_ploys" style="font-weight: bold;" align="center">
-						<td colspan="8">对不起，未查询到此商品活动</td>
+						<td colspan="8">请输入商品ID进行查看</td>
 					</tr>
 				</table>
 				<table style="width: 95%;">

@@ -31,53 +31,50 @@
 
 				<!-- 正文 -->
 				<div id="text" class="contenttext">
-					<p>
-						<form action="/secure/promotion/add" method="post">
-							<input type="hidden" name="numIids"/>
-							<input type="hidden" name="discountValue"/>
-							
-							<b>Step1:选择促销商品：</b><br />
-							<!-- 测试分页 -->
-							<div id="Searchresult" class="productFlow" align="center"></div>
-							<div class="clear"></div>
-							<div id="Pagination"></div>
-							<div class="clear"></div>
-							
-							<br /><b>Step2:设定标题和描述：</b><br />
-							活动名称：<input type="text" name="promotionTitle"/>([2-5]个字符)<br />
-							活动描述：<input name="promotionDesc" style="width: 400px;"/>([2-30]个字符)<br />
-							
-							<br /><b>Step3:优惠类型和额度：</b><br />
-							优惠类型：<input type="radio" name="discountType" value="DISCOUNT" checked="checked"/> 打折
-									<input type="radio" name="discountType" value="PRICE"/> 特价<br />
-									
-							优惠额度：<select id="discountV" style="width: 80px;">
-										<c:forEach begin="1" end="999" var="result">
-											<option value="${result/100 }">&nbsp;&nbsp;${result/100 }折</option>
-										</c:forEach>
-									</select>
-							<span id="discountSpan"><input type="text" id="priceV"/>(精确到小数点后2位，不得超过商品原价) <br />
-							
-							首件打折：<input type="radio" name="decreaseNum" checked="checked" value="0"/> 否(全部商品打折)
-									<input type="radio" name="decreaseNum" value="1"/> 是(仅首件打折)
-									</span><br />
-							<!-- 显示例子 -->
-							<span id="discountShowSpan"></span>
+					<form action="/secure/promotion/add" method="post">
+						<input type="hidden" name="numIids"/>
+						<input type="hidden" name="discountValue"/>
 						
-							<br /><b>Step4:设定活动开始和结束时间：</b><br />
-							活动开始时间：<input type="text" name="startTime" readonly="readonly"/> <br />
-							活动结束时间：<input type="text" name="endTime" readonly="readonly"/> <br />
-							客户分类：
-							<select name="tagId" style="width: 80px;">
-								<option value="1" selected="selected">所有用户</option>
-							</select> (未进行客户分类?点这里指定)
-							<br />
-							
-							<br /><input type="button" id="formSubmit" value="提交"/> <input type="reset" value="重置"/>
-							
-						</form>
-					</p>
-
+						<b>Step1:选择促销商品：</b><br />
+						<!-- 测试分页 -->
+						<div id="Searchresult" class="productFlow" align="center"></div>
+						<div class="clear"></div>
+						<div id="Pagination"></div>
+						<div class="clear"></div>
+						
+						<br /><b>Step2:设定标题和描述：</b><br />
+						活动名称：<input type="text" name="promotionTitle"/>([2-5]个字符)<br />
+						活动描述：<input name="promotionDesc" style="width: 400px;"/>([2-30]个字符)<br />
+						
+						<br /><b>Step3:优惠类型和额度：</b><br />
+						优惠类型：<input type="radio" name="discountType" value="DISCOUNT" checked="checked"/> 打折
+								<input type="radio" name="discountType" value="PRICE"/> 特价<br />
+								
+						优惠额度：<select id="discountV" style="width: 80px;">
+									<c:forEach begin="1" end="999" var="result">
+										<option value="${result/100 }">&nbsp;&nbsp;${result/100 }折</option>
+									</c:forEach>
+								</select>
+						<span id="discountSpan"><input type="text" id="priceV"/>(精确到小数点后2位，不得超过所选商品原价) <br />
+						
+						首件打折：<input type="radio" name="decreaseNum" checked="checked" value="0"/> 否(全部商品打折)
+								<input type="radio" name="decreaseNum" value="1"/> 是(仅首件打折)
+								</span><br />
+						<!-- 显示例子 -->
+						<span id="discountShowSpan"></span>
+					
+						<br /><b>Step4:设定活动开始和结束时间：</b><br />
+						活动开始时间：<input type="text" name="startTime" readonly="readonly"/> <br />
+						活动结束时间：<input type="text" name="endTime" readonly="readonly"/> <br />
+						客户分类：
+						<select name="tagId" style="width: 80px;">
+							<option value="1" selected="selected">所有用户</option>
+						</select> (未进行客户分类?点这里指定)
+						<br />
+						
+						<br /><input type="button" id="formSubmit" value="提交"/> <input type="reset" value="重置"/>
+						
+					</form>
 				</div>
 				<!-- 正文结束 -->
 
@@ -116,7 +113,7 @@
 			page_init();
 			
 		 	// 初始化分页
-			var page_size = 1;
+			var page_size = 2;
 			initPagination(page_size);
 			function initPagination(page_size) {
 				// 显示第一页
@@ -142,72 +139,63 @@
 			
 			// 查询在售商品
 			function page_show (page_size,page_no){
-				var total_results = 0;
-				$.ajax({
+				return _ajax({
 					url: "/secure/items/list_onsale",
-					dataType :"json",
 					async : false, // 同步，因为要返回值
 					data:{
 						page_size : page_size,
 						page_no : page_no,
-						is_json : true,
 					},
 					success: function(json){
 						if (checkJson(json)){
-							total_results = json.total_results;
-							
 							$('#Searchresult').empty();
 							$(json.items).each (function(index,item){
-								$('#Searchresult').append('<ul item_id=' + item.numIid + '><li><img width="100px" src="' + item.picUrl + '" /></li><li>' + item.title + '(' + item.price + '元)</li></ul>');
+								var html = '<ul item_id="#1"><li><img src="#2" /></li><li>#3(#4元)</li></ul>';
+								$('#Searchresult').append(html.replace("#1",item.numIid)
+										.replace("#2",item.picUrl)
+										.replace("#3",item.title)
+										.replace("#4",item.price));
 							});
 							
 							// call 绑定点击商品事件
-							bindClickEvent(page_no);
+							bindClickEvent();
 							// call 选中当前页所有已绑定数据的标签(模拟click)
-							showAllSelectedItems(total_results);
+							showAllSelectedItems();
+							
+							return json.total_results;
 						}
 					},
-					error: function(error){
-						dialog_error ("未知异常：" + error);
-						return ;
-					},
 				});
-				return total_results;
 			}
 			
 			/**
 			 * 商品标签点击事件绑定
-			 * 选择的商品都绑定在#Pagination对象上，按page_{no}为键存放
+			 * 选择的商品都绑定在#Pagination对象上，按numIids为键存放
 			 * @param page_no 当前页
 			 */ 
-			function bindClickEvent(page_no){
+			function bindClickEvent(){
 				$("#Searchresult ul").click(function(){
 					if ($(this).attr("class") != 'productSelect'){
-						// 设置所有选中商品数据
-						var total_pages = $("#Pagination").data("total_pages", total_pages);
-						if (getAllBindedItems(total_pages).length >= 10){
+						var array = getAllBindedItems();
+						if (array.length >= 10){
 							dialog_error("一次活动最多选择10个商品");
 							return;
 						}
 						
-						// 点击事件，添加边框，绑定数据
-						$(this).addClass("productSelect");
-						
-						var array = $("#Pagination").data("page_" + page_no);
-						if (array == undefined){
-							array = [];
-						}
+						// 点击事件，绑定对象
 						array.push($(this).attr("item_id"));
-						$("#Pagination").data("page_" + page_no, $.unique(array));
+						$("#Pagination").data("numIids", $.unique(array));
+						// 点击事件，添加边框
+						$(this).addClass("productSelect");
 					} else {
 						// 点击事件，去除边框，删除数据
 						$(this).removeClass("productSelect");
 						
-						var array = $("#Pagination").data("page_" + page_no);
-						if (array != undefined){
-							array.deleElement($(this).attr("item_id")).deleElement("");
-						}
-						$("#Pagination").data("page_" + page_no, array);
+						$("#Pagination").data("numIids", 
+								$("#Pagination").data("numIids")
+								.deleElement($(this).attr("item_id"))
+								.deleElement("")
+						);
 					}
 				});
 			}
@@ -216,8 +204,8 @@
 			 * 选中当前页所有已绑定数据的标签(模拟click)
 			 * @param total_pages 总页数
 			 */ 
-			function showAllSelectedItems(total_pages){
-				var array = getAllBindedItems (total_pages)
+			function showAllSelectedItems(){
+				var array = getAllBindedItems();
 				$("#Searchresult ul").each(function(index,element){
 					if ($.inArray($(this).attr("item_id"),array) != -1){
 						$(this).click();
@@ -229,14 +217,11 @@
 			 * 设置所有选中商品数据
 			 * @param total_pages 总页数
 			 */ 
-			function getAllBindedItems (total_pages){
-				var result = [];
-				for (var i=0; i < total_pages; i++) {
-					var page_array = $("#Pagination").data("page_" + (i + 1));
-					if (page_array != undefined){
-						result = $.merge(result,page_array);
-					}
-				};
+			function getAllBindedItems(){
+				var result = $("#Pagination").data("numIids");
+				if (result == undefined){
+					result = [];
+				}
 				return result;
 			}
 			

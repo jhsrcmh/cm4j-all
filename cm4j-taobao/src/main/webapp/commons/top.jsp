@@ -25,10 +25,10 @@
 		</li>
 		<li><a title="用户留言" href="#" class="one">自动橱窗推荐</a>
 			<ul>
-				<li><a title="智能橱窗推荐" href="#">智能推荐</a>
+				<li><a title="智能橱窗推荐" href="#">智能橱窗推荐</a>
 					<ul></ul>
 				</li>
-				<li><a title="定时橱窗推荐" href="/secure/items/separate_showcase/prepare">分批推荐</a>
+				<li><a title="定时橱窗推荐" href="/secure/items/separate_showcase/prepare">分批橱窗推荐</a>
 					<ul></ul>
 				</li>
 			</ul>

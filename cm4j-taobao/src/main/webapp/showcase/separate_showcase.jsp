@@ -27,16 +27,17 @@
 			<div id="right">
 
 				<!-- 当前位置和广告位 -->
-				<jsp:include page="/commons/position_ad.jsp?current_position=创建定向优惠活动" />
+				<jsp:include page="/commons/position_ad.jsp?current_position=分批橱窗推荐" />
 
 				<!-- 正文 -->
 				<div id="text" class="contenttext">
-					<p>
 						<form action="/secure/promotion/add" method="post">
-							<input type="hidden" name="numIids"/>
-							<input type="hidden" name="numIids_no2"/>
+							<input type="hidden" name="numIids_group1"/>
+							<input type="hidden" name="numIids_group2"/>
 							
-							<b>Step1:选择促销商品：</b><br />
+							<b>Step1:请选择分批橱窗推荐的商品(只显示在售商品)<br />
+								<font color="red">注意：点击鼠标左键选择第一批(选中后为蓝色框)，点击鼠标右键选择第二批(选中后为橙色框)</font>：
+							</b><br />
 							<!-- 测试分页 -->
 							<div id="Searchresult" class="productFlow" align="center"></div>
 							<div class="clear"></div>
@@ -44,10 +45,18 @@
 							<div class="clear"></div>
 							<br />
 							
+							<b>Step2：选择分批橱窗推荐时间间隔</b><br />
+							两批次轮换时间间隔：<select>
+								<option value="8">8小时</option>
+								<option value="16">16小时</option>
+								<option value="24" selected="selected">1天</option>
+								<option value="72">3天</option>
+								<option value="168">7天</option>
+							</select><br />
+							
 							<br /><input type="button" id="formSubmit" value="提交"/> <input type="reset" value="重置"/>
 							
 						</form>
-					</p>
 
 				</div>
 				<!-- 正文结束 -->
@@ -82,7 +91,19 @@
 	<link href="/app/css/jquery-pagination.css" rel="stylesheet" type="text/css"/>
 	
 	<script type="text/javascript">
+		// 禁止右键
+		document.oncontextmenu = function() {
+			event.returnValue = false;
+		}
 		$(document).ready(function() {
+			// 查询可设置的橱窗数量限制 
+			_ajax({
+				url: "/secure/shop/remainshowcase_get",
+				success: function(json){
+					$("#Pagination").data("total_showcase", json.allCount);
+				}
+			});
+			
 			// 初始化分页
 			var page_size = 1;
 			initPagination(page_size);
@@ -110,109 +131,142 @@
 			
 			// 查询在售商品
 			function page_show (page_size,page_no){
-				var total_results = 0;
-				$.ajax({
+				return _ajax({
 					url: "/secure/items/list_onsale",
-					dataType :"json",
 					async : false, // 同步，因为要返回值
 					data:{
 						page_size : page_size,
 						page_no : page_no,
-						is_json : true,
 					},
 					success: function(json){
 						if (checkJson(json)){
-							total_results = json.total_results;
-							
 							$('#Searchresult').empty();
 							$(json.items).each (function(index,item){
-								$('#Searchresult').append('<ul item_id=' + item.numIid + '><li><img width="100px" src="' + item.picUrl + '" /></li><li>' + item.title + '(' + item.price + '元)</li></ul>');
+								var html = '<ul item_id="#1"><li><img src="#2" /></li><li>#3(#4元)</li></ul>';
+								$('#Searchresult').append(html.replace("#1",item.numIid)
+										.replace("#2",item.picUrl)
+										.replace("#3",item.title)
+										.replace("#4",item.price));
 							});
 							
 							// call 绑定点击商品事件
-							bindClickEvent(page_no);
+							bindClickEvent();
 							// call 选中当前页所有已绑定数据的标签(模拟click)
-							showAllSelectedItems(total_results);
+							showAllSelectedItems();
+							
+							return json.total_results;
 						}
 					},
-					error: function(error){
-						dialog_error ("未知异常：" + error);
-						return ;
-					},
 				});
-				return total_results;
 			}
 			
 			/**
 			 * 商品标签点击事件绑定
-			 * 选择的商品都绑定在#Pagination对象上，按page_{no}为键存放
+			 * 选择的商品都绑定在#Pagination对象上，按numIids为键存放
 			 * @param page_no 当前页
 			 */ 
-			function bindClickEvent(page_no){
+			function bindClickEvent(){
 				$("#Searchresult ul").mousedown(function(e){
-					if (1 == e.which){
-						// 左击
-						if ($(this).attr("class") != 'productSelect'){
-							// 设置所有选中商品数据
-							var total_pages = $("#Pagination").data("total_pages", total_pages);
-							if (getAllBindedItems(total_pages).length >= 10){
-								dialog_error("一次活动最多选择10个商品");
-								return;
-							}
-							
-							// 点击事件，添加边框，记录数据
-							$(this).addClass("productSelect");
-							
-							var array = $("#Pagination").data("page_" + page_no);
-							if (array == undefined){
-								array = [];
-							}
-							array.push($(this).attr("item_id"));
-							$("#Pagination").data("page_" + page_no, $.unique(array));
-						} else {
-							// 点击事件，去除边框，删除数据
-							$(this).removeClass("productSelect");
-							
-							var array = $("#Pagination").data("page_" + page_no);
-							if (array != undefined){
-								array.deleElement($(this).attr("item_id")).deleElement("");
-							}
-							$("#Pagination").data("page_" + page_no, array);
-						}
-					} else if (3 == e.which){
-						// 右击
+					var group = 1;
+					if (1 == e.which){ // 左击
+						bindClickEvent_group ($(this),1); // 第一组
+					} else if (3 == e.which){ // 右击
+						bindClickEvent_group ($(this),2); // 第二组 
 					}
 				});
+			}
+			
+			function bindClickEvent_group (element,group){
+				var class_group = ["productSelect","productSelect_second"];
+				var index = group - 1;
+				
+				// 已被其他组选中
+				if (isNotBlank(element.attr("class")) && $.inArray(element.attr("class"),class_group) != index){
+					dialog_error("此商品已被其他选为其他组，请先退出其他组再选择");
+					return;
+				}
+				
+				// 选中本组
+				if (element.attr("class") != class_group[index]){
+					var array = getAllBindedItems(group);
+					var total_showcase = $("#Pagination").data("total_showcase") == undefined
+						? 0 :  $("#Pagination").data("total_showcase");
+					
+					if (array.length >= total_showcase){
+						dialog_error("本批次最多选择total_showcase个商品");
+						return;
+					}
+					// 添加边框样式
+					setElementStyle (element,group,"add");
+					
+					// 绑定数据
+					array.push(element.attr("item_id"));
+					$("#Pagination").data("numIids_group" + group, $.unique(array));
+				} else { // 取消选中本组
+					// 去除边框样式
+					setElementStyle (element,group,"remove");
+					
+					// 删除绑定数据
+					$("#Pagination").data("numIids_group" + group, 
+							$("#Pagination").data("numIids_group" + group)
+							.deleElement(element.attr("item_id"))
+							.deleElement("")
+					);
+				}
+			}
+			
+			/**
+			 * 对象的css样式操作
+			 */
+			function setElementStyle (element,group,operation){
+				var class_group = ["productSelect","productSelect_second"];
+				var index = group - 1;
+				
+				if ("add" == operation){
+					element.addClass(class_group[index]);
+				} else if ("remove" == operation){
+					element.removeClass(class_group[index]);
+				}
 			}
 			
 			/**
 			 * 选中当前页所有已绑定数据的标签(模拟click)
 			 * @param total_pages 总页数
 			 */ 
-			function showAllSelectedItems(total_pages){
-				var array = getAllBindedItems (total_pages)
+			function showAllSelectedItems(){
+				var group1 = getAllBindedItems(1);
+				var group2 = getAllBindedItems(2);
 				$("#Searchresult ul").each(function(index,element){
-					if ($.inArray($(this).attr("item_id"),array) != -1){
-						$(this).click();
+					if ($.inArray($(this).attr("item_id"),group1) != -1){
+						// 在第一组
+						setElementStyle ($(this),1,"add");
+					} else if ($.inArray($(this).attr("item_id"),group2) != -1){
+						// 在第二组
+						setElementStyle ($(this),2,"add");
 					}
 				});
 			}
 			
 			/**
 			 * 设置所有选中商品数据
-			 * @param total_pages 总页数
+			 * @param group 组别 1 2
 			 */ 
-			function getAllBindedItems (total_pages){
-				var result = [];
-				for (var i=0; i < total_pages; i++) {
-					var page_array = $("#Pagination").data("page_" + (i + 1));
-					if (page_array != undefined){
-						result = $.merge(result,page_array);
-					}
-				};
+			function getAllBindedItems(group){
+				var result = $("#Pagination").data("numIids_group" + group);
+				if (result == undefined){
+					result = [];
+				}
 				return result;
 			}
+			
+			/**
+			 * 提交按钮
+			 */ 
+			$("#formSubmit").click(function(){
+				alert("group1:" + getAllBindedItems(1) + "\ngroup2:" + getAllBindedItems(2));
+			});
 		}); 
+		
 	</script>
 </body>
 </html>

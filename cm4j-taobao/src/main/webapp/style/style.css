@@ -908,6 +908,12 @@ ul#navmenu li:hover ul,ul#navmenu ul li:hover ul,ul#navmenu ul ul li:hover ul,ul
 	float: left;
 	margin: 10px;
 	cursor: pointer;
+	width: 150px;
+	height: 100px;
+}
+.productFlow img{
+	width: 100px;
+	height: 70px;
 }
 .productFlow ul li{
 	margin: 0px auto;
@@ -915,4 +921,7 @@ ul#navmenu li:hover ul,ul#navmenu ul li:hover ul,ul#navmenu ul ul li:hover ul,ul
 /*商品选中样式*/
 .productSelect {
 	border:1px solid;
+}
+.productSelect_second {
+	border:1px solid #F93;
 }

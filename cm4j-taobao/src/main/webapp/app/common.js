@@ -50,16 +50,18 @@ function checkJson(json) {
  * @param url
  * @param data
  * @param handler
- * @returns
+ * @returns 可以带返回值[success方法的返回]，但此时必须是同步调用[async = false]
  */
 function _ajax(json_params){
+	var result = undefined;
 	$.ajax({
 		url: json_params.url + "?is_json=true",
+		async : json_params.async == undefined ? true : json_params.async,
 		dataType : json_params.dataType == undefined ? "json" : json_params.dataType,
 		data:json_params.data,
 		success: function(json){
 			if (checkJson(json)){
-				json_params.success(json);
+				result = json_params.success(json);
 			} 
 		},
 		error: function(error){
@@ -67,6 +69,22 @@ function _ajax(json_params){
 			return ;
 		},
 	});
+	return result;
+}
+
+/* =======================utils====================== */
+/**
+ * 判断字符串是否为空
+ * 
+ * @returns Boolean
+ */
+function isNotBlank(element) {
+	if (element == undefined){
+		return false;
+	} else if ($.trim(element) == ''){
+		return false;
+	}
+	return true;
 }
 
 /* =======================prototype function====================== */
@@ -85,7 +103,7 @@ Array.prototype.deleElement = function(element) {
 	return this;
 }
 /**
- * string to array,以,分隔
+ * string to array,以,分隔，去重复
  * 
  * @return 返回数组，去空格
  */
