@@ -15,6 +15,8 @@ import org.apache.commons.lang.time.DateUtils;
 import org.quartz.Job;
 
 import com.cm4j.taobao.service.async.quartz.jobs.IdentityMantain;
+import com.cm4j.taobao.service.async.quartz.jobs.SeparateShowcase;
+import com.cm4j.taobao.utils.Function;
 
 @Entity()
 @Table(name = "async_task", schema = "")
@@ -22,24 +24,24 @@ import com.cm4j.taobao.service.async.quartz.jobs.IdentityMantain;
 public class AsyncTask {
 
 	/**
-	 * 状态 - 禁用 - 0
-	 */
-	public static String STATE_INVALID = "0";
-
-	/**
-	 * 状态 - 启用 - 1
-	 */
-	public static String STATE_VALID = "1";
-
-	/**
 	 * 时间-当前
 	 */
-	public static Date DATE_NOW = Calendar.getInstance().getTime();
+	public static Function<Date> DATE_NOW = new Function<Date>() {
+		@Override
+		public Date apply() {
+			return Calendar.getInstance().getTime();
+		}
+	};
 
 	/**
 	 * 时间-永久
 	 */
-	public static Date DATE_FOREVER = DateUtils.addYears(DATE_NOW, 100);
+	public static Function<Date> DATE_FOREVER = new Function<Date>() {
+		@Override
+		public Date apply() {
+			return  DateUtils.addYears(DATE_NOW.apply(), 100);
+		}
+	};
 
 	@Id
 	@Column(name = "task_id")
@@ -56,7 +58,7 @@ public class AsyncTask {
 	 * @since 2011-8-16 上午10:45:16
 	 * 
 	 */
-	public static enum TaskType {
+	public enum TaskType {
 		/**
 		 * 定时任务
 		 */
@@ -77,11 +79,16 @@ public class AsyncTask {
 	 * @since 2011-8-16 上午10:45:04
 	 * 
 	 */
-	public static enum TaskSubType {
+	public enum TaskSubType {
 		/**
-		 * 身份维持
+		 * cron - 身份维持
 		 */
-		identity_mantain(IdentityMantain.class);
+		identity_mantain(IdentityMantain.class),
+
+		/**
+		 * cron - 分批橱窗推荐
+		 */
+		separate_showcase(SeparateShowcase.class);
 
 		/**
 		 * 对应处理类
@@ -114,6 +121,25 @@ public class AsyncTask {
 
 	@Column(name = "state")
 	private String state;
+
+	public enum State {
+		/**
+		 * 待执行
+		 */
+		wating_operate,
+		/**
+		 * 执行成功
+		 */
+		success,
+		/**
+		 * 执行失败
+		 */
+		failed,
+		/**
+		 * 禁用
+		 */
+		invalid;
+	}
 
 	public Long getTaskId() {
 		return taskId;

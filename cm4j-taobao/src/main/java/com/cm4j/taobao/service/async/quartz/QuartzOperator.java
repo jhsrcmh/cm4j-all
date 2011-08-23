@@ -57,6 +57,8 @@ public class QuartzOperator implements DisposableBean {
 		
 		Class<? extends Job> handlerClazz = data.getHandlerClazz();
 		JobKey jobKey = new JobKey(handlerClazz.getSimpleName() + RandomStringUtils.randomAlphanumeric(10));
+		
+		// 删除旧任务
 		scheduler.deleteJob(jobKey);
 		JobDetail jobDetail = JobBuilder.newJob(handlerClazz).withIdentity(jobKey).build();
 		
@@ -65,7 +67,7 @@ public class QuartzOperator implements DisposableBean {
 		TriggerBuilder<?> builder = TriggerBuilder.newTrigger().withIdentity(handlerClazz.getSimpleName())
 				.forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule(data.getCron()));
 		if (data.getStartDate() == null) {
-			builder.startAt(AsyncTask.DATE_NOW);
+			builder.startAt(AsyncTask.DATE_NOW.apply());
 		} else {
 			builder.startAt(data.getStartDate());
 		}
@@ -77,6 +79,11 @@ public class QuartzOperator implements DisposableBean {
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
+	/**
+	 * 启动任务
+	 * 
+	 * @throws SchedulerException
+	 */
 	public void startQuartz() throws SchedulerException {
 		if (scheduler.getJobGroupNames().size() > 0) {
 			// 定时任务

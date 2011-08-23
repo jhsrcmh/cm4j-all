@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.cm4j.taobao.api.googds.items.ItemAPI;
 import com.cm4j.taobao.api.googds.items.ItemsAPI;
 import com.cm4j.taobao.exception.ValidationException;
@@ -64,6 +66,33 @@ public class ItemService {
 	}
 
 	/**
+	 * 显示所有的橱窗推荐商品列表
+	 * 
+	 * @param hasShowcase
+	 * @param sessionKey
+	 * @return
+	 * @throws ApiException
+	 * @throws ValidationException
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Item> listShowcaseItems(boolean hasShowcase, String sessionKey) throws ApiException,
+			ValidationException {
+		Long pageNo = 1L;
+		Map<String, Object> listShowcaseItems = null;
+		List<Item> currentItems = null;
+		List<Item> items = new ArrayList<Item>();
+		for (;;) {
+			listShowcaseItems = listShowcaseItems(40L, pageNo++, hasShowcase, sessionKey);
+			currentItems = (List<Item>) listShowcaseItems.get("items");
+			if (CollectionUtils.isEmpty(currentItems)) {
+				break;
+			}
+			items.addAll(currentItems);
+		}
+		return items;
+	}
+
+	/**
 	 * 批量橱窗推荐
 	 * 
 	 * @param num_iids
@@ -112,7 +141,9 @@ public class ItemService {
 			ValidationException {
 		List<Item> items = new ArrayList<Item>();
 		for (Long num_iid : num_iids) {
-			items.add(ItemAPI.update_listing(num_iid, sessionKey));
+			if (num_iid != 0L) {
+				items.add(ItemAPI.update_listing(num_iid, sessionKey));
+			}
 		}
 		return items;
 	}
@@ -130,7 +161,9 @@ public class ItemService {
 			ValidationException {
 		List<Item> items = new ArrayList<Item>();
 		for (Long num_iid : num_iids) {
-			items.add(ItemAPI.update_delisting(num_iid, sessionKey));
+			if (num_iid != 0L) {
+				items.add(ItemAPI.update_delisting(num_iid, sessionKey));
+			}
 		}
 		return items;
 	}

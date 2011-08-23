@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<title>商家小管家 - 创建定向优惠活动</title>
+<title>商家小管家 - 分批橱窗推荐</title>
 <meta name="keywords" content="keywords" />
 <meta name="description" content="description" />
 <meta name="author" content="yang.hao" />
@@ -31,7 +31,7 @@
 
 				<!-- 正文 -->
 				<div id="text" class="contenttext">
-						<form action="/secure/promotion/add" method="post">
+						<form action="/secure/items/separate_showcase" method="post">
 							<input type="hidden" name="numIids_group1"/>
 							<input type="hidden" name="numIids_group2"/>
 							
@@ -105,7 +105,7 @@
 			});
 			
 			// 初始化分页
-			var page_size = 1;
+			var page_size = 2;
 			initPagination(page_size);
 			function initPagination(page_size) {
 				// 显示第一页
@@ -275,7 +275,7 @@
 				} 
 				
 				// 提交 
-				$(this).submit();
+				$("form:first").submit();
 			});
 		}); 
 		

@@ -25,6 +25,26 @@ public class AsyncTaskLog {
 
 	@Column(name = "state")
 	private String state;
+	
+	public enum State {
+		/**
+		 * 执行成功 - 1
+		 */
+		success("1"),
+		/**
+		 * 执行失败 - 2
+		 */
+		failed("2");
+		private String state;
+
+		private State(String state) {
+			this.state = state;
+		}
+
+		public String getState() {
+			return state;
+		}
+	}
 
 	/**
 	 * 执行相关信息，如异常信息等

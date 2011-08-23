@@ -56,6 +56,7 @@ public class QuartzService {
 				UserInfo userInfo = (UserInfo) result[1];
 
 				QuartzJobData data = new QuartzJobData();
+				data.setTaskId(cronTask.getTaskId());
 				data.setUserId(userInfo.getUserId());
 				data.setSessionKey(userInfo.getSessionKey());
 				data.setCron(cronTask.getTaskCron());

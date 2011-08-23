@@ -32,10 +32,11 @@ public class AsyncTaskDaoTest {
 		cronTask.setTaskType(TaskType.cron.name());
 		cronTask.setTaskSubType(TaskSubType.identity_mantain.name());
 		cronTask.setRelatedId(55496072L);
+		cronTask.setTaskCron("0 0/1 * * * ?");
 		cronTask.setTaskData("");
-		cronTask.setStartDate(AsyncTask.DATE_NOW);
-		cronTask.setEndDate(AsyncTask.DATE_FOREVER);
-		cronTask.setState(AsyncTask.STATE_VALID);
+		cronTask.setStartDate(AsyncTask.DATE_NOW.apply());
+		cronTask.setEndDate(AsyncTask.DATE_FOREVER.apply());
+		cronTask.setState(AsyncTask.State.wating_operate.name());
 
 		return asyncTaskDao.save(cronTask);
 	}
@@ -45,7 +46,7 @@ public class AsyncTaskDaoTest {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(55496072L);
 		userInfo.setUserNick("syniiii");
-		userInfo.setState(UserInfo.STATE_NORMAL);
+		userInfo.setState(UserInfo.State.normal.name());
 		userInfo.setVersionNo(1);
 		userInfo.setUpdateDate(new Date());
 		userInfo.setSessionKey("50810117fe140343effTQTfsRj5b39dc0b779f038761bf5554960722");

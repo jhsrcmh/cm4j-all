@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import com.cm4j.dao.hibernate.HibernateDao;
 import com.cm4j.taobao.pojo.AsyncTask;
-import com.cm4j.taobao.pojo.UserInfo;
 import com.cm4j.taobao.pojo.AsyncTask.TaskType;
+import com.cm4j.taobao.pojo.UserInfo;
 
 @Repository
 public class AsyncTaskDao extends HibernateDao<AsyncTask, Long> {
@@ -19,10 +19,11 @@ public class AsyncTaskDao extends HibernateDao<AsyncTask, Long> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getCronTasks() {
-		// 加上执行失败次数上限限制
+		// todo 加上执行失败次数上限限制
 		String hql = "from AsyncTask t,UserInfo u where t.relatedId = u.userId and u.state = ?"
 				+ " and t.state = ? and t.taskType = ? and sysdate between t.startDate and t.endDate";
-		List<Object[]> result = (List<Object[]>) findAllWithHql(hql, new Object[] { UserInfo.STATE_NORMAL, AsyncTask.STATE_VALID ,TaskType.cron.name()});
+		List<Object[]> result = (List<Object[]>) findAllWithHql(hql, new Object[] { UserInfo.State.normal.name(),
+				AsyncTask.State.wating_operate.name(), TaskType.cron.name() });
 		return result;
 	}
 }

@@ -43,7 +43,7 @@ public class PrivilegeFilter implements Filter {
 		String uri = req.getRequestURI();
 		if (StringUtils.startsWith(uri, privilege.name())) {
 			// 权限不对...
-			req.setAttribute(BaseDispatchAction.ERROR_KEY, "您的权限不够，无法使用此功能，请购买高级版本！");
+			req.setAttribute(BaseDispatchAction.MESSAGE_KEY, "您的权限不够，无法使用此功能，请购买高级版本！");
 			req.getRequestDispatcher("error.jsp").forward(req, rep);
 		} else {
 			chain.doFilter(req, rep);

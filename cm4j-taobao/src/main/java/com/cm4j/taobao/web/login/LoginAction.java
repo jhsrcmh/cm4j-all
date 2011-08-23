@@ -78,7 +78,7 @@ public class LoginAction extends BaseDispatchAction {
 
 		// 时间戳校验
 		String ts = IdentityContext.resolveParameters(top_parameters, APIConstants.TIME_STAMP);
-		Date now = AsyncTask.DATE_NOW;
+		Date now = AsyncTask.DATE_NOW.apply();
 		Date last = DateUtils.addSeconds(now, -APIConstants.getApplicationTimeout());
 		if (last.getTime() > NumberUtils.toLong(ts)) {
 			logger.error("登陆超时：now:{},last:{}", now.getTime(), ts);
@@ -98,7 +98,7 @@ public class LoginAction extends BaseDispatchAction {
 			if (privilege == null) {
 				// 权限获取为空
 				Model model = new BindingAwareModelMap();
-				model.addAttribute(ERROR_KEY, "权限获取为空，请联系管理员");
+				model.addAttribute(MESSAGE_KEY, "权限获取为空，请联系管理员");
 				return ERROR_PAGE;
 			}
 			userSession.setVisitor_privilege(privilege);
@@ -107,10 +107,10 @@ public class LoginAction extends BaseDispatchAction {
 		UserInfo userInfo = new UserInfo();
 		userInfo.setUserId(userSession.getVisitor_id());
 		userInfo.setUserNick(userSession.getVisitor_nick());
-		userInfo.setState(UserInfo.STATE_NORMAL);
+		userInfo.setState(UserInfo.State.normal.name());
 		userInfo.setVersionNo(versionNo == null ? 1 : versionNo);
 		userInfo.setLeaseId(leaseId);
-		userInfo.setUpdateDate(AsyncTask.DATE_NOW);
+		userInfo.setUpdateDate(AsyncTask.DATE_NOW.apply());
 		userInfo.setSessionKey(userSession.getTop_session());
 		userInfoDao.saveOrUpdate(userInfo);
 

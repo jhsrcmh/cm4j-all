@@ -67,7 +67,7 @@ public class PromotionPloy {
 	@Column(name = "end_date")
 	private Date endDate;
 
-	public enum PromotionPloyStatus {
+	public enum Status {
 		ACTIVE,UNACTIVE
 	}
 	

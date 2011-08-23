@@ -57,6 +57,10 @@
 		<property name="queueCapacity" value="25" />
 	</bean>
 	
+	<!-- async_task_log -->
+	<bean id="asyncTaskLogDao" class="com.cm4j.dao.hibernate.HibernateDao">
+		<property name="persistentClass" value="com.cm4j.taobao.pojo.AsyncTaskLog"/>
+	</bean>
 	<!-- user_info -->
 	<bean id="userInfoDao" class="com.cm4j.dao.hibernate.HibernateDao">
 		<property name="persistentClass" value="com.cm4j.taobao.pojo.UserInfo"/>

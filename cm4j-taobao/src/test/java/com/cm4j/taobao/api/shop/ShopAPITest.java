@@ -7,7 +7,7 @@ import com.cm4j.taobao.api.common.APICaller;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Shop;
 
-public class ShopServiceTest extends TestContext {
+public class ShopAPITest extends TestContext {
 
 	/**
 	 * 测试获取商家剩余橱窗推荐数

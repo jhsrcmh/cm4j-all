@@ -11,16 +11,6 @@ import javax.persistence.Table;
 @Table(name = "user_info", schema = "")
 public class UserInfo {
 
-	/**
-	 * 状态 - 冻结 - 0
-	 */
-	public static String STATE_FREEZED = "0";
-
-	/**
-	 * 状态 - 正常 - 1
-	 */
-	public static String STATE_NORMAL = "1";
-
 	@Id
 	@Column(name = "user_id")
 	private Long userId;
@@ -48,6 +38,21 @@ public class UserInfo {
 
 	@Column(name = "update_date")
 	private Date updateDate;
+	
+	public enum State {
+		/**
+		 * 冻结
+		 */
+		freezed,
+		/**
+		 * 正常
+		 */
+		normal,
+		/**
+		 * 禁用
+		 */
+		invalid;
+	}
 
 	public Long getUserId() {
 		return userId;

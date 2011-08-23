@@ -30,9 +30,9 @@ public class BaseDispatchAction {
 	 */
 	public static String ERROR_PAGE = "/error";
 	/**
-	 * 放到request的错误的key
+	 * 放到request的消息key
 	 */
-	public static String ERROR_KEY = "msg";
+	public static String MESSAGE_KEY = "msg";
 	/**
 	 * 成功提示页面
 	 */
@@ -53,7 +53,7 @@ public class BaseDispatchAction {
 	 * @param obj
 	 */
 	protected void addRequestErrorMessage(Object obj) {
-		getRequest().setAttribute(ERROR_KEY, obj);
+		getRequest().setAttribute(MESSAGE_KEY, obj);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class BaseDispatchAction {
 		if (checkJsonException(exception, request, response)) {
 			return null;
 		}
-		request.setAttribute(ERROR_KEY, "哎呦，系统抽风了，异常信息[" + exception.getMessage() + "]");
+		request.setAttribute(MESSAGE_KEY, "哎呦，系统抽风了，异常信息[" + exception.getMessage() + "]");
 		return ERROR_PAGE;
 	}
 	

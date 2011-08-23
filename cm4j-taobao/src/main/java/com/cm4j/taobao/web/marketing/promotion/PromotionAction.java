@@ -20,7 +20,7 @@ import com.cm4j.dao.hibernate.HibernateDao;
 import com.cm4j.taobao.api.marketing.promotion.PromotionAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.cm4j.taobao.pojo.PromotionPloy;
-import com.cm4j.taobao.pojo.PromotionPloy.PromotionPloyStatus;
+import com.cm4j.taobao.pojo.PromotionPloy.Status;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.cm4j.taobao.web.base.ResultObject;
 import com.google.common.base.Joiner;
@@ -92,7 +92,7 @@ public class PromotionAction extends BaseDispatchAction {
 			ploy.setStartDate(request.getStartDate());
 			ploy.setEndDate(request.getEndDate());
 			ploy.setTagId(request.getTagId());
-			ploy.setStatus(PromotionPloyStatus.ACTIVE.name());
+			ploy.setStatus(Status.ACTIVE.name());
 
 			try {
 				promotionPloyDao.save(ploy);
@@ -178,7 +178,7 @@ public class PromotionAction extends BaseDispatchAction {
 		if (PromotionAPI.delete(promotion_id, super.getSessionKey())) {
 			try {
 				promotionPloyDao.update("update PromotionPloy set status = ? where promotionId = ?", new Object[] {
-						PromotionPloyStatus.UNACTIVE.name(), promotion_id });
+						Status.UNACTIVE.name(), promotion_id });
 			} catch (DataAccessException e) {
 				logger.error("禁用定向优惠活动数据库异常", e);
 				throw new ValidationException("禁用定向优惠活动数据库异常，请重试！");

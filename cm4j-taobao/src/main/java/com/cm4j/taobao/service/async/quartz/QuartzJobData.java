@@ -23,6 +23,10 @@ public class QuartzJobData {
 	 */
 	private String cron;
 	/**
+	 * cron task ID
+	 */
+	private Long taskId;
+	/**
 	 * json数据
 	 */
 	private String jsonData;
@@ -86,6 +90,14 @@ public class QuartzJobData {
 
 	public void setHandlerClazz(Class<? extends Job> handlerClazz) {
 		this.handlerClazz = handlerClazz;
+	}
+
+	public Long getTaskId() {
+		return taskId;
+	}
+
+	public void setTaskId(Long taskId) {
+		this.taskId = taskId;
 	}
 
 }
