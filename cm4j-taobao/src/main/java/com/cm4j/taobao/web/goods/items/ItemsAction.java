@@ -1,17 +1,13 @@
 package com.cm4j.taobao.web.goods.items;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.WebUtils;
 
 import com.cm4j.taobao.api.common.APICaller;
@@ -19,14 +15,16 @@ import com.cm4j.taobao.api.shop.ShopAPI;
 import com.cm4j.taobao.dao.AsyncTaskDao;
 import com.cm4j.taobao.exception.ValidationException;
 import com.cm4j.taobao.pojo.AsyncTask;
-import com.cm4j.taobao.pojo.AsyncTask.State;
+import com.cm4j.taobao.pojo.AsyncTask.DATE_ENUM;
 import com.cm4j.taobao.pojo.AsyncTask.TaskSubType;
 import com.cm4j.taobao.pojo.AsyncTask.TaskType;
+import com.cm4j.taobao.service.async.quartz.QuartzService;
 import com.cm4j.taobao.service.async.quartz.jobs.SeparateShowcase.SeparateShowcaseData;
 import com.cm4j.taobao.service.goods.items.ItemService;
 import com.cm4j.taobao.utils.Converter;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.cm4j.taobao.web.login.UserSession;
+import com.google.common.base.Splitter;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Item;
 import com.taobao.api.domain.Shop;
@@ -44,6 +42,8 @@ public class ItemsAction extends BaseDispatchAction {
 
 	@Autowired
 	private AsyncTaskDao asyncTaskDao;
+	@Autowired
+	private QuartzService quartzService;
 
 	/**
 	 * 分页显示在销售的商品
@@ -80,12 +80,12 @@ public class ItemsAction extends BaseDispatchAction {
 	 * @throws ValidationException
 	 */
 	@RequestMapping("/separate_showcase")
-	public ModelAndView separate_showcase(String numIids_group1, String numIids_group2, int interval)
-			throws ApiException, ValidationException {
-		String[] str_group1 = StringUtils.split(numIids_group1, ",");
-		String[] str_group2 = StringUtils.split(numIids_group2, ",");
-		String[] obj_group1 = (String[]) ArrayUtils.removeElement(str_group1, "");
-		String[] obj_group2 = (String[]) ArrayUtils.removeElement(str_group2, "");
+	public String separate_showcase(String numIids_group1, String numIids_group2, int interval) throws ApiException,
+			ValidationException {
+		Iterable<String> str_group1 = Splitter.on(",").omitEmptyStrings().trimResults().split(numIids_group1);
+		Iterable<String> str_group2 = Splitter.on(",").omitEmptyStrings().trimResults().split(numIids_group1);
+		List<Long> group1 = Converter.typeConvert(str_group1);
+		List<Long> group2 = Converter.typeConvert(str_group2);
 
 		Shop shop = ShopAPI.remainshowcase_get(getSessionKey());
 		if (shop == null) {
@@ -93,40 +93,31 @@ public class ItemsAction extends BaseDispatchAction {
 		}
 		Long allCount = shop.getAllCount();
 
-		if (ArrayUtils.isEmpty(obj_group1) || obj_group1.length > allCount) {
+		if (group1.isEmpty() || group1.size() > allCount) {
 			throw new ValidationException("第一批橱窗推荐商品数量不在范围之内：[1," + allCount + "]！");
 		}
-		if (ArrayUtils.isEmpty(obj_group2) || obj_group2.length > allCount) {
+		if (group2.isEmpty() || group2.size() > allCount) {
 			throw new ValidationException("第二批橱窗推荐商品数量不在范围之内：[1," + allCount + "]！");
 		}
 
 		UserSession userSession = (UserSession) WebUtils.getSessionAttribute(getRequest(), UserSession.SESSION_NAME);
 		Long userId = userSession.getVisitor_id();
-		List<AsyncTask> list = asyncTaskDao.findAllByProperty(new String[] { "relatedId", "taskType", "taskSubType" },
-				new Object[] { userId, TaskType.cron.name(), TaskSubType.separate_showcase.name() });
+		List<AsyncTask> list = asyncTaskDao.getShowCaseCronTasks(userId);
 		if (list.size() > 0) {
 			throw new ValidationException("对不起，您已设置了分批橱窗推荐，请禁用原设置后再添加！");
 		}
 
 		// 插入异步cron任务
-		AsyncTask asyncTask = new AsyncTask();
-		asyncTask.setTaskType(TaskType.cron.name());
-		asyncTask.setTaskSubType(TaskSubType.separate_showcase.name());
-
-		asyncTask.setRelatedId(userId);
-		asyncTask.setTaskCron("0 0 0/" + interval + " * * ?");
-		asyncTask.setStartDate(AsyncTask.DATE_NOW.apply());
-		asyncTask.setEndDate(AsyncTask.DATE_FOREVER.apply());
-		asyncTask.setState(State.wating_operate.name());
-
 		SeparateShowcaseData data = new SeparateShowcaseData();
-		data.setNumIids_group1(obj_group1);
-		data.setNumIids_group2(obj_group2);
-		asyncTask.setTaskData(APICaller.jsonBinder.toJson(data));
+		data.setNumIids_group1(group1);
+		data.setNumIids_group2(group2);
+		AsyncTask asyncTask = asyncTaskDao.addAsyncTask(TaskType.cron, TaskSubType.separate_showcase, userId, "0 0 0/"
+				+ interval + " * * ?", DATE_ENUM.NOW.apply(), DATE_ENUM.FOREVER.apply(),
+				APICaller.jsonBinder.toJson(data));
 
-		asyncTaskDao.save(asyncTask);
+		quartzService.addCronTask(asyncTask, getSessionKey());
 
-		return new ModelAndView(SUCCESS_PAGE, Collections.singletonMap(MESSAGE_KEY, "恭喜您，商品分批橱窗推荐设置成功！"));
+		return "redirect:/secure/async/list/prepare";
 	}
 
 	/**
@@ -164,9 +155,9 @@ public class ItemsAction extends BaseDispatchAction {
 	List<Item> recommend(@PathVariable String operation, @PathVariable List<String> num_iids) throws ApiException,
 			ValidationException {
 		if ("add".equals(operation)) {
-			return ItemService.batchRecommandAdd(Converter.listConverter(num_iids), getSessionKey());
+			return ItemService.batchRecommandAdd(Converter.typeConvert(num_iids), getSessionKey());
 		} else if (("delete").equals(operation)) {
-			return ItemService.batchRecommandDelete(Converter.listConverter(num_iids), getSessionKey());
+			return ItemService.batchRecommandDelete(Converter.typeConvert(num_iids), getSessionKey());
 		}
 		return null;
 	}
@@ -188,9 +179,9 @@ public class ItemsAction extends BaseDispatchAction {
 	List<Item> update_listing(@PathVariable String operation, @PathVariable List<String> num_iids) throws ApiException,
 			ValidationException {
 		if ("listing".equals(operation)) {
-			return ItemService.batchUpdateListing(Converter.listConverter(num_iids), getSessionKey());
+			return ItemService.batchUpdateListing(Converter.typeConvert(num_iids), getSessionKey());
 		} else if ("delisting".equals(operation)) {
-			return ItemService.batchUpdateDelisting(Converter.listConverter(num_iids), getSessionKey());
+			return ItemService.batchUpdateDelisting(Converter.typeConvert(num_iids), getSessionKey());
 		}
 		return null;
 	}

@@ -33,7 +33,7 @@
 				</li>
 			</ul>
 		</li>
-		<li><a title="使用帮助" href="#" class="one">使用帮助</a></li>
+		<li><a title="异步任务查询" href="/secure/async/list/prepare" class="one">异步任务查询</a></li>
 		<li><a title="推荐有礼" href="#" class="one">推荐有礼 </a></li>
 		<li><a title="网站公告" href="#" class="one">网站公告 </a></li>
 	</ul>

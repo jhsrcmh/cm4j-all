@@ -31,20 +31,9 @@
 			</list>
 		</property>
 	</bean>
- 	<!-- 日期格式注入转换
-	<bean id="customEditorConfigurer"
-		class="org.springframework.beans.factory.config.CustomEditorConfigurer">
-		<property name="customEditors">
-			<map>
-				<entry key="java.util.Date">
-					<bean class="com.cm4j.taobao.utils.UtilDateConverter">
-						<property name="format" value="yyyy-MM-dd HH:mm" />
-					</bean>
-				</entry>
-			</map>
-		</property>
-	</bean> -->
-	
+
+		<!-- 用InitializingBean可能会调用2次 -->
+		<bean class="com.cm4j.taobao.web.base.WebInitialzer" init-method="init" />
 
 	<!-- ①：对web包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 在applicationContext已配置 -->
 	<context:component-scan base-package="com.cm4j.taobao" />
@@ -52,15 +41,11 @@
 	<!-- spring提供的线程池 -->
 	<bean id="taskExecutor"
 		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-		<property name="corePoolSize" value="5" />
+		<property name="corePoolSize" value="3" />
 		<property name="maxPoolSize" value="10" />
 		<property name="queueCapacity" value="25" />
 	</bean>
 	
-	<!-- async_task_log -->
-	<bean id="asyncTaskLogDao" class="com.cm4j.dao.hibernate.HibernateDao">
-		<property name="persistentClass" value="com.cm4j.taobao.pojo.AsyncTaskLog"/>
-	</bean>
 	<!-- user_info -->
 	<bean id="userInfoDao" class="com.cm4j.dao.hibernate.HibernateDao">
 		<property name="persistentClass" value="com.cm4j.taobao.pojo.UserInfo"/>

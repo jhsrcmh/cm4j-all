@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS async_task(
 	task_id bigint not null PRIMARY KEY, 		-- 主键ID
 	task_type varchar(25) not null, 			-- 任务类型 async or cron
 	task_sub_type varchar(25) not null,		-- 具体任务类型
-	related_id bigint, 							-- 相关业务ID
+	related_id bigint, 							-- 相关业务ID - cron，存放用户ID
 	task_cron varchar(50), 						-- 定时任务cron表达式
 	task_data varchar(500), 					-- 任务相关数据(包含)
 	start_date timestamp not null default sysdate, 	-- 开始时间 
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS async_task(
 );
 create sequence IF NOT EXISTS async_task_sq
 start with 1
-increment by 1 
-cache 20;
+increment by 1; 
+--cache 20;
 
 -- 异步任务执行记录表
 CREATE TABLE IF NOT EXISTS async_task_log(
@@ -49,8 +49,7 @@ CREATE TABLE IF NOT EXISTS async_task_log(
 
 create sequence IF NOT EXISTS async_task_log_sq
 start with 1
-increment by 1 
-cache 20;
+increment by 1;
 
 -- 定向优惠活动表
 CREATE TABLE IF NOT EXISTS promotion_ploy(

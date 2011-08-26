@@ -1,12 +1,19 @@
 package com.cm4j.taobao.service.async.quartz;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.springframework.context.ApplicationContext;
 
-public class TestJob implements Job {
+import com.cm4j.taobao.service.async.quartz.data.QuartzJobData;
+import com.cm4j.taobao.service.async.quartz.jobs.AbstractJobHandler;
+
+public class TestJob extends AbstractJobHandler {
+
 	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
+	protected String handle(QuartzJobData quartzJobData,ApplicationContext ctx) throws Exception {
 		System.out.println("==========AAA==========");
+		return null;
+	}
+
+	@Override
+	protected void handleException(Exception e) {
 	}
 }

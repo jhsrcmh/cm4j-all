@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<title>网站标题</title>
+<title>商家小管家 - 定向优惠活动查询</title>
 <meta name="keywords" content="keywords" />
 <meta name="description" content="description" />
 <meta name="author" content="yang.hao" />
@@ -32,11 +32,11 @@
 				<!-- 正文 -->
 				<div id="text" class="contenttext">
 				
-				<table id="promotion_query" style="width: 95%;">
-					<tr style="font-weight: bold;" align="center">
+				<table id="promotion_query" class="table_show">
+					<tr class="c_bold">
 						<td colspan="8">单个商品定向优惠活动查询 [淘宝系统实时查询]</td>
 					</tr>
-					<tr style="font-weight: bold;" align="center">
+					<tr>
 						<td colspan="8">
 							商品ID：<input type="text" id="num_iid" />
 							<select id="promotion_status">
@@ -47,7 +47,7 @@
 							<input id="promotion_submit" type="button" value="提交"/>
 						</td>
 					</tr>
-					<tr style="font-weight: bold;" align="center">
+					<tr class="c_bold">
 						<td>活动ID</td>
 						<td>名称</td>
 						<td>类型</td>
@@ -57,15 +57,17 @@
 						<td>状态</td>
 						<td>操作</td>
 					</tr>
-					<tr id="not_found_ploys" style="font-weight: bold;" align="center">
+					<tr id="not_found_ploys" class="c_bold">
 						<td colspan="8">请输入商品ID进行查看</td>
 					</tr>
 				</table>
-				<table style="width: 95%;">
-					<tr style="font-weight: bold;" align="center">
+				
+				<br />
+				<table class="table_show">
+					<tr class="c_bold">
 						<td colspan="8">定向优惠活动展示 [小管家存储活动]</td>
 					</tr>
-					<tr style="font-weight: bold;" align="center">
+					<tr class="c_bold">
 						<td>活动ID</td>
 						<td>名称</td>
 						<td>类型</td>
@@ -76,7 +78,7 @@
 						<td>操作</td>
 					</tr>
 					<c:forEach var="ploy" items="${result }">
-					<tr align="center">
+					<tr>
 						<td>${ploy.promotionId }</td>
 						<td>${ploy.promotionTitle }</td>
 						<td>
@@ -136,7 +138,7 @@
 							var html = [];
 							$(json.promotions).each(function(index, element){
 								var promotion_html = [];
-								promotion_html.push('<tr name="show_ploys" style="font-weight: bold;" align="center">');
+								promotion_html.push('<tr name="show_ploys">');
 								promotion_html.push('<td>#1</td>');
 								promotion_html.push('<td>#2</td>');
 								promotion_html.push('<td>#3</td>');

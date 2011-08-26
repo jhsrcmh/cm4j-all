@@ -25,13 +25,10 @@
 			<groupId>com.taobao</groupId>
 			<artifactId>taobao-api</artifactId>
 			<version>${com.taobao.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>

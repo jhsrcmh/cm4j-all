@@ -5,9 +5,12 @@
  * @returns
  */
 function dialog_error(htmlMsg){
-	dialog("错误提醒",htmlMsg);
+	return dialog("错误提醒",htmlMsg);
 }
 function dialog(title,htmlMsg) {
+	if (htmlMsg == undefined){
+		htmlMsg = "未知消息异常，如有需要，请联系管理员！";
+	}
 	return $('<div></div>')
 	.html(htmlMsg)
 	.dialog({
@@ -16,7 +19,8 @@ function dialog(title,htmlMsg) {
 		modal : true,
 		buttons : [{
 			text : "关闭",
-			click : function() { $(this).dialog("close");
+			click : function() { 
+				$(this).dialog("close").dialog("destroy").empty().remove();
 			}
 		}]
 	})
@@ -30,11 +34,11 @@ function dialog(title,htmlMsg) {
  * @returns {Boolean}
  */
 function checkJson(json) {
-	if(json.code == -1) {
+	if(-1 == json.code) {
 		dialog('身份失效提醒',"用户未登陆或身份过期，请点击<a href='" + json.objInfo + "'>这里登陆</a>");
 		return false;
-	} else if(json.code == 0) {
-		dialog(json.message);
+	} else if(0 == json.code) {
+		dialog_error(json.message);
 		return false;
 	}
 	return true;

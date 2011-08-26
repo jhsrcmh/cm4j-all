@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cm4j.taobao.api.googds.items.ItemAPI;
 import com.cm4j.taobao.api.googds.items.ItemsAPI;
+import com.cm4j.taobao.api.shop.ShopAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Item;
+import com.taobao.api.domain.Shop;
 import com.taobao.api.request.ItemsOnsaleGetRequest;
 
 /**
@@ -21,6 +25,8 @@ import com.taobao.api.request.ItemsOnsaleGetRequest;
  * 
  */
 public class ItemService {
+
+	private static Logger logger = LoggerFactory.getLogger(ItemService.class);
 
 	/**
 	 * 分页获取在销售的商品列表
@@ -101,10 +107,18 @@ public class ItemService {
 	 * @throws ApiException
 	 * @throws ValidationException
 	 */
-	public static List<Item> batchRecommandAdd(List<Long> num_iids, String sessionKey) throws ApiException,
+	public static List<Item> batchRecommandAdd(Iterable<Long> num_iids, String sessionKey) throws ApiException,
 			ValidationException {
+		Shop shop = ShopAPI.remainshowcase_get(sessionKey);
+
 		List<Item> items = new ArrayList<Item>();
+		int num = 0;
 		for (Long num_iid : num_iids) {
+			if (num >= shop.getRemainCount()) {
+				logger.warn("批量橱窗推荐，推荐个数已达剩余橱窗个数");
+				return items;
+			}
+			num++;
 			items.add(ItemAPI.recommend_add(num_iid, sessionKey));
 		}
 		return items;

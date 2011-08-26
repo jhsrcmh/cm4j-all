@@ -903,6 +903,10 @@ ul#navmenu li:hover ul,ul#navmenu ul li:hover ul,ul#navmenu ul ul li:hover ul,ul
 	display: block;
 }
 
+.c_bold {
+	font-weight: bold;
+}
+
 /* 商品显示样式 */
 .productFlow ul{
 	float: left;
@@ -924,4 +928,11 @@ ul#navmenu li:hover ul,ul#navmenu ul li:hover ul,ul#navmenu ul ul li:hover ul,ul
 }
 .productSelect_second {
 	border:1px solid #F93;
+}
+/*显示表格样式*/
+.table_show{
+	width:100%;
+	margin :0px;
+	border: 1px solid red;
+	text-align: center;
 }

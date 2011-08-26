@@ -14,7 +14,7 @@ public class Converter {
 	 * @param list
 	 * @return
 	 */
-	public static List<Long> listConverter(List<String> list) {
+	public static List<Long> typeConvert(Iterable<String> list) {
 		List<Long> result = new ArrayList<Long>();
 		for (String element : list) {
 			if (StringUtils.isNotBlank(element)) {

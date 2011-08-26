@@ -92,13 +92,23 @@ public class BaseDispatchAction {
 	 */
 	protected String getSessionKey() throws ApiException {
 		String sessionKey = null;
-		UserSession userSession = (UserSession) WebUtils.getSessionAttribute(getRequest(), UserSession.SESSION_NAME);
+		UserSession userSession = getUserSession();
 		if (userSession != null) {
 			sessionKey = userSession.getTop_session();
 		} else {
 			throw new ApiException("can not find 'userSession' in session,please login first!");
 		}
 		return sessionKey;
+	}
+
+	/**
+	 * 获取session中的淘宝用户sessionKey
+	 * 
+	 * @return
+	 * @throws ApiException
+	 */
+	protected UserSession getUserSession() {
+		return (UserSession) WebUtils.getSessionAttribute(getRequest(), UserSession.SESSION_NAME);
 	}
 
 	/**
@@ -138,14 +148,14 @@ public class BaseDispatchAction {
 	 */
 	@ExceptionHandler
 	protected String otherExceptionHandle(Exception exception, HttpServletRequest request, HttpServletResponse response) {
-		logger.error("action caught exception",exception);
+		logger.error("action caught exception", exception);
 		if (checkJsonException(exception, request, response)) {
 			return null;
 		}
 		request.setAttribute(MESSAGE_KEY, "哎呦，系统抽风了，异常信息[" + exception.getMessage() + "]");
 		return ERROR_PAGE;
 	}
-	
+
 	/**
 	 * 处理为json的异常请求
 	 * 
@@ -161,21 +171,22 @@ public class BaseDispatchAction {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 组装成功ResultObject对象
 	 */
 	protected ResultObject successResultObject(String message) {
-		return successResultObject (message,null);
+		return successResultObject(message, null);
 	}
+
 	/**
 	 * 组装成功ResultObject对象
 	 */
-	protected ResultObject successResultObject(String message,Object obj) {
-		if (obj == null){
+	protected ResultObject successResultObject(String message, Object obj) {
+		if (obj == null) {
 			return new ResultObject(1, message);
 		} else {
-			return new ResultObject(1, message ,obj);
+			return new ResultObject(1, message, obj);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.cm4j.taobao.service.async.quartz;
+package com.cm4j.taobao.service.async.quartz.data;
 
 import java.util.Date;
 

@@ -15,6 +15,7 @@ import com.cm4j.taobao.dao.AsyncTaskDao;
 import com.cm4j.taobao.pojo.AsyncTask;
 import com.cm4j.taobao.pojo.AsyncTask.TaskSubType;
 import com.cm4j.taobao.pojo.UserInfo;
+import com.cm4j.taobao.service.async.quartz.data.QuartzJobData;
 
 /**
  * 定时触发器
@@ -52,26 +53,10 @@ public class QuartzService {
 				return;
 			}
 			for (Object[] result : results) {
-				AsyncTask cronTask = (AsyncTask) result[0];
+				AsyncTask asyncTask = (AsyncTask) result[0];
 				UserInfo userInfo = (UserInfo) result[1];
 
-				QuartzJobData data = new QuartzJobData();
-				data.setTaskId(cronTask.getTaskId());
-				data.setUserId(userInfo.getUserId());
-				data.setSessionKey(userInfo.getSessionKey());
-				data.setCron(cronTask.getTaskCron());
-				data.setJsonData(cronTask.getTaskData());
-				data.setStartDate(cronTask.getStartDate());
-				data.setEndDate(cronTask.getEndDate());
-				data.setHandlerClazz(TaskSubType.valueOf(cronTask.getTaskSubType()).getHandleClazz());
-				try {
-					quartzOperator.addJob(data);
-				} catch (SchedulerException e) {
-					logger.error("quartz scheduleJob 异常", e);
-				} catch (ParseException e) {
-					logger.error(
-							"job cron格式不正常，转换异常，task_id:" + cronTask.getTaskId() + ",cron:" + cronTask.getTaskCron(), e);
-				}
+				addCronTask(asyncTask, userInfo.getSessionKey());
 			}
 
 			try {
@@ -80,6 +65,32 @@ public class QuartzService {
 				logger.error("quartz startJob 异常", e);
 			}
 		}
+	}
 
+	/**
+	 * 添加定时任务到quartz
+	 * 
+	 * @param asyncTask
+	 * @param sessionKey
+	 */
+	public void addCronTask(AsyncTask asyncTask, String sessionKey) {
+		QuartzJobData data = new QuartzJobData();
+		data.setTaskId(asyncTask.getTaskId());
+		data.setUserId(asyncTask.getRelatedId());
+		data.setSessionKey(sessionKey);
+		data.setCron(asyncTask.getTaskCron());
+		data.setJsonData(asyncTask.getTaskData());
+		data.setStartDate(asyncTask.getStartDate());
+		data.setEndDate(asyncTask.getEndDate());
+		try {
+			data.setHandlerClazz(TaskSubType.valueOf(asyncTask.getTaskSubType()).getHandleClazz());
+			quartzOperator.addJob(data);
+		} catch (SchedulerException e) {
+			logger.error("quartz scheduleJob 异常", e);
+		} catch (ParseException e) {
+			logger.error("job cron格式不正常，转换异常，task_id:" + asyncTask.getTaskId() + ",cron:" + asyncTask.getTaskCron(), e);
+		} catch (Exception e) {
+			logger.error("添加job异常，task_id:" + asyncTask.getTaskId() + ",cron:" + asyncTask.getTaskCron(), e);
+		}
 	}
 }

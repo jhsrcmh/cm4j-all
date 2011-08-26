@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cm4j.dao.hibernate.HibernateDao;
 import com.cm4j.taobao.pojo.AsyncTask;
+import com.cm4j.taobao.pojo.AsyncTask.DATE_ENUM;
 import com.cm4j.taobao.pojo.AsyncTask.TaskSubType;
 import com.cm4j.taobao.pojo.AsyncTask.TaskType;
 import com.cm4j.taobao.pojo.UserInfo;
@@ -34,8 +35,8 @@ public class AsyncTaskDaoTest {
 		cronTask.setRelatedId(55496072L);
 		cronTask.setTaskCron("0 0/1 * * * ?");
 		cronTask.setTaskData("");
-		cronTask.setStartDate(AsyncTask.DATE_NOW.apply());
-		cronTask.setEndDate(AsyncTask.DATE_FOREVER.apply());
+		cronTask.setStartDate(DATE_ENUM.NOW.apply());
+		cronTask.setEndDate(DATE_ENUM.FOREVER.apply());
 		cronTask.setState(AsyncTask.State.wating_operate.name());
 
 		return asyncTaskDao.save(cronTask);

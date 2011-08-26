@@ -23,25 +23,20 @@ import com.cm4j.taobao.utils.Function;
 @SequenceGenerator(name = "SEQ_GEN", sequenceName = "async_task_sq")
 public class AsyncTask {
 
-	/**
-	 * 时间-当前
-	 */
-	public static Function<Date> DATE_NOW = new Function<Date>() {
-		@Override
-		public Date apply() {
-			return Calendar.getInstance().getTime();
-		}
-	};
+	public enum DATE_ENUM implements Function<Date> {
+		NOW(0), FOREVER(100);
+		private int year;
 
-	/**
-	 * 时间-永久
-	 */
-	public static Function<Date> DATE_FOREVER = new Function<Date>() {
+		private DATE_ENUM(int year) {
+			this.year = year;
+		}
+
 		@Override
 		public Date apply() {
-			return  DateUtils.addYears(DATE_NOW.apply(), 100);
+			return DateUtils.addYears(Calendar.getInstance().getTime(), this.year);
 		}
-	};
+
+	}
 
 	@Id
 	@Column(name = "task_id")
@@ -211,5 +206,11 @@ public class AsyncTask {
 
 	public void setTaskCron(String taskCron) {
 		this.taskCron = taskCron;
+	}
+
+	public static void main(String[] args) throws InterruptedException {
+		System.out.println(DATE_ENUM.NOW.apply());
+		Thread.sleep(1000);
+		System.out.println(DATE_ENUM.NOW.apply());
 	}
 }

@@ -15,10 +15,14 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
-import com.cm4j.taobao.pojo.AsyncTask;
+import com.cm4j.taobao.pojo.AsyncTask.DATE_ENUM;
+import com.cm4j.taobao.service.async.quartz.data.QuartzJobData;
 
 /**
  * 定时任务操作者
@@ -28,12 +32,17 @@ import com.cm4j.taobao.pojo.AsyncTask;
  * 
  */
 @Service
-public class QuartzOperator implements DisposableBean {
+public class QuartzOperator implements ApplicationContextAware, DisposableBean {
 
 	/**
-	 * 常量 - jobDetail数据的key
+	 * 常量 - jobDetail数据key - 业务数据
 	 */
 	public static final String JOBDETAIL_DATA_KEY = "JOB_DATA_KEY";
+	
+	/**
+	 * 常量 - jobDetail数据key - Spring 上下文
+	 */
+	public static final String APPLICATION_CONTEXT = "APPLICATION_CONTEXT";
 
 	private Scheduler scheduler;
 	private Logger logger = LoggerFactory.getLogger(getClass());
@@ -54,20 +63,21 @@ public class QuartzOperator implements DisposableBean {
 		if (data == null) {
 			throw new IllegalArgumentException("异步任务data参数不允许为空");
 		}
-		
+
 		Class<? extends Job> handlerClazz = data.getHandlerClazz();
 		JobKey jobKey = new JobKey(handlerClazz.getSimpleName() + RandomStringUtils.randomAlphanumeric(10));
-		
+
 		// 删除旧任务
 		scheduler.deleteJob(jobKey);
 		JobDetail jobDetail = JobBuilder.newJob(handlerClazz).withIdentity(jobKey).build();
-		
+
 		jobDetail.getJobDataMap().put(JOBDETAIL_DATA_KEY, data);
+		jobDetail.getJobDataMap().put(APPLICATION_CONTEXT, ctx);
 
 		TriggerBuilder<?> builder = TriggerBuilder.newTrigger().withIdentity(handlerClazz.getSimpleName())
 				.forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule(data.getCron()));
 		if (data.getStartDate() == null) {
-			builder.startAt(AsyncTask.DATE_NOW.apply());
+			builder.startAt(DATE_ENUM.NOW.apply());
 		} else {
 			builder.startAt(data.getStartDate());
 		}
@@ -102,5 +112,12 @@ public class QuartzOperator implements DisposableBean {
 		} catch (SchedulerException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private ApplicationContext ctx;
+
+	@Override
+	public void setApplicationContext(ApplicationContext ctx) throws BeansException {
+		this.ctx = ctx;
 	}
 }

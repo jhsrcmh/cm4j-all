@@ -18,7 +18,7 @@ import com.cm4j.dao.hibernate.HibernateDao;
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.api.common.APIConstants;
 import com.cm4j.taobao.api.identity.IdentityContext;
-import com.cm4j.taobao.pojo.AsyncTask;
+import com.cm4j.taobao.pojo.AsyncTask.DATE_ENUM;
 import com.cm4j.taobao.pojo.UserInfo;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 import com.cm4j.taobao.web.base.VisitorPrivilege;
@@ -78,7 +78,7 @@ public class LoginAction extends BaseDispatchAction {
 
 		// 时间戳校验
 		String ts = IdentityContext.resolveParameters(top_parameters, APIConstants.TIME_STAMP);
-		Date now = AsyncTask.DATE_NOW.apply();
+		Date now = DATE_ENUM.NOW.apply();
 		Date last = DateUtils.addSeconds(now, -APIConstants.getApplicationTimeout());
 		if (last.getTime() > NumberUtils.toLong(ts)) {
 			logger.error("登陆超时：now:{},last:{}", now.getTime(), ts);
@@ -110,7 +110,7 @@ public class LoginAction extends BaseDispatchAction {
 		userInfo.setState(UserInfo.State.normal.name());
 		userInfo.setVersionNo(versionNo == null ? 1 : versionNo);
 		userInfo.setLeaseId(leaseId);
-		userInfo.setUpdateDate(AsyncTask.DATE_NOW.apply());
+		userInfo.setUpdateDate(DATE_ENUM.NOW.apply());
 		userInfo.setSessionKey(userSession.getTop_session());
 		userInfoDao.saveOrUpdate(userInfo);
 

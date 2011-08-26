@@ -398,7 +398,7 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<E> page(String queryString, Map<String, Object> paramValues, int firstRow, int pageSize)
+	public List<E> page(String queryString, Map<String, Object> paramValues, int pageSize, int pageNo)
 			throws DataAccessException {
 		if (MapUtils.isEmpty(paramValues)) {
 			throw new Cm4jDataAccessException("查询参数不允许为空");
@@ -409,7 +409,7 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 
 		Session session = this.getSession();
 		Query query = session.createQuery(queryString);
-		query.setFirstResult(firstRow);
+		query.setFirstResult((pageNo - 1) * pageSize);
 		query.setMaxResults(pageSize);
 		query.setProperties(paramValues);
 		List<E> list = null;
@@ -465,14 +465,14 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<E> pageByProperty(String property, Object value, int firstResult, int maxResults, String orderBy,
-			boolean isAsc) throws DataAccessException {
+	public List<E> pageByProperty(String property, Object value, int pageSize, int pageNo, String orderBy, boolean isAsc)
+			throws DataAccessException {
 		if (StringUtils.isBlank(property)) {
 			throw new Cm4jDataAccessException("查询参数名不允许为空");
 		}
 
-		if (maxResults == 0) {
-			throw new Cm4jDataAccessException("参数maxResults不能为0");
+		if (pageSize == 0) {
+			throw new Cm4jDataAccessException("参数pageSize不能为0");
 		}
 		String orderStr = StringUtils.isBlank(orderBy) ? "" : orderBy + (isAsc ? " ASC" : " DESC");
 		StringBuilder hql = new StringBuilder("FROM ").append(this.getPersistentClass().getSimpleName())
@@ -484,8 +484,8 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
-		query.setFirstResult(firstResult);
-		query.setMaxResults(maxResults);
+		query.setFirstResult((pageNo - 1) * pageSize);
+		query.setMaxResults(pageSize);
 		query.setParameter(property, value);
 		List<E> list = null;
 		list = query.list();
@@ -494,14 +494,14 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<E> pageByProperty(Map<String, Object> paramValues, int firstResult, int maxResults, String orderBy,
+	public List<E> pageByProperty(Map<String, Object> paramValues, int pageSize, int pageNo, String orderBy,
 			Boolean isAsc) throws DataAccessException {
 		if (MapUtils.isEmpty(paramValues)) {
 			throw new Cm4jDataAccessException("查询参数不允许为空");
 		}
 
-		if (maxResults == 0) {
-			throw new Cm4jDataAccessException("参数maxResults不能为0");
+		if (pageSize == 0) {
+			throw new Cm4jDataAccessException("参数pageSize不能为0");
 		}
 		String[] params = paramValues.keySet().toArray(new String[0]);
 		StringBuilder paramStr = new StringBuilder();
@@ -519,8 +519,8 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
-		query.setFirstResult(firstResult);
-		query.setMaxResults(maxResults);
+		query.setFirstResult((pageNo - 1) * pageSize);
+		query.setMaxResults(pageSize);
 		query.setProperties(paramValues);
 		List<E> list = null;
 		list = query.list();
@@ -530,7 +530,7 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 
 	@SuppressWarnings("unchecked")
 	public List<E> pageByPropertyAndOthers(Map<String, Object> propertyValues, String queryString,
-			Map<String, Object> otherValues, int firstResult, int maxResults, String orderBy, Boolean isAsc)
+			Map<String, Object> otherValues, int pageSize, int pageNo, String orderBy, Boolean isAsc)
 			throws DataAccessException {
 		if (MapUtils.isEmpty(otherValues)) {
 			throw new Cm4jDataAccessException("查询参数不允许为空");
@@ -556,8 +556,8 @@ public class HibernateDao<E, ID extends Serializable> implements InitializingBea
 
 		Session session = this.getSession();
 		Query query = session.createQuery(hql.toString());
-		query.setFirstResult(firstResult);
-		query.setMaxResults(maxResults);
+		query.setFirstResult((pageNo - 1) * pageSize);
+		query.setMaxResults(pageSize);
 		query.setProperties(propertyValues);
 		List<E> list = null;
 		list = query.list();

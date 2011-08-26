@@ -1,9 +1,10 @@
 package com.cm4j.taobao.service.async.quartz.jobs;
 
 import org.quartz.JobExecutionException;
+import org.springframework.context.ApplicationContext;
 
 import com.cm4j.taobao.api.user.UserAPI;
-import com.cm4j.taobao.service.async.quartz.QuartzJobData;
+import com.cm4j.taobao.service.async.quartz.data.QuartzJobData;
 import com.taobao.api.ApiException;
 
 /**
@@ -15,10 +16,11 @@ import com.taobao.api.ApiException;
 public class IdentityMantain extends AbstractJobHandler {
 
 	@Override
-	protected void handle(QuartzJobData data) throws JobExecutionException, ApiException {
+	protected String handle(QuartzJobData data, ApplicationContext ctx) throws JobExecutionException, ApiException {
 		if (data != null) {
 			UserAPI.user_get("user_id", null, data.getSessionKey());
 		}
+		return null;
 	}
 
 	@Override
