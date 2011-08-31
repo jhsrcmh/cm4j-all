@@ -83,7 +83,7 @@ public class ItemsAction extends BaseDispatchAction {
 	public String separate_showcase(String numIids_group1, String numIids_group2, int interval) throws ApiException,
 			ValidationException {
 		Iterable<String> str_group1 = Splitter.on(",").omitEmptyStrings().trimResults().split(numIids_group1);
-		Iterable<String> str_group2 = Splitter.on(",").omitEmptyStrings().trimResults().split(numIids_group1);
+		Iterable<String> str_group2 = Splitter.on(",").omitEmptyStrings().trimResults().split(numIids_group2);
 		List<Long> group1 = Converter.typeConvert(str_group1);
 		List<Long> group2 = Converter.typeConvert(str_group2);
 

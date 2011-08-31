@@ -7,7 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * BlockingQueue 的使用 - 放、取物品
+ * BlockingQueue 的使用 - 放、取物品<br />
+ * 
+ * 建议把使用公共变量的线程类放在与公共变量的同一个类里面，这样线程类
+ * 就可直接操作公共变量
  * 
  * @author yanghao
  * 

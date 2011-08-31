@@ -13,6 +13,6 @@ public class QuartzServiceTest {
 	private QuartzService quartzService;
 	
 	public void testStartJobs (){
-		quartzService.startJobs();
+		quartzService.startJobsWithExecutor();
 	}
 }

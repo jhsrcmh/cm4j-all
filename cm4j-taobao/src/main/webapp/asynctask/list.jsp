@@ -162,6 +162,7 @@
 				$("a[sid='invalid_task']").click(function(){
 					var td_line = $(this).parent().parent().children();
 					var task_id = $(td_line[0]).html();
+					var task_state = $(td_line[6]);
 					
 					_ajax({
 						url: "/secure/async/invalid",
@@ -171,6 +172,7 @@
 						success : function (json){
 							if (checkJson(json)){
 								if (json){
+									task_state.html("禁用");
 									dialog("禁用成功","恭喜你，禁用任务[" + task_id + "]成功！");
 									return;
 								} else {

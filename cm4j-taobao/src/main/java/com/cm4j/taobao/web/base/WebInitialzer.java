@@ -22,7 +22,7 @@ public class WebInitialzer {
 
 	public void init() throws Exception {
 		logger.debug("WebInitialzer init...");
-		quartzService.startJobs();
+		quartzService.startJobsWithExecutor();
 	}
 
 }

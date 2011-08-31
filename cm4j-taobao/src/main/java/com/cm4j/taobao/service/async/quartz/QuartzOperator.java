@@ -2,7 +2,6 @@ package com.cm4j.taobao.service.async.quartz;
 
 import java.text.ParseException;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -38,7 +37,7 @@ public class QuartzOperator implements ApplicationContextAware, DisposableBean {
 	 * 常量 - jobDetail数据key - 业务数据
 	 */
 	public static final String JOBDETAIL_DATA_KEY = "JOB_DATA_KEY";
-	
+
 	/**
 	 * 常量 - jobDetail数据key - Spring 上下文
 	 */
@@ -65,17 +64,18 @@ public class QuartzOperator implements ApplicationContextAware, DisposableBean {
 		}
 
 		Class<? extends Job> handlerClazz = data.getHandlerClazz();
-		JobKey jobKey = new JobKey(handlerClazz.getSimpleName() + RandomStringUtils.randomAlphanumeric(10));
+		JobKey jobKey = getJobKey(handlerClazz, data.getTaskId());
 
 		// 删除旧任务
-		scheduler.deleteJob(jobKey);
+		deleteJob(jobKey);
 		JobDetail jobDetail = JobBuilder.newJob(handlerClazz).withIdentity(jobKey).build();
 
 		jobDetail.getJobDataMap().put(JOBDETAIL_DATA_KEY, data);
 		jobDetail.getJobDataMap().put(APPLICATION_CONTEXT, ctx);
 
-		TriggerBuilder<?> builder = TriggerBuilder.newTrigger().withIdentity(handlerClazz.getSimpleName())
-				.forJob(jobDetail).withSchedule(CronScheduleBuilder.cronSchedule(data.getCron()));
+		TriggerBuilder<?> builder = TriggerBuilder.newTrigger()
+				.withIdentity(handlerClazz.getSimpleName() + data.getTaskId()).forJob(jobDetail)
+				.withSchedule(CronScheduleBuilder.cronSchedule(data.getCron()));
 		if (data.getStartDate() == null) {
 			builder.startAt(DATE_ENUM.NOW.apply());
 		} else {
@@ -87,6 +87,9 @@ public class QuartzOperator implements ApplicationContextAware, DisposableBean {
 		Trigger trigger = builder.build();
 
 		scheduler.scheduleJob(jobDetail, trigger);
+		
+		// 触发任务
+		 scheduler.triggerJob(jobKey);
 	}
 
 	/**
@@ -104,6 +107,15 @@ public class QuartzOperator implements ApplicationContextAware, DisposableBean {
 		}
 	}
 
+	public void deleteJob(JobKey jobKey) {
+		// 删除任务
+		try {
+			scheduler.deleteJob(jobKey);
+		} catch (SchedulerException e) {
+			logger.error("删除任务异常,jobKey:" + jobKey, e);
+		}
+	}
+
 	@Override
 	public void destroy() throws Exception {
 		logger.info("sched will be shutdown,waiting all jobs finished");
@@ -114,10 +126,15 @@ public class QuartzOperator implements ApplicationContextAware, DisposableBean {
 		}
 	}
 
+	public JobKey getJobKey(Class<? extends Job> handlerClazz, Long taskId) {
+		return new JobKey(handlerClazz.getSimpleName() + "-" + taskId, "TOP");
+	}
+
 	private ApplicationContext ctx;
 
 	@Override
 	public void setApplicationContext(ApplicationContext ctx) throws BeansException {
 		this.ctx = ctx;
 	}
+
 }

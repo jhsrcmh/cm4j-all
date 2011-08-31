@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cm4j.taobao.dao.AsyncTaskDao;
+import com.cm4j.taobao.exception.ValidationException;
 import com.cm4j.taobao.pojo.AsyncTask;
+import com.cm4j.taobao.service.async.quartz.QuartzService;
 import com.cm4j.taobao.web.base.BaseDispatchAction;
 
 @Controller
@@ -17,6 +19,8 @@ public class AsyncTaskAction extends BaseDispatchAction {
 
 	@Autowired
 	private AsyncTaskDao asyncTaskDao;
+	@Autowired
+	private QuartzService quartzService;
 
 	/**
 	 * 跳转至异步任务查询页面
@@ -57,11 +61,23 @@ public class AsyncTaskAction extends BaseDispatchAction {
 	 * 
 	 * @param task_id
 	 * @return
+	 * @throws ValidationException 
 	 */
 	@RequestMapping("/invalid")
 	public @ResponseBody
-	Boolean invalid(long task_id) {
-		return 1 == asyncTaskDao.update("update AsyncTask set state = ? where taskId = ?", new Object[] {
-				AsyncTask.State.invalid.name(), task_id });
+	Boolean invalid(long task_id) throws ValidationException {
+		AsyncTask asyncTask = asyncTaskDao.findById(task_id);
+		if (asyncTask == null) {
+			throw new ValidationException("未查询到异步任务，task_id:" + task_id);
+		}
+		asyncTask.setState(AsyncTask.State.invalid.name());
+		// 更新状态
+		asyncTaskDao.update(asyncTask);
+
+		if (AsyncTask.TaskType.cron.name().equals(asyncTask.getTaskType())){
+			// 删除quartz的任务
+			quartzService.removeCronTask(asyncTask);
+		}
+		return true;
 	}
 }

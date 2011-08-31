@@ -58,6 +58,9 @@ public abstract class AbstractJobHandler implements Job {
 		} catch (DataAccessException e) {
 			logger.error("cron task exec log error", e);
 		}
+
+		logger.warn("定时任务 {} - {} 执行结果：{}", new Object[] { data.getTaskId(), data.getHandlerClazz().getSimpleName(),
+				is_success });
 	}
 
 	/**

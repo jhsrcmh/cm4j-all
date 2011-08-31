@@ -28,9 +28,9 @@ public class ExchangerTest {
 					while (true) {
 						// 当buf大小大于等于10，才和另一个线程交换数据
 						if (buff.size() >= 10) {
+							System.out.println("exchange buff1");
 							// 等待另一个线程也执行到exchange()方法，开始跟另外一个线程交换数据
 							buff = exchanger.exchange(buff);
-							System.out.println("exchange buff1");
 							buff.clear();
 						}
 
@@ -56,9 +56,7 @@ public class ExchangerTest {
 						buff.clear();
 						// 等待另一个线程也执行到exchange()方法，开始跟另外一个线程交换数据
 						// 如果另一个线程没执行到exchange()，则暂挂当前线程等待
-						if (buff.isEmpty()){
-							buff = exchanger.exchange(buff);
-						}
+						buff = exchanger.exchange(buff);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

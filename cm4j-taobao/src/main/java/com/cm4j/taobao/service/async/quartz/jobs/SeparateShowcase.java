@@ -69,7 +69,7 @@ public class SeparateShowcase extends AbstractJobHandler {
 
 			// 查询本次任务是第几次执行
 			AsyncTaskLogDao asyncTaskLogDao = ctx.getBean(AsyncTaskLogDao.class);
-			int execCount = asyncTaskLogDao.countByTaskId(data.getUserId());
+			int execCount = asyncTaskLogDao.countByTaskId(data.getTaskId());
 			// 执行来源
 			SeparateShowcaseData separateShowcaseData = APICaller.jsonBinder.fromJson(data.getJsonData(),
 					SeparateShowcaseData.class);

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class QuartzService {
 	/**
 	 * 从数据库中获取需要执行的任务并执行
 	 */
-	public void startJobs() {
+	public void startJobsWithExecutor() {
 		taskExecutor.execute(new StartJobsRunnable());
 	}
 
@@ -92,5 +93,16 @@ public class QuartzService {
 		} catch (Exception e) {
 			logger.error("添加job异常，task_id:" + asyncTask.getTaskId() + ",cron:" + asyncTask.getTaskCron(), e);
 		}
+	}
+	
+	/**
+	 * 从quartz中删除定时任务
+	 * 
+	 * @param asyncTask
+	 */
+	public void removeCronTask (AsyncTask asyncTask){
+		TaskSubType type = AsyncTask.TaskSubType.valueOf(asyncTask.getTaskSubType());
+		JobKey jobKey = quartzOperator.getJobKey(type.getHandleClazz(), asyncTask.getTaskId());
+		quartzOperator.deleteJob(jobKey);
 	}
 }
