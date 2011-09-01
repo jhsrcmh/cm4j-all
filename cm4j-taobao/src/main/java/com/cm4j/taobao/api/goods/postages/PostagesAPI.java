@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.googds.postages;
+package com.cm4j.taobao.api.goods.postages;
 
 import java.util.List;
 

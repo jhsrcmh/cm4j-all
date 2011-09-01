@@ -49,6 +49,10 @@ public class APIConstants extends ConfigurableConstants {
 	/*
 	 * ====================Properties获取============================
 	 */
+	public static String getGoogleShorterURL() {
+		return getValue("google.url.shorter.url");
+	}
+
 	/**
 	 * 调用淘宝API超时时间
 	 * 
@@ -84,13 +88,14 @@ public class APIConstants extends ConfigurableConstants {
 	public static String getTaobaoServiceUrl() {
 		return getValue("taobao.api.service.url");
 	}
-	
+
 	/**
 	 * 查询H2信息
+	 * 
 	 * @param key
 	 * @return
 	 */
-	public static String getH2Info(String key){
+	public static String getH2Info(String key) {
 		return getValue("h2." + key);
 	}
 }

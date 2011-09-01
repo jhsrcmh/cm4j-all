@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.googds.items;
+package com.cm4j.taobao.api.goods.items;
 
 import java.util.List;
 import java.util.Map;
@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.cm4j.taobao.TestContext;
 import com.cm4j.taobao.api.common.APICaller;
+import com.cm4j.taobao.api.goods.items.ItemsAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Item;

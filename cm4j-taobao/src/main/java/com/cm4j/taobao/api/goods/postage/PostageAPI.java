@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.googds.postage;
+package com.cm4j.taobao.api.goods.postage;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;

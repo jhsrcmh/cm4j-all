@@ -4,7 +4,19 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 延时队列的使用
+ * 
+ * @author yang.hao
+ * @since 2011-9-1 上午9:26:52
+ */
 public class DelayQueueUsage {
+	/**
+	 * 注意对TimeUnit的使用
+	 * 
+	 * @author yang.hao
+	 * @since 2011-9-1 上午9:27:03
+	 */
 	class DelayItem<E> implements Delayed {
 		private final long create = System.nanoTime();
 
@@ -38,7 +50,8 @@ public class DelayQueueUsage {
 		}
 
 		/**
-		 * 排序规则对象优先级，返回正数、0、负数
+		 * 排序规则对象优先级，返回正数、0、负数<br>
+		 * 参考JDK中其他Comparable实现
 		 */
 		@Override
 		public int compareTo(Delayed other) {
@@ -74,7 +87,7 @@ public class DelayQueueUsage {
 	public static void main(String[] args) throws InterruptedException {
 		DelayQueueUsage usage = new DelayQueueUsage();
 		usage.put("a");
-		
+
 		// 立即获取，获取不到
 		System.out.println(usage.get());
 		// 等三秒，获取到

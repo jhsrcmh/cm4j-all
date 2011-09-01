@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.cm4j.taobao.TestContext;
 import com.cm4j.taobao.api.common.APICaller;
-import com.cm4j.taobao.api.googds.items.ItemAPI;
+import com.cm4j.taobao.api.goods.items.ItemAPI;
 import com.cm4j.taobao.api.marketing.meal.MealAPI.SimpleItemList;
 import com.cm4j.taobao.api.marketing.meal.MealAPI.SimpleItemList.SimpleItem;
 import com.cm4j.taobao.exception.ValidationException;

@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.googds.postages;
+package com.cm4j.taobao.api.goods.postages;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import com.cm4j.taobao.TestContext;
 import com.cm4j.taobao.api.common.APICaller;
+import com.cm4j.taobao.api.goods.postages.PostagesAPI;
 import com.taobao.api.ApiException;
 import com.taobao.api.domain.Postage;
 

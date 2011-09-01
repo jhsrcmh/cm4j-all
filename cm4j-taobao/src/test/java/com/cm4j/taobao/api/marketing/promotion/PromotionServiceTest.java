@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import com.cm4j.taobao.TestContext;
 import com.cm4j.taobao.api.common.APICaller;
-import com.cm4j.taobao.api.googds.items.ItemsAPI;
+import com.cm4j.taobao.api.goods.items.ItemsAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.google.common.base.Joiner;
 import com.taobao.api.ApiException;

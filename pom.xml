@@ -28,6 +28,7 @@
 		<google.guava.version>r09</google.guava.version>
 		<quartz.version>2.0.2</quartz.version>
 		<joda-time.version>2.0</joda-time.version>
+		<http-client.version>4.1.2</http-client.version>
 		<!-- 数据库 -->
 		<h2database.version>1.2.135</h2database.version>
 		<hibernate.entitymanager.version>3.3.1.ga</hibernate.entitymanager.version>
@@ -342,6 +343,11 @@
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz-jboss</artifactId>
 				<version>${quartz.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${http-client.version}</version>
 			</dependency>
 
 			<!-- 数据库 -->

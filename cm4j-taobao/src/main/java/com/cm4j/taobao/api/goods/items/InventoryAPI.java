@@ -1,4 +1,4 @@
-package com.cm4j.taobao.api.googds.items;
+package com.cm4j.taobao.api.goods.items;
 
 import java.util.HashMap;
 import java.util.Map;

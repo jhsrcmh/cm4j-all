@@ -8,8 +8,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cm4j.taobao.api.googds.items.ItemAPI;
-import com.cm4j.taobao.api.googds.items.ItemsAPI;
+import com.cm4j.taobao.api.goods.items.ItemAPI;
+import com.cm4j.taobao.api.goods.items.ItemsAPI;
 import com.cm4j.taobao.api.shop.ShopAPI;
 import com.cm4j.taobao.exception.ValidationException;
 import com.taobao.api.ApiException;
