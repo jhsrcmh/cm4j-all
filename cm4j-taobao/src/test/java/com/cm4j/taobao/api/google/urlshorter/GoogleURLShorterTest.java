@@ -10,9 +10,11 @@ public class GoogleURLShorterTest {
 
 	@Test
 	public void testShorterAndLonger() throws HttpException {
-		String longUrl = "http://www.sina.com.cn";
-		String shorter = GoogleURLShorter.shorten(longUrl);
-		String longer = GoogleURLShorter.longen(shorter);
+		String longUrl = "http://www.sina.com.cn/";
+		String shorted = GoogleURLShorter.shorten(longUrl);
+		Assert.assertThat(shorted, Is.is("http://goo.gl/rN7W"));
+
+		String longer = GoogleURLShorter.longen(shorted);
 		Assert.assertThat(longer, Is.is(longUrl));
 	}
 }
