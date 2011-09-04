@@ -2,12 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
 <title>生成页面推广示例</title>
-<link href="generation_style.css" rel="stylesheet" type="text/css" />
+
+<!-- <link href="generation_style.css" rel="stylesheet" type="text/css" /> -->
+
+<script src="../../app/jquery-1.6.2.min.js"></script>	
+<script type="text/javascript">
+	/**
+	 * 动态加载css 或者 js
+	 */
+	function loadExtentFile(filePath, fileType){
+	    if(fileType == "js"){
+	    	$("head").append('<script src="' + filePath + '"><\/script>');
+	    }else if(fileType == "css"){
+	    	$("head").append('<link href="' + filePath + '" rel="stylesheet" type="text/css" />');
+	    }
+	}
+	loadExtentFile("generation_style.css", "css");
+</script>
 </head>
 <body>
-asdfa
 	<div class="container">
 		<div class="title">标题标题标题标题标题标题标题</div>
 		<div class="content">

@@ -2,8 +2,6 @@ package com.cm4j.dao.datasource;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.logging.Logger;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -45,8 +43,4 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 		}
 	}
 
-	@Override
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		return null;
-	}
 }
