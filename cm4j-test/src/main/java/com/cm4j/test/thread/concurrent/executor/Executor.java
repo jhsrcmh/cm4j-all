@@ -21,25 +21,27 @@ import java.util.concurrent.TimeoutException;
  */
 public class Executor {
 
-    public static void main(String[] args) throws InterruptedException, ExecutionException {
-        // Executors是Executor的工厂类
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<Object> task = new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                Thread.sleep(3000);
-                return "result object";
-            }
-        };
+	public static void main(String[] args) throws InterruptedException, ExecutionException {
+		// Executors是Executor的工厂类
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Callable<Object> task = new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				Thread.sleep(3000);
+				return "result object";
+			}
+		};
 
-        Future<Object> future = executor.submit(task);
-        try {
-            System.out.println(future.get(1,TimeUnit.SECONDS));
-        } catch (TimeoutException e) {
-            System.out.println("超时了");
-            e.printStackTrace();
-        }
-        
-        executor.shutdown();
-    }
+		Future<Object> future = null; 
+		if (!executor.isShutdown()){
+			future = executor.submit(task);
+		}
+		try {
+			System.out.println(future.get(1, TimeUnit.SECONDS));
+		} catch (TimeoutException e) {
+			System.out.println("超时了");
+			e.printStackTrace();
+		}
+		executor.shutdown();
+	}
 }
