@@ -13,8 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import com.cm4j.taobao.api.common.APICaller;
 import com.cm4j.taobao.api.common.APIConstants;
-import com.cm4j.taobao.utils.HttpClientUtils.HttpException;
 
+/**
+ * google网址缩短API<br />
+ * http://code.google.com/intl/zh-CN/apis/urlshortener/index.html
+ * 
+ * @author yang.hao
+ * @since 2011-9-8 下午10:14:12
+ */
 public class GoogleURLShorter {
 
 	private static final Logger logger = LoggerFactory.getLogger(GoogleURLShorter.class);
@@ -26,21 +32,29 @@ public class GoogleURLShorter {
 
 	public static int request_timeout = 1500;
 
+	public static String longenAndReturnJson (String shortUrl,GoogleURLProjection projection) throws URLShorterException {
+		String url = submit_url + "&shortUrl=" + shortUrl;
+		if (projection != null){
+			url += "&projection=" + projection;
+		}
+		return httpRequest(url, "GET", request_timeout);
+	}
+	
 	/**
 	 * 还原原网址 - GET
 	 * 
 	 * @param shortUrl
 	 * @return
-	 * @throws HttpException
+	 * @throws URLShorterException
 	 */
-	public static String longen(String shortUrl) throws HttpException {
+	public static String longen(String shortUrl) throws URLShorterException {
 		try {
-			String longedJson = httpRequest(submit_url + "&shortUrl=" + shortUrl, "GET", request_timeout);
+			String longedJson = longenAndReturnJson (shortUrl,null);
 			GoogleURLShorterAnalytics fromJson = APICaller.jsonBinder.fromJson(longedJson,
 					GoogleURLShorterAnalytics.class);
 			return fromJson.getLongUrl();
 		} catch (Exception e) {
-			throw new HttpException(e);
+			throw new URLShorterException(e);
 		}
 	}
 
@@ -49,9 +63,9 @@ public class GoogleURLShorter {
 	 * 
 	 * @param longUrl
 	 * @return
-	 * @throws HttpException
+	 * @throws URLShorterException
 	 */
-	public static String shorten(String longUrl) throws HttpException {
+	public static String shorten(String longUrl) throws URLShorterException {
 		try {
 			GoogleURLShorterAnalytics pojo = new GoogleURLShorterAnalytics();
 			pojo.setLongUrl(longUrl);
@@ -60,7 +74,7 @@ public class GoogleURLShorter {
 					GoogleURLShorterAnalytics.class);
 			return fromJson.getId();
 		} catch (Exception e) {
-			throw new HttpException(e);
+			throw new URLShorterException(e);
 		}
 	}
 

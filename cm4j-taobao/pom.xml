@@ -11,7 +11,7 @@
 	<name>cm4j-taobao</name>
 
 	<properties>
-		<com.taobao.version>20110829</com.taobao.version>
+		<com.taobao.version>20110906</com.taobao.version>
 		<html2image.version>0.9</html2image.version>
 	</properties>
 
