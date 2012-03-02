@@ -11,7 +11,8 @@
 	<name>cm4j-taobao</name>
 
 	<properties>
-		<com.taobao.version>20110711</com.taobao.version>
+		<com.taobao.version>20110906</com.taobao.version>
+		<html2image.version>0.9</html2image.version>
 	</properties>
 
 	<dependencies>
@@ -75,15 +76,18 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gui.ava</groupId>
+			<artifactId>html2image</artifactId>
+			<version>${html2image.version}</version>
 		</dependency>
 
 		<!-- test -->

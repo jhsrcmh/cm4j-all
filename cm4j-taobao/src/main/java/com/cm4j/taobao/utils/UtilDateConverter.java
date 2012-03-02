@@ -5,6 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 暂未用到，需测试？
+ * @author yang.hao
+ * @since 2011-9-6 下午5:20:55
+ */
 public class UtilDateConverter extends PropertyEditorSupport {
 	private String format = "yyyy-MM-dd";
 
