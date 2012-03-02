@@ -59,6 +59,7 @@
 		<module>cm4j-dao</module>
 		<module>cm4j-test</module>
 		<module>cm4j-taobao</module>
+		<module>cm4j-web</module>
 	</modules>
 
 	<!-- 仓库 -->
@@ -528,7 +529,7 @@
 						<scanIntervalSeconds>5</scanIntervalSeconds>
 						<connectors>
 							<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-								<port>8080</port>
+								<port>80</port>
 							</connector>
 						</connectors>
 						<webDefaultXml>../jetty-webdefault.xml</webDefaultXml>

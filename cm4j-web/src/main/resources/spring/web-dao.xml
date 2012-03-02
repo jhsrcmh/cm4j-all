@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:flow="http://www.springframework.org/schema/webflow-config"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/webflow-config http://www.springframework.org/schema/webflow-config/spring-webflow-config-1.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- ①：对web包中的所有类进行扫描，以完成Bean创建和自动依赖注入的功能 在applicationContext已配置 -->
+	<context:component-scan base-package="com.cm4j" />
+	<context:annotation-config />
+
+	<!-- 通用sessionDao -->
+	<bean id="sessionDao" class="com.cm4j.dao.jdbc.SessionDao" />
+
+	<!-- 通用hibernateDao -->
+	<bean id="hibernateDao" class="com.cm4j.dao.hibernate.HibernateDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="userInfoDao" class="com.cm4j.dao.hibernate.HibernateDao">
+		<property name="persistentClass" value="com.cm4j.web.pojo.UserInfo" />
+	</bean>
+
+
+	<!-- 数据源 -->
+	<bean id="dataSource" class="org.hibernate.dialect.H2DataSource">
+		<property name="url" value="${h2.url}" />
+		<property name="user" value="${h2.user}" />
+		<property name="password" value="${h2.password}" />
+	</bean>
+
+	<!-- Hibernate Session Factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.cm4j.web.pojo</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+				<prop key="hibernate.connection.driver_class">org.h2.Driver</prop>
+				<prop key="hibernate.connection.pool_size">1</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">validate</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>
