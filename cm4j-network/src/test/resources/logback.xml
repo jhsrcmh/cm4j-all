@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="true">
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{HH:mm:ss} %-5level %t %logger{0}:%L - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="stat.log" class="ch.qos.logback.core.FileAppender">
+		<file>../logs/stat.log</file>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%-5level %logger{0}:%L %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="perf4j"
+		class="com.woniu.network.util.log.Slf4JAsyncCoalescingStatisticsAppender">
+		<param name="timeSlice" value="5000" />
+		<appender-ref ref="stat.log" />
+	</appender>
+
+	<logger name="com.woniu.network" level="debug" appender-ref="stdout"/>
+
+	<logger name="org.perf4j.TimingLogger" additivity="false">
+		<level value="info" />
+		<appender-ref ref="perf4j" />
+	</logger>
+
+	<root>
+		<level value="warn" />
+		<appender-ref ref="stdout" />
+	</root>
+</configuration>

@@ -1,0 +1,33 @@
+<protocol little-endian="true" string-encoding="UTF-8"
+	wstring-encoding="UTF-16LE">
+	<!-- must in order and name is corresponding to IProtocolParam-->
+	<header>
+		<field name="length" type="int" />
+		<field name="version" type="int" value="0x301"/>
+		<field name="userid0" type="int" value="0"/>
+		<field name="userid1" type="int" value="0"/>
+		<field name="userid2" type="int" value="0"/>
+		<field name="userid3" type="int" value="0"/>
+		<field name="reserved" type="int" value="0"/>
+		<field name="messageType" type="int" value="0x9000"/>
+	</header>
+
+	<messages>
+		<message><!-- 发送充值消息 -->
+			<field name="messageId" type="int" value="0x1001"/>
+			<field name="serverId" type="int" />
+			<field name="accountId" type="int" />
+			<field name="gameId" type="int" />
+			<field name="imprestType" type="int" />
+			<field name="remark" type="string" />
+		</message>
+		<message><!-- 测试消息 -->
+			<field name="messageId" type="int" value="0x1002"/>
+			<field name="accountId" type="int" />
+			<responseBody>
+				<field name="messageType" type="int" value="0x40"/>
+                <field name="result" type="int" />
+            </responseBody>
+		</message>
+	</messages>
+</protocol>

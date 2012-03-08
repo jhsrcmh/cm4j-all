@@ -60,6 +60,7 @@
 		<module>cm4j-test</module>
 		<module>cm4j-taobao</module>
 		<module>cm4j-web</module>
+		<module>cm4j-network</module>
 	</modules>
 
 	<!-- 仓库 -->
